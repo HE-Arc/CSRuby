@@ -18,5 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('csruby_app.urls')),
+    path('', include('csruby_frontend_app.urls')),
     path('admin/', admin.site.urls),
 ]
