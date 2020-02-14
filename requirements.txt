@@ -6,6 +6,7 @@ coverage==5.0.3
 Django==3.0.3
 djangorestframework==3.11.0
 more-itertools==8.2.0
+Django==3.0.3
 mysqlclient==1.4.6
 packaging==20.1
 pip-autoremove==0.9.1
