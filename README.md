@@ -6,7 +6,7 @@ Cloner le repository. Installer les dépendences pythons avec :
 ```
 pip install -r requirements.txt
 ```
-Installer les dépendences de l'application frontend (csruby_frontend_app) Nodes avec :
+Installer les dépendences Nodes de l'application frontend (csruby_frontend_app) avec :
 ```
 npm install
 ```
