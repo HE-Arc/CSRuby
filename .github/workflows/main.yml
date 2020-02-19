@@ -1,0 +1,23 @@
+name: CSRuby-CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Setup Python environment
+        uses: actions/setup-python@v1.1.1
+      - uses: actions/checkout@v1
+      - name: Install Python dependencies
+        run: |
+          ls
+          pip install -r requirements.txt
+      - name: Install npm dependencies
+        run: |
+          cd csruby_frontend_app
+          npm install
+          cd ..
+          
