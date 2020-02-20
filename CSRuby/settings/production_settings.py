@@ -2,8 +2,7 @@ from CSRuby.settings.common_settings import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SET environment variable SECRET_KEY on server
-# SECRET_KEY = os.environ['SECRET_KEY']
-SECRET_KEY = 'jduk5ieuy&-%z1cr@!31c46#0kf^40-&fx3(sud-q#$o#az^ao'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
