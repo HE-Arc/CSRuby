@@ -39,6 +39,8 @@ jobs:
           # MYSQL_PASSWORD - specified superuser password which user is power for created database
           mysql password: root # optional, default is
       - name: Run migrations
+        env:
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
         run: python manage.py migrate
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
