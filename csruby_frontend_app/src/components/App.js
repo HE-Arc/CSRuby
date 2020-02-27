@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
+import ItemPreview from './item/ItemPreview';
 
 class App extends Component {
-  constructor(props) {
+  /*constructor(props) {
     super(props);
     this.state = {
       data: [],
       loaded: false,
       placeholder: "Loading"
     };
-  }
+  }*/
 
-  componentDidMount() {
+  /*componentDidMount() {
     fetch("api/users")
       .then(response => {
         if (response.status > 400) {
@@ -29,19 +30,21 @@ class App extends Component {
           };
         });
       });
-  }
+  }*/
 
   render() {
     return (
-      <ul>
+      <ItemPreview/>
+      /*<ul>
         {this.state.data.map(contact => {
           return (
             <li key={contact.id}>
               {contact.username} - {contact.password}
             </li>
+
           );
         })}
-      </ul>
+      </ul>*/
     );
   }
 }

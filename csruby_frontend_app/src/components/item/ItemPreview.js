@@ -12,3 +12,5 @@ class ItemPreview extends Component {
     );
   }
 }
+
+export default ItemPreview;
