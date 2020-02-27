@@ -41,7 +41,7 @@ class Price(models.Model):
     lowest_price = models.FloatField()
     median_price = models.FloatField(null=True)
 
-class Barter(models.Model):
+class User_Item(models.Model):
     item=models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     buy_created_at=models.DateTimeField();
