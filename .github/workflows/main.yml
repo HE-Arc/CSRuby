@@ -11,16 +11,18 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v1.1.1
       - uses: actions/checkout@v1
+      - name: ls debug
+        run: ls
       - name: Install Python dependencies
-        run: |
-          ls
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
       - name: Switch to frontend app
         run: cd csruby_frontend_app
+      - name: ls debug
+        run: ls
       - name: Install npm dependencies
         run: npm install
       - name: Run webpack
-        run: ls | npm run dev
+        run: npm run dev
       - name: Switch to backend app
         run: cd ../csruby_app
       - name: Run unit tests
