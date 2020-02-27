@@ -6,7 +6,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Setup Python environment
         uses: actions/setup-python@v1.1.1
@@ -23,5 +23,4 @@ jobs:
       - name: ls debug
         run: ls csruby_app
       - name: Run unit tests
-        run: cd csruby_app/tests/ && pytest
-          
+        run: cd csruby_app/tests/ && pytest --ds=CSRuby.settings.production_settings
