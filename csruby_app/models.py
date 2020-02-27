@@ -29,7 +29,23 @@ class Item(models.Model):
         EXCEEDINGLY_RARE = 'EXR', _('Exceedingly Rare')
         CONTRABAND = 'CON', _('Contraband')
 
-    item_id= models.BigIntegerField()
+    item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     item_image = models.CharField(max_length=255)
     rarity = models.CharField(max_length=3,choices=Rarity.choices,default=Rarity.CONSUMER_GRADE,)
+
+class Price(models.Model):
+    price_id = models.AutoField(primary_key=True)
+    item_id = models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
+    timestamp = models.DateTimeField()
+    lowest_price = models.FloatField()
+    median_price = models.FloatField(null=True)
+
+class Barter(models.Model):
+    item=models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    buy_created_at=models.DateTimeField();
+    sell_created_at=models.DateTimeField();
+    buy_item=models.BooleanField(default=False)
+    sell_item=models.BooleanField(default=False)
+    favorite_item=models.BooleanField(default=False)
