@@ -15,8 +15,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
-      - name: Run webpack
-        run: cd csruby_frontend_app && npm run build
+      #- name: Run webpack
+      #  run: cd csruby_frontend_app && npm run build
       - name: Run unit tests
         run: cd csruby_app && pytest
           
