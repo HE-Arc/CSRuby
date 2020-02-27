@@ -20,7 +20,7 @@ jobs:
       - name: Install npm dependencies
         run: npm install
       - name: Run webpack
-        run: npm run dev
+        run: ls | npm run dev
       - name: Switch to backend app
         run: cd ../csruby_app
       - name: Run unit tests
