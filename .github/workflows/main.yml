@@ -11,15 +11,13 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v1.1.1
       - uses: actions/checkout@v1
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
       - name: Install Python dependencies
         run: pip install -r requirements.txt
       - name: Install npm dependencies
       - name: Setting up SECRET_KEY env. var.
-        env: 
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      - name: Setting up DJANGO_SETTINGS_MODULE env. var.
-        env:
-          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
         run: cd csruby_frontend_app && npm install
       #- name: Run webpack
       #  run: cd csruby_frontend_app && npm run build
