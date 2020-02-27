@@ -23,7 +23,7 @@ jobs:
       - name: Run webpack
         run: |
           cd csruby_frontend_app
-          npm run dev
+          npm run start:dev
           cd ..
       - name: Run unit tests
         run: |
