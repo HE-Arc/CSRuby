@@ -18,5 +18,5 @@ jobs:
       #- name: Run webpack
       #  run: cd csruby_frontend_app && npm run build
       - name: Run unit tests
-        run: cd csruby_app && pytest
+        run: cd csruby_app/tests && pytest
           
