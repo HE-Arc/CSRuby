@@ -34,7 +34,7 @@ class App extends Component {
 
   render() {
     return (
-      <ItemPreview/>
+      <ItemPreview url='/static/images/stattrack_survival_knife.png' name='★ StatTrak™ Survival Knife | Fade' price='1758.79'/>
       /*<ul>
         {this.state.data.map(contact => {
           return (

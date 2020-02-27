@@ -2,12 +2,20 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 
 class ItemPreview extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      url:props.url,
+      name:props.name,
+      price:props.price
+    };
+  }
   render(){
     return (
       <div>
-          <img src="/static/images/stattrack_survival_knife.png" alt="StatTrack Survival Knife"/>
-          <h1>★ StatTrak™ Survival Knife | Fade</h1>
-          <p>Selling price 1758.58$</p>
+          <img src={this.state.url} alt={this.state.name}/>
+          <h1>{this.state.name}</h1>
+          <p>Selling price {this.state.price}$</p>
       </div>
     );
   }
