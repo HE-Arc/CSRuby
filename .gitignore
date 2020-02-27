@@ -130,3 +130,6 @@ dmypy.json
 
 # node installed modules
 node_modules
+
+# Django development settings
+development_settings.py
