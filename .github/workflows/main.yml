@@ -38,10 +38,6 @@ jobs:
           mysql user: root # optional, default is
           # MYSQL_PASSWORD - specified superuser password which user is power for created database
           mysql password: root # optional, default is
-      - name: Check timeout value
-        run: |
-        mysql -u root -p root
-        SHOW SESSION VARIABLES LIKE 'wait_timeout';
       - name: Run migrations
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}

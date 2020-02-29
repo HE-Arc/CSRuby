@@ -83,6 +83,10 @@ DATABASES = {
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS':{
+            'timeout': 99999999,
+            'net_read_timeout': 9999999
+        },
     },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
