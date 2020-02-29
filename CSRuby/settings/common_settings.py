@@ -85,7 +85,6 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS':{
             'connect_timeout': 99999999,
-            'bind_address': '0.0.0.0',
         },
     },
     'default_sqlite': {
