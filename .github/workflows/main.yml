@@ -47,8 +47,6 @@ jobs:
         run: cd csruby_frontend_app && npm install
       #- name: Run webpack
       #  run: cd csruby_frontend_app && npm run build
-      - name: ls debug
-        run: ls csruby_app
       - name: Run unit tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}

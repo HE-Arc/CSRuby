@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'csruby_database',
         'USER': 'root',
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '3306',
     },
     'default_sqlite': {
