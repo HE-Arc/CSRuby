@@ -84,8 +84,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS':{
-            'connect_timeout': 99999999,
-            'net_read_timeout': 9999999
+            'connect_timeout': 99999999
         },
     },
     'default_sqlite': {
