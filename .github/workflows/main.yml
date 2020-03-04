@@ -46,6 +46,7 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: python manage.py migrate
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
