@@ -29,7 +29,7 @@ jobs:
           # --collation-server - The character collation of MySQL server
           collation server: utf8mb4_general_ci # optional, default is utf8mb4_general_ci
           # Version of MySQL to use
-          mysql version: latest # optional, default is latest
+          mysql version: latest # optional, default is latestwait sleep
           # MYSQL_ROOT_PASSWORD - root superuser password
           mysql root password: root # optional, default is
           # MYSQL_DATABASE - name for the default database that is created
@@ -38,15 +38,18 @@ jobs:
           mysql user: root # optional, default is
           # MYSQL_PASSWORD - specified superuser password which user is power for created database
           mysql password: root # optional, default is
-      # - name: Run migrations
-      #   env:
-      #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      #     DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-      #   run: python manage.py migrate
+      - name: Wait / Sleep
+        uses: jakejarvis/wait-action@v0.1.0
+        with:
+          time: '20s'
+      - name: Run migrations
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: python manage.py migrate
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
-      #- name: Run webpack
-      #  run: cd csruby_frontend_app && npm run build
       - name: Run unit tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
