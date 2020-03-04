@@ -38,15 +38,15 @@ jobs:
           mysql user: root # optional, default is
           # MYSQL_PASSWORD - specified superuser password which user is power for created database
           mysql password: root # optional, default is
-      # - name: Run migrations
-      #   env:
-      #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      #     DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-      #   run: python manage.py migrate
+      - name: Wait for 20 secondes
+        run: sleep(20)
+      - name: Run migrations
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+        run: python manage.py migrate
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
-      #- name: Run webpack
-      #  run: cd csruby_frontend_app && npm run build
       - name: Run unit tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
