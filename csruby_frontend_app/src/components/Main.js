@@ -13,7 +13,9 @@ import {
 } from "react-router-dom";
 
 import Dashboard from "./Dashboard";
+
 import Profile from "./Profile";
+import Search from "./Search";
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 // import "../static/csruby_frontend_app/css/main.css";
 
@@ -29,7 +31,10 @@ class Main extends Component {
           </header>
           <div className="content">
             <Route exact path="/" component={Dashboard}/>
+
             <Route exact path="/profile" component={Profile}/>
+            <Route exact path="/search" component={Search}/>
+
           </div>
         </div>
       </HashRouter>
