@@ -12,6 +12,15 @@ class UserListCreate(generics.ListCreateAPIView):
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
     def get_queryset(self):
-        search_input = self.request.GET.get('name','')
-        queryset = Item.objects.filter(name__istartswith=search_input)
+        name = self.request.GET.get('name','')
+        item_rarity = self.request.GET.get('rarity',None)
+        min_price = self.request.GET.get('min_price',None)
+        max_price = self.request.GET.get('max_price',None)
+        queryset = Item.objects.filter(name__istartswith=name)
+        if item_rarity:
+            queryset=queryset.filter(rarity=item_rarity)
+        if min_price:
+            pass
+        if max_price:
+            pass
         return queryset
