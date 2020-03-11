@@ -16,6 +16,9 @@ import Dashboard from "./Dashboard";
 
 import Profile from "./Profile";
 import Search from "./Search";
+
+import Login from "./Login";
+import Signup from "./Signup";
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
 class Main extends Component {
@@ -50,6 +53,8 @@ class Main extends Component {
             <Route exact path="/profile" component={Profile}/>
             <Route exact path="/search" component={Search}/>
 
+            <Route exact path="/login" component={Login}/>
+            <Route exact path="/signup" component={Signup}/>
           </div>
         </div>
       </HashRouter>
