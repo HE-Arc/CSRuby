@@ -14,5 +14,4 @@ class ItemSearch(generics.ListAPIView):
     def get_queryset(self):
         search_input = self.request.GET.get('name','')
         queryset = Item.objects.filter(name__istartswith=search_input)
-        #queryset = Item.objects.all()
         return queryset
