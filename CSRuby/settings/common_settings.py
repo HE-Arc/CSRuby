@@ -80,9 +80,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'csruby_database',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': os.environ['DATABASE_PASSWORD'],
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS':{
+            'connect_timeout': 99999999,
+        },
     },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',

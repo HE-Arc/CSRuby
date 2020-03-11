@@ -6,18 +6,53 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Setup Python environment
         uses: actions/setup-python@v1.1.1
       - uses: actions/checkout@v1
       - name: Install Python dependencies
-        run: |
-          ls
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
+      - name: Shutdown Ubuntu MySQL (SUDO)
+        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        env:
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        with:
+          # The port of host
+          host port: 3306 # optional, default is 3306
+          # The port of container
+          container port: 3306 # optional, default is 3306
+          # --character-set-server - The character set of MySQL server
+          character set server: utf8mb4 # optional, default is utf8mb4
+          # --collation-server - The character collation of MySQL server
+          collation server: utf8mb4_general_ci # optional, default is utf8mb4_general_ci
+          # Version of MySQL to use
+          mysql version: latest # optional, default is latestwait sleep
+          # MYSQL_ROOT_PASSWORD - root superuser password
+          mysql root password: root # optional, default is
+          # MYSQL_DATABASE - name for the default database that is created
+          mysql database: csruby_database # optional, default is
+          # MYSQL_USER - create the specified user with superuser power for created database
+          mysql user: root # optional, default is
+          # MYSQL_PASSWORD - specified superuser password which user is power for created database
+          mysql password: root # optional, default is
+      - name: Wait / Sleep
+        uses: jakejarvis/wait-action@v0.1.0
+        with:
+          time: '20s'
+      - name: Run migrations
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: python manage.py migrate
       - name: Install npm dependencies
-        run: |
-          cd csruby_frontend_app
-          npm install
-          cd ..
-          
+        run: cd csruby_frontend_app && npm install
+      - name: Run unit tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: cd csruby_app/tests/ && pytest --ds=CSRuby.settings.production_settings
