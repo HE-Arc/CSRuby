@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
+import ItemPreview from './item/ItemPreview';
 
 class App extends Component {
   // constructor(props) {
