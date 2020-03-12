@@ -16,6 +16,9 @@ import Dashboard from "./Dashboard";
 
 import Profile from "./Profile";
 import Search from "./Search";
+
+import Login from "./Login";
+import Signup from "./Signup";
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
 class Main extends Component {
@@ -39,7 +42,7 @@ class Main extends Component {
                 </ul>
                 <form className="form-inline my-2 my-lg-0">
                   <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                  <button className="btn btn-outline-success my-2 my-sm-0 invisible" type="submit">Search</button>
+                  <button className="btn btn-outline-success my-2 my-sm-0 d-none" type="submit">Search</button>
                 </form>
               </div>
             </nav>
@@ -50,6 +53,8 @@ class Main extends Component {
             <Route exact path="/profile" component={Profile}/>
             <Route exact path="/search" component={Search}/>
 
+            <Route exact path="/login" component={Login}/>
+            <Route exact path="/signup" component={Signup}/>
           </div>
         </div>
       </HashRouter>

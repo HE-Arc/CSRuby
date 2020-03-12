@@ -3,12 +3,10 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server "csruby.srvz-webapp.he-arc.ch", user: "poweruser", roles: %w{app db web}, port: 1426
-set :deploy_to, "/var/www/#{fetch(:application)}"
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
-
+server "csruby.srvz-webapp.he-arc.ch", user: "poweruser", roles: %w{app db web}, port: 1426
 
 
 # role-based syntax
@@ -32,7 +30,7 @@ set :deploy_to, "/var/www/#{fetch(:application)}"
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
-
+set :deploy_to, "/var/www/#{fetch(:application)}"
 
 
 # Custom SSH Options
@@ -51,9 +49,9 @@ set :deploy_to, "/var/www/#{fetch(:application)}"
 #
 # The server-based syntax can be used to override options:
 # ------------------------------------
-# server "csruby.srvz-webapp.he-arc.ch",
-#   user: "poweruser",
-#   roles: %w{app db web},
+# server "example.com",
+#   user: "user_name",
+#   roles: %w{web app},
 #   ssh_options: {
 #     user: "user_name", # overrides user setting above
 #     keys: %w(/home/user_name/.ssh/id_rsa),

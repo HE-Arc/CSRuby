@@ -136,3 +136,6 @@ development_settings.py
 
 # React.js compiled file
 csruby_frontend_app/static/csruby_frontend_app/main.js
+
+# resources
+images/
