@@ -1,7 +1,7 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.12.1"
 
-set :application, "csruby_app"
+set :application, "CSRuby"
 set :repo_url, "https://github.com/HE-Arc/CSRuby.git"
 
 after 'deploy:publishing', 'uwsgi:restart'
