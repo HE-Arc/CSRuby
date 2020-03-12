@@ -6,11 +6,9 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
+server "csruby.srvz-webapp.he-arc.ch", user: "poweruser", roles: %w{app db web}, port: 1426
 
-server "csruby.srvz-webapp.he-arc.ch", user: "poweruser",
-			                  roles: %w{app db web}, port: 1426
 
-set :deploy_to, "/var/www/#{fetch(:application)}"
 # role-based syntax
 # ==================
 
@@ -32,7 +30,7 @@ set :deploy_to, "/var/www/#{fetch(:application)}"
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
-
+set :deploy_to, "/var/www/#{fetch(:application)}"
 
 
 # Custom SSH Options

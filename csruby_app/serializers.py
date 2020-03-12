@@ -46,3 +46,8 @@ class UserRegistrationSerializer(serializers.Serializer):
             raise serializers.ValidationError(error_message)
 
         return data
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ('item_id','name','item_image','rarity')
