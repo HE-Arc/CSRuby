@@ -19,8 +19,10 @@ class ItemSearch(generics.ListAPIView):
         queryset = Item.objects.filter(name__istartswith=name)
         if item_rarity:
             queryset=queryset.filter(rarity=item_rarity)
-        if min_price:
-            pass
-        if max_price:
-            pass
+        for item in queryset:
+            lowest_price = item.entries.latest('timestamp').values('lowest_price')
+            if min_price and lowest_price<min_price:
+                queryset.exclude(item_id_id=item.item_id)
+            if max_price and lowest_price>max_price:
+                queryset.exclude(item_id_id=item.item_id)
         return queryset
