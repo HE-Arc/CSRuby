@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import User, Item
+from .models import User, Item, Price
 from .serializers import UserSerializer, ItemSerializer
 from rest_framework import generics
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
@@ -23,4 +23,14 @@ class ItemSearch(generics.ListAPIView):
             pass
         if max_price:
             pass
+        return queryset
+
+class ItemPriceDetail(generics.ListAPIView):
+    serializer_class = ItemPricesSerializer
+    def get_queryset(self):
+        item_id = self.request.GET.get('item','')
+        timestamp = self.request.GET.get('timestamp',None)
+        lowest_price = self.request.GET.get('lowest_price',None)
+        median_price = self.request.GET.get('median_price',None)
+        queryset = Price.objects.filter(item_id__exact=item)
         return queryset

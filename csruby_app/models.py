@@ -48,8 +48,8 @@ class Price(models.Model):
 class User_Item(models.Model):
     item=models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    buy_created_at=models.DateTimeField();
-    sell_created_at=models.DateTimeField();
+    buy_created_at=models.DateTimeField()
+    sell_created_at=models.DateTimeField()
     buy_item=models.BooleanField(default=False)
     sell_item=models.BooleanField(default=False)
     favorite_item=models.BooleanField(default=False)

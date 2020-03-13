@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Item
+from .models import User, Item, Price
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,3 +10,8 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity')
+
+class ItemPricesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Price
+        fields = ('price_id', 'item_id', 'timestamp', 'lowest_price', 'median_price')
