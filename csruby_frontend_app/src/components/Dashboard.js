@@ -1,6 +1,32 @@
 import React, { Component } from "react";
 
 class Dashboard extends Component {
+  componentDidMount() {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: '# of Votes',
+          backgroundColor: 'rgba(255, 0, 0, 1.0)',
+          borderColor: 'rgba(255, 0, 0, 1.0)',
+          fill: false,
+          data: [12, 19, 3, 5, 2, 3, 5]
+        }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+    });
+  }
+
   render() {
     return (
       <div className="content text-light mt-5">
@@ -24,7 +50,7 @@ class Dashboard extends Component {
             </div>
             <div className="col-lg p-3">
               <div className="csruby-bg-darkest csruby-height-100">
-                <p>graph</p>
+                <canvas id="myChart" width="540" height="450"></canvas>
               </div>
             </div>
           </div>
