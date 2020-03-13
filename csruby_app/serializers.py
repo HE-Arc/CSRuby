@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Item
+from .models import User, Item, Price
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +10,12 @@ class ItemSerializer(serializers.ModelSerializer):
     lowest_price = serializers.SerializerMethodField('get_lowest_price')
 
     def get_lowest_price(self, item):
-        return item.entries.latest('timestamp').values('lowest_price')
+        return item.price_set.latest('timestamp').lowest_price
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity','lowest_price')
+
+class PriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Price
+        fields = ('price_id','timestamp', 'lowest_price', 'median_price')
