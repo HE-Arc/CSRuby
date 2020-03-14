@@ -11,10 +11,10 @@ class Role(models.Model):
     name = models.CharField(max_length=255, default="User")
 
 class User(models.Model):
-    email = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
     profilename = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
-    steamid = models.CharField(max_length=17)
+    steamid = models.CharField(max_length=17, default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
 

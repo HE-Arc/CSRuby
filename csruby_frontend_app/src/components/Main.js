@@ -5,7 +5,6 @@
 *   - Header (usually the case)
 *******************************************************************************************/
 import React, { Component } from "react";
-
 import {
   Route,
   NavLink,
@@ -38,6 +37,9 @@ class Main extends Component {
                 <ul className="navbar-nav mr-auto">
                   <li className="nav-item active">
                     <NavLink className="nav-link" exact to="/">Dashboard<span className="sr-only">(current)</span></NavLink>
+                  </li>
+                  <li className="nav-item active">
+                    <NavLink className="nav-link" exact to="/signup">Signup</NavLink>
                   </li>
                 </ul>
                 <form className="form-inline my-2 my-lg-0">
