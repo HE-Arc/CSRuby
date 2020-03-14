@@ -4,6 +4,14 @@ from .serializers import UserSerializer, ItemSerializer
 from rest_framework import generics
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 
+def convertArgToFloat(str):
+    try:
+        if str:
+            return float(str)
+        return None
+    except:
+        return None
+
 # Create your views here.
 class UserListCreate(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -11,26 +19,28 @@ class UserListCreate(generics.ListCreateAPIView):
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
+
+
     def get_queryset(self):
         name = self.request.GET.get('name','')
         item_rarity = self.request.GET.get('rarity',None)
         min_price = self.request.GET.get('min_price',None)
         max_price = self.request.GET.get('max_price',None)
+        min_price=convertArgToFloat(min_price);
+        max_price=convertArgToFloat(max_price);
         queryset = Item.objects.filter(name__istartswith=name)
         if item_rarity:
             queryset=queryset.filter(rarity=item_rarity)
-        if min_price:
-            pass
-        if max_price:
-            pass
+        for item in queryset:
+            lowest_price = float(item.price_set.latest('timestamp').lowest_price)
+            if min_price and lowest_price<min_price:
+                queryset=queryset.exclude(item_id=item.item_id)
+            if max_price and lowest_price>max_price:
+                queryset=queryset.exclude(item_id=item.item_id)
         return queryset
 
-class ItemPriceDetail(generics.ListAPIView):
-    serializer_class = ItemPricesSerializer
+class ItemPriceDetail(generics.RetrieveAPIView):
+    serializer_class = ItemSerializer
     def get_queryset(self):
-        item_id = self.request.GET.get('item','')
-        timestamp = self.request.GET.get('timestamp',None)
-        lowest_price = self.request.GET.get('lowest_price',None)
-        median_price = self.request.GET.get('median_price',None)
-        queryset = Price.objects.filter(item_id__exact=item)
+        queryset = Item.objects.all()
         return queryset
