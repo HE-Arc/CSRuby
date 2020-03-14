@@ -32,7 +32,7 @@ class ItemSearch(generics.ListAPIView):
         order_by = self.request.GET.get('order_by','')
         min_price=convertArgToFloat(min_price);
         max_price=convertArgToFloat(max_price);
-        queryset = Item.objects.filter(name__istartswith=name)
+        queryset = Item.objects.filter(name__icontains=name)
         if item_rarity:
             queryset=queryset.filter(rarity=item_rarity)
         for item in queryset:
@@ -44,9 +44,12 @@ class ItemSearch(generics.ListAPIView):
                     if max_price and lowest_price>max_price:
                         queryset=queryset.exclude(item_id=item.item_id)
         if order_by=='price' or order_by=='price_reverse':
+            print('price')
             queryset=sorted(queryset, key=lambda item:item_utils.get_lowest_price(item) if item_utils.get_lowest_price(item) else 0, reverse=order_by=='price_reverse')
         elif order_by=='rarity' or order_by=='rarity_reverse':
+            print('rarity')
             queryset=sorted(queryset, key=lambda item:item_utils.get_rarity_value(item.rarity), reverse=order_by=='rarity_reverse')
         elif order_by=='name' or 'name_reverse':
+            print('name')
             queryset=queryset.order_by('name' if order_by=='name' else '-name')
         return queryset

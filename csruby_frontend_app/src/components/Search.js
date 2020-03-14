@@ -7,13 +7,14 @@ class Search extends Component{
     this.state = {
       searchValue:'',
       rarity:'',
-      minPrice:'',
-      maxPrice:'',
+      minPrice:0,
+      maxPrice:7500,
       ordering:'',
       data: [],
       loaded: false,
       placeholder: "Loading"
     };
+    this.onSubmit = this.onSubmit.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleRarityChange = this.handleRarityChange.bind(this);
     this.handleMinPriceChange = this.handleMinPriceChange.bind(this);
@@ -22,33 +23,41 @@ class Search extends Component{
   }
 
   handleSearchChange(event){
-    this.setState({searchValue: event.target.value});
+    this.setState({searchValue: event.target.value},this.updateSearchResult);
   }
 
   handleRarityChange(event){
-    this.setState({rarity: event.target.value});
+    this.setState({rarity: event.target.value},this.updateSearchResult);
   }
 
   handleMinPriceChange(event){
-    this.setState({minPrice: event.target.value});
+    this.setState({minPrice: event.target.value},this.updateSearchResult);
   }
 
   handleMaxPriceChange(event){
-    this.setState({maxPrice: event.target.value});
+    this.setState({maxPrice: event.target.value},this.updateSearchResult);
   }
 
   handleOrderingChange(event){
-    this.setState({ordering: event.target.value});
+    this.setState({ordering: event.target.value},this.updateSearchResult);
   }
 
-  updateSearchResult() {
+  updateSearchResult = () => {
+    var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
+    console.log(route);
+    this.search(route);
+  };
 
-      var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&ordering="+this.state.ordering;
+  onSubmit(event) {
+      var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
       console.log(route);
-      // TODO finish retrieving parameters, create route and search
+      this.search(route);
+      event.preventDefault();
   }
 
   search(route){
+    this.setState({loaded: false});
+    this.setState({data: []});
     fetch(route)
       .then(response => {
         if (response.status > 400) {
@@ -69,6 +78,7 @@ class Search extends Component{
   }
 
   componentDidMount() {
+    //console.log("onMount");
     this.search("item/search/");
   }
 
@@ -76,12 +86,12 @@ class Search extends Component{
     return (
       <div>
         <div className="search-container">
-          <form onSubmit={this.updateSearchResult}>
+          <form onSubmit={this.onSubmit} ref="form">
             <input id="searchbar" type="text" placeholder="Search.." name="search" value={this.state.searchValue} onChange={this.handleSearchChange}/>
-            <button  onClick={this.updateSearchResult()}>{/*<i className="fa fa-search"></i>*/}Submit</button>
+            <button  type="submit">{/*<i className="fa fa-search"></i>*/}Submit</button>
 
             <select id="rarity" value={this.state.rarity} onChange={this.handleRarityChange}>
-              <option value="ALL">All rarities</option>
+              <option value="">All rarities</option>
               <option value="COG">Consumer grade</option>
               <option value="ING">Industrial grade</option>
               <option value="MIS">Mil-spec</option>
