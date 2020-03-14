@@ -44,13 +44,11 @@ class Search extends Component{
 
   updateSearchResult = () => {
     var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
-    console.log(route);
     this.search(route);
   };
 
   onSubmit(event) {
       var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
-      console.log(route);
       this.search(route);
       event.preventDefault();
   }
