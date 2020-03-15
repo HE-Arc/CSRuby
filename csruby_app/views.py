@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import User, Item, Price
 from .serializers import UserSerializer, ItemSerializer
-from rest_framework import generics
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 from django.db import models
 import csruby_app.utils.item_utils as item_utils
@@ -14,10 +17,23 @@ def convertArgToFloat(str):
     except:
         return None
 
+
 # Create your views here.
 class UserListCreate(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    renderer_classes = [JSONRenderer]
+    permission_classes = [
+        permissions.AllowAny
+    ]
+
+    def create(self, request, *args, **kwargs):
+        model_serializer = UserSerializer(data=request.data)
+        model_serializer.is_valid(raise_exception=True)
+
+        model_serializer.save()
+
+        return Response(model_serializer.data)
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
