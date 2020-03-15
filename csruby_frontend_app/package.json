@@ -19,7 +19,9 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "minimist": "^1.2.2",
+    "acorn": "^6.4.1"
   },
   "dependencies": {
     "axios": "^0.19.2",
