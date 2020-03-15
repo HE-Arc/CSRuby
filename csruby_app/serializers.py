@@ -10,7 +10,10 @@ class ItemSerializer(serializers.ModelSerializer):
     lowest_price = serializers.SerializerMethodField('get_lowest_price')
 
     def get_lowest_price(self, item):
-        return item.price_set.latest('timestamp').lowest_price
+        try:
+            return item.price_set.latest('timestamp').lowest_price
+        except:
+            return None
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity','lowest_price')
