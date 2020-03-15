@@ -13,13 +13,17 @@ class ItemSerializer(serializers.ModelSerializer):
     timestamps = serializers.SerializerMethodField('get_timestamps')
 
     def get_lowest_price(self, item):
-        return item.price_set.latest('timestamp').lowest_price
+        try:
+            return item.price_set.latest('timestamp').lowest_price
+        except:
+            return None
     def get_lowest_prices(self, item):
         return item.price_set.values('lowest_price')
     def get_median_prices(self, item):
         return item.price_set.values('median_price')
     def get_timestamps(self, item):
         return item.price_set.values('timestamp')
+
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
