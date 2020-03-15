@@ -7,7 +7,7 @@ class UserAndRoleTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(email="user@domain.com", password="securepassword", profilename="user", steamid="61772925218070718")
-        self.user_steamdid_bad = User.objects.create(email="user@domain.com", password="securepassword", profilename="user", steamid="1")
+        self.user_steamdid_bad = User.objects.create(email="user_bad@domain.com", password="securepassword", profilename="user", steamid="1")
 
         self.role_user = Role.objects.create(name="User")
 
