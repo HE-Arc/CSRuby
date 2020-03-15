@@ -66,3 +66,9 @@ class ItemSearch(generics.ListAPIView):
         elif order_by=='name' or 'name_reverse':
             queryset=queryset.order_by('name' if order_by=='name' else '-name')
         return queryset
+
+class ItemPriceDetail(generics.RetrieveAPIView):
+    serializer_class = ItemSerializer
+    def get_queryset(self):
+        queryset = Item.objects.all()
+        return queryset

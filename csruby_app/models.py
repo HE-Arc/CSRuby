@@ -23,11 +23,15 @@ class Item(models.Model):
         CONSUMER_GRADE = 'COG', _('Consumer grade')
         INDUSTRIAL_GRADE = 'ING', _('Industrial grade')
         MIL_SPEC = 'MIS', _('Mil-spec')
-        RESTRICTED = 'RES', _('Restricted')
+        RESTRICTED = 'RST', _('Restricted')
         CLASSIFIED = 'CLA', _('Classified')
         COVERT = 'COV', _('Covert')
         EXCEEDINGLY_RARE = 'EXR', _('Exceedingly Rare')
         CONTRABAND = 'CON', _('Contraband')
+        REMARKABLE_STICKER = 'RES', _('Remarkable Sticker')
+        HIGH_GRADE_STICKER = 'HGS', _('High Grade Sticker')
+        EXTRAORDINARY_STICKER = 'EXS', _('Extraordinary Sticker')
+        EXTRAORDINARY_GLOES = 'EXG', _('Extraordinary Gloves')
 
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -44,8 +48,8 @@ class Price(models.Model):
 class User_Item(models.Model):
     item=models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    buy_created_at=models.DateTimeField();
-    sell_created_at=models.DateTimeField();
+    buy_created_at=models.DateTimeField()
+    sell_created_at=models.DateTimeField()
     buy_item=models.BooleanField(default=False)
     sell_item=models.BooleanField(default=False)
     favorite_item=models.BooleanField(default=False)
