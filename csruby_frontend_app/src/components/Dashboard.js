@@ -26,9 +26,8 @@ class Dashboard extends Component {
     .then((response) => {
       if(response.status === 200) {
 
+        if
         response.data = response.data[0];
-
-        console.log(response.data);
 
         response.data['lowest_prices'].forEach((element) => {
           item_prices.push(parseFloat(element['lowest_price']));
