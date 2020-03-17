@@ -1,6 +1,6 @@
 
 /******************************************************************************************
-* This file serves as the app frame of the SPA, meaning some elemnts never changes
+* This file serves as the app frame of the SPA, meaning some elements never changes
 * - In this case, the element is
 *   - Header (usually the case)
 *******************************************************************************************/
@@ -24,8 +24,8 @@ import Provider from "./Provider";
 
 class Main extends Component {
   render() {
+    // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
     return (
-      // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
       <HashRouter>
         <div>
           <header>
@@ -64,10 +64,9 @@ class Main extends Component {
           </div>
         </div>
       </HashRouter>
-
-      // This prop ('exact') ensures the Route is active only if the path is an exact match for what is being loaded
-      // without the 'exact', the content of home would always be displayed
-    )
+    );
+    // This prop ('exact') ensures the Route is active only if the path is an exact match for what is being loaded
+    // without the 'exact', the content of home would always be displayed
   }
 }
 

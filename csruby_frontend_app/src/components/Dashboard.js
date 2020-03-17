@@ -78,7 +78,10 @@ class Dashboard extends Component {
                   color: '#d63031'
                 },
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: false,
+                  callback: function(value, index, values) {
+                    return '$' + value;
+                  }
                 }
               }],
               xAxes: [{
@@ -127,9 +130,9 @@ class Dashboard extends Component {
           </div>
           <h2>Buyers | Sellers</h2>
           <MContext.Consumer>
-              {(context) => {
-                this.state.item_to_search = context.state.message;
-              }}
+            {(context) => {
+              this.state.item_to_search = context.state.message;
+            }}
           </MContext.Consumer>
         </div>
       </div>
