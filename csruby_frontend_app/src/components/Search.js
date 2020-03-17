@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { MContext } from './Provider';
 import ItemPreview from "./item/ItemPreview"
 
 class Search extends Component {
@@ -117,16 +116,11 @@ class Search extends Component {
             <option value="name_reverse">Name Z-A</option>
           </select>
         </form>
-        <MContext.Consumer>
-          {(context) => (
-            <p>{context.state.message}</p>
-          )}
-        </MContext.Consumer>
         <div className="result-container">
           {
             this.state.data.map(item => {
               return (
-                <ItemPreview url={item.item_image} name={item.name} price={item.lowest_price}/>
+                <ItemPreview itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price}/>
               );
             })
           }
