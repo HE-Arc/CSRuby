@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import { MContext } from './Provider';
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -10,7 +12,7 @@ class Dashboard extends Component {
       item_lowest_price: '',
       item_median_price: '',
       rarity_class: '',
-    };
+    }
   }
 
   componentDidMount() {
@@ -117,6 +119,11 @@ class Dashboard extends Component {
             <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
             <p className="lead">Median price : ${this.state.item_median_price}</p>
           </div>
+          <MContext.Consumer>
+            {(context) => (
+              <button onClick={()=>{context.setMessage("New Arrival")}}>Send</button>
+            )}
+          </MContext.Consumer>
           <h2>Buyers | Sellers</h2>
         </div>
       </div>

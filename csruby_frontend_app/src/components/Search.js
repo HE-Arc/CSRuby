@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { MContext } from './Provider';
 
 class Search extends Component{
   render() {
@@ -30,6 +31,11 @@ class Search extends Component{
             </select>
 
           </form>
+          <MContext.Consumer>
+            {(context) => (
+              <p>{context.state.message}</p>
+            )}
+          </MContext.Consumer>
         </div>
       </div>
     );
