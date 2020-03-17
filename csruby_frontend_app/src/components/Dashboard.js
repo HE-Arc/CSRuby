@@ -12,6 +12,7 @@ class Dashboard extends Component {
       item_lowest_price: '',
       item_median_price: '',
       rarity_class: '',
+      item_to_search: '',
     }
   }
 
@@ -19,15 +20,21 @@ class Dashboard extends Component {
     let item_prices = [];
     let labels = [];
 
+    let url = '/items/getMostExpensive';
+    if (this.state.item_to_search) {
+      url = '/items/' + this.state.item_to_search;
+    }
+
     axios({
-      url:'/items/getMostExpensive',
-      method:'get'
+      url: url,
+      method: 'get'
     })
     .then((response) => {
       if(response.status === 200) {
 
-        if
-        response.data = response.data[0];
+        if(Array.isArray(response.data)) {
+          response.data = response.data[0];
+        }
 
         response.data['lowest_prices'].forEach((element) => {
           item_prices.push(parseFloat(element['lowest_price']));
@@ -71,7 +78,10 @@ class Dashboard extends Component {
                   color: '#d63031'
                 },
                 ticks: {
-                  beginAtZero: true
+                  beginAtZero: false,
+                  callback: function(value, index, values) {
+                    return '$' + value;
+                  }
                 }
               }],
               xAxes: [{
@@ -118,12 +128,12 @@ class Dashboard extends Component {
             <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
             <p className="lead">Median price : ${this.state.item_median_price}</p>
           </div>
-          <MContext.Consumer>
-            {(context) => (
-              <button onClick={()=>{context.setMessage("New Arrival")}}>Send</button>
-            )}
-          </MContext.Consumer>
           <h2>Buyers | Sellers</h2>
+          <MContext.Consumer>
+            {(context) => {
+              this.state.item_to_search = context.state.message;
+            }}
+          </MContext.Consumer>
         </div>
       </div>
     );
