@@ -72,3 +72,19 @@ class ItemPriceDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         queryset = Item.objects.all()
         return queryset
+
+class ItemMostExpensive(generics.ListAPIView):
+    serializer_class = ItemSerializer
+    def get_queryset(self):
+        queryset = Item.objects.all()
+        lowest_price = -1
+        for item in queryset:
+            current_lowest_price = float(item.price_set.latest('timestamp').lowest_price)
+            if current_lowest_price > lowest_price:
+                lowest_price = current_lowest_price
+
+        for item in queryset:
+            current_lowest_price = float(item.price_set.latest('timestamp').lowest_price)
+            if lowest_price > current_lowest_price:
+                queryset=queryset.exclude(item_id=item.item_id)
+        return queryset

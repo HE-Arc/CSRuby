@@ -1,116 +1,54 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
+
+import { MContext } from './Provider';
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      item_name: '',
+      item_rarity: '',
+      item_lowest_price: '',
+      item_median_price: '',
+      rarity_class: '',
+    }
+  }
+
   componentDidMount() {
-    let weapon_prices = []
-    let labels = []
+    let item_prices = [];
+    let labels = [];
 
     axios({
-      url:'/items/17',
+      url:'/items/getMostExpensive',
       method:'get'
     })
     .then((response) => {
       if(response.status === 200) {
-        console.log(response.data);
+
+        if
+        response.data = response.data[0];
+
         response.data['lowest_prices'].forEach((element) => {
-          weapon_prices.push(parseFloat(element['lowest_price']));
+          item_prices.push(parseFloat(element['lowest_price']));
         });
+
+        let rarity_class = 'csruby-rarity-' + response.data['rarity'];
+
+        this.setState((state) =>  {
+          return {
+            item_name: response.data['name'],
+            item_rarity: response.data['rarity'],
+            item_lowest_price: response.data['lowest_price'],
+            item_median_price: response.data['median_prices'][response.data['median_prices'].length - 1]['median_price'],
+            rarity_class: rarity_class,
+          };
+        });
+
         response.data['timestamps'].forEach((element) => {
           let date_time = element['timestamp'];
           date_time = date_time.split('T')
           labels.push(String(date_time[0]));
-        });
-
-        Chart.pluginService.register({
-          afterUpdate: function (chart) {
-            var xScale = chart.scales['x-axis-0'];
-            if (xScale.options.ticks.maxTicksLimit) {
-              // store the original maxTicksLimit
-              xScale.options.ticks._maxTicksLimit = xScale.options.ticks.maxTicksLimit;
-              // let chart.js draw the first and last label
-              xScale.options.ticks.maxTicksLimit = (xScale.ticks.length % xScale.options.ticks._maxTicksLimit === 0) ? 1 : 2;
-
-              var originalXScaleDraw = xScale.draw
-              xScale.draw = function () {
-                originalXScaleDraw.apply(this, arguments);
-
-                var xScale = chart.scales['x-axis-0'];
-                if (xScale.options.ticks.maxTicksLimit) {
-                  var helpers = Chart.helpers;
-
-                  var tickFontColor = helpers.getValueOrDefault(xScale.options.ticks.fontColor, Chart.defaults.global.defaultFontColor);
-                  var tickFontSize = helpers.getValueOrDefault(xScale.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-                  var tickFontStyle = helpers.getValueOrDefault(xScale.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-                  var tickFontFamily = helpers.getValueOrDefault(xScale.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
-                  var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-                  var tl = xScale.options.gridLines.tickMarkLength;
-
-                  var isRotated = xScale.labelRotation !== 0;
-                  var yTickStart = xScale.top;
-                  var yTickEnd = xScale.top + tl;
-                  var chartArea = chart.chartArea;
-
-                  // use the saved ticks
-                  var maxTicks = xScale.options.ticks._maxTicksLimit - 1;
-                  var ticksPerVisibleTick = xScale.ticks.length / maxTicks;
-
-                  // chart.js uses an integral skipRatio - this causes all the fractional ticks to be accounted for between the last 2 labels
-                  // we use a fractional skipRatio
-                  var ticksCovered = 0;
-                  helpers.each(xScale.ticks, function (label, index) {
-                    if (index < ticksCovered)
-                    return;
-
-                    ticksCovered += ticksPerVisibleTick;
-
-                    // chart.js has already drawn these 2
-                    if (index === 0 || index === (xScale.ticks.length - 1))
-                    return;
-
-                    // copy of chart.js code
-                    var xLineValue = this.getPixelForTick(index);
-                    var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines);
-
-                    if (this.options.gridLines.display) {
-                      this.ctx.lineWidth = this.options.gridLines.lineWidth;
-                      this.ctx.strokeStyle = this.options.gridLines.color;
-
-                      xLineValue += helpers.aliasPixel(this.ctx.lineWidth);
-
-                      // Draw the label area
-                      this.ctx.beginPath();
-
-                      if (this.options.gridLines.drawTicks) {
-                        this.ctx.moveTo(xLineValue, yTickStart);
-                        this.ctx.lineTo(xLineValue, yTickEnd);
-                      }
-
-                      // Draw the chart area
-                      if (this.options.gridLines.drawOnChartArea) {
-                        this.ctx.moveTo(xLineValue, chartArea.top);
-                        this.ctx.lineTo(xLineValue, chartArea.bottom);
-                      }
-
-                      // Need to stroke in the loop because we are potentially changing line widths & colours
-                      this.ctx.stroke();
-                    }
-
-                    if (this.options.ticks.display) {
-                      this.ctx.save();
-                      this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
-                      this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-                      this.ctx.font = tickLabelFont;
-                      this.ctx.textAlign = (isRotated) ? "right" : "center";
-                      this.ctx.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
-                      this.ctx.fillText(label, 0, 0);
-                      this.ctx.restore();
-                    }
-                  }, xScale);
-                }
-              };
-            }
-          },
         });
 
         var ctx = document.getElementById('myChart').getContext('2d');
@@ -123,30 +61,27 @@ class Dashboard extends Component {
               backgroundColor: 'rgba(255, 0, 0, 1.0)',
               borderColor: 'rgba(255, 0, 0, 1.0)',
               fill: false,
-              data: weapon_prices
+              data: item_prices
             }]
           },
           options: {
-              scales: {
-                  yAxes: [{
-                    gridLines: {
-                      color: '#d63031'
-                    },
-                    ticks: {
-                        beginAtZero: true
-                    }
-                  }],
-                  xAxes: [{
-                    gridLines: {
-                      color: '#d63031'
-                    }
-                  }]
-              }
+            scales: {
+              yAxes: [{
+                gridLines: {
+                  color: '#d63031'
+                },
+                ticks: {
+                  beginAtZero: true
+                }
+              }],
+              xAxes: [{
+                gridLines: {
+                  color: '#d63031'
+                }
+              }]
+            }
           }
         });
-
-        console.log(weapon_prices);
-        console.log(labels);
       }
     });
   }
@@ -157,10 +92,10 @@ class Dashboard extends Component {
         <div className="container">
           <div className="row">
             <div className="col-lg p-3">
-              <div className="csruby-bg-darkest text-center">
+              <div className="csruby-bg-darkest text-center p-3">
                 <img src="/static/csruby_frontend_app/images/m4a4_howl.png" className="img-fluid text-center" alt="Responsive image" />
               </div>
-              <div className="row mt-3">
+              <div className="row mt-3 py-3">
                 <div className="col-4">
                   <button type="button" className="btn btn-lg btn-block csruby-bg-red">Buy</button>
                 </div>
@@ -173,12 +108,21 @@ class Dashboard extends Component {
               </div>
             </div>
             <div className="col-lg p-3">
-              <div className="csruby-bg-darkest csruby-height-100">
+              <div className="csruby-bg-darkest csruby-height-100 p-3">
                 <canvas id="myChart" width="540" height="450"></canvas>
               </div>
             </div>
           </div>
-          <h2>Item information</h2>
+          <div id="itemInformation" className="csruby-bg-darkest p-3">
+            <h4 className={this.state.rarity_class}>{this.state.item_name}</h4>
+            <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
+            <p className="lead">Median price : ${this.state.item_median_price}</p>
+          </div>
+          <MContext.Consumer>
+            {(context) => (
+              <button onClick={()=>{context.setMessage("New Arrival")}}>Send</button>
+            )}
+          </MContext.Consumer>
           <h2>Buyers | Sellers</h2>
         </div>
       </div>

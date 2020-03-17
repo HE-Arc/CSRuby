@@ -18,6 +18,8 @@ import Search from "./Search";
 
 import Login from "./Login";
 import Signup from "./Signup";
+
+import Provider from "./Provider";
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
 class Main extends Component {
@@ -50,21 +52,21 @@ class Main extends Component {
             </nav>
           </header>
           <div className="content text-light mt-5">
-            <Route exact path="/" component={Dashboard}/>
+            <Provider>
+              <Route exact path="/" component={Dashboard}/>
 
-            <Route exact path="/profile" component={Profile}/>
-            <Route exact path="/search" component={Search}/>
+              <Route exact path="/profile" component={Profile}/>
+              <Route exact path="/search" component={Search}/>
 
-            <Route exact path="/login" component={Login}/>
-            <Route exact path="/signup" component={Signup}/>
+              <Route exact path="/login" component={Login}/>
+              <Route exact path="/signup" component={Signup}/>
+            </Provider>
           </div>
         </div>
       </HashRouter>
 
       // This prop ('exact') ensures the Route is active only if the path is an exact match for what is being loaded
       // without the 'exact', the content of home would always be displayed
-
-      // NavLink is
     )
   }
 }
