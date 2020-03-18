@@ -41,4 +41,4 @@ class ItemSerializer(serializers.ModelSerializer):
 class UserItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Item
-        fields = ('item','user','buy_created_at','sell_created_at', 'buy_item', 'sell_item', 'favorite_item')
+        fields = ('id','item','user','buy_created_at','sell_created_at', 'buy_item', 'sell_item', 'favorite_item')
