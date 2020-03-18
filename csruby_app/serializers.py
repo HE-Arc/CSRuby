@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Item, Price
+from .models import *
 from django.forms import ModelForm
 from django.contrib.auth.hashers import make_password
 
@@ -37,3 +37,8 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
+
+class UserItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_Item
+        fields = ('item','user','buy_created_at','sell_created_at', 'buy_item', 'sell_item', 'favorite_item')

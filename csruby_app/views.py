@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import User, Item, Price
-from .serializers import UserSerializer, ItemSerializer
+from .models import *
+from .serializers import *
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -88,3 +88,19 @@ class ItemMostExpensive(generics.ListAPIView):
             if lowest_price > current_lowest_price:
                 queryset=queryset.exclude(item_id=item.item_id)
         return queryset
+
+class ItemAddFavorite(generics.ListCreateAPIView):
+    queryset=User_Item.objects.all();
+    serializer_class=UserItemSerializer;
+    def create(self, request, *args, **kwargs):
+        model_serializer = UserItemSerializer(data=request.data)
+        model_serializer.is_valid(raise_exception=True)
+
+        user_item = User_Item.objects.filter(user=request.data['user'],item=request.data['item']).first()
+        if user_item:
+            # if the user_item exists, we only update it
+            model_serializer.update(user_item,model_serializer.validated_data)
+        else:
+            # if the user_item doesn't exists, we create it
+            model_serializer.save()
+        return Response(model_serializer.data)

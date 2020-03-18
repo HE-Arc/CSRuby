@@ -6,4 +6,5 @@ urlpatterns = [
     path('item/search/', views.ItemSearch.as_view()),
     path('items/<int:pk>', views.ItemPriceDetail.as_view()),
     path('items/getMostExpensive', views.ItemMostExpensive.as_view()),
+    path('items/favorite', views.ItemAddFavorite.as_view()),
 ]
