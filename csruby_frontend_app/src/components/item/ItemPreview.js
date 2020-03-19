@@ -17,9 +17,9 @@ class ItemPreview extends Component {
 
   render() {
     return (
-      <div className="card bg-dark mb-3">
+      <div className="card csruby-card-shadow csruby-bg-darkest mb-3">
         <div className="row no-gutters">
-          <div className="col-md-2 text-center csruby-bg-darkest">
+          <div className="col-md-2 text-center">
             <img className="card-img img-fluid csruby-item-search-img mt-2" src={this.state.url} alt={this.state.name}/>
           </div>
           <div className="col-md-10">
