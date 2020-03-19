@@ -105,7 +105,7 @@ class Dashboard extends Component {
           <div className="row">
             <div className="col-lg p-3">
               <div className="csruby-bg-darkest text-center p-3">
-                <img src={this.state.item_image} className="img-fluid text-center" alt="Responsive image" />
+                <img src={this.state.item_image} className="img-fluid text-center" alt={this.state.item_name} />
               </div>
               <div className="row mt-3 py-3">
                 <div className="col-4">
