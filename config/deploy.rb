@@ -7,30 +7,42 @@ set :repo_url, "https://github.com/HE-Arc/CSRuby.git"
 after 'deploy:publishing', 'uwsgi:restart'
 
 namespace :uwsgi do
-    desc 'Restart application'
-    task :restart do
-        on roles(:web) do |h|
-	    execute :sudo, 'sv reload uwsgi'
-	end
+  desc 'Restart application'
+  task :restart do
+    on roles(:web) do |h|
+      execute :sudo, 'sv reload uwsgi'
     end
+  end
 end
 
 after 'deploy:updating', 'python:create_venv'
 
 namespace :python do
 
-    def venv_path
-        File.join(shared_path, 'env')
-    end
+  def venv_path
+    File.join(shared_path, 'env')
+  end
 
-    desc 'Create venv'
-    task :create_venv do
-        on roles([:app, :web]) do |h|
-	    execute "python3.6 -m venv #{venv_path}"
-            execute "source #{venv_path}/bin/activate"
-	    execute "#{venv_path}/bin/pip install -r #{release_path}/requirements.txt"
-        end
+  desc 'Create venv'
+  task :create_venv do
+    on roles([:app, :web]) do |h|
+      execute "python3.6 -m venv #{venv_path}"
+      execute "source #{venv_path}/bin/activate"
+      execute "#{venv_path}/bin/pip install -r #{release_path}/requirements.txt"
     end
+  end
+end
+
+after 'deploy:published', 'node:install_packages'
+
+namespace :node do
+  desc 'Install node packages'
+  task :install_packages do
+    on roles([:app, :web]) do |h|
+      execute "cd #{release_path}/csruby_frontend_app"
+      execute "npm install"
+    end
+  end
 end
 
 # Default branch is :master
