@@ -43,11 +43,15 @@ class Main extends Component {
                   <li className="nav-item active">
                     <NavLink className="nav-link" exact to="/signup">Signup</NavLink>
                   </li>
+                  <li className="nav-item active">
+                    <NavLink className="nav-link" exact to="/search">Search</NavLink>
+                  </li>
                 </ul>
-                <form className="form-inline my-2 my-lg-0">
-                  <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                  <button className="btn btn-outline-success my-2 my-sm-0 d-none" type="submit">Search</button>
-                </form>
+                <ul className="navbar-nav">
+                  <li className="nav-item active">
+                    <NavLink className="nav-link" exact to="/signin">Signin</NavLink>
+                  </li>
+                </ul>
               </div>
             </nav>
           </header>

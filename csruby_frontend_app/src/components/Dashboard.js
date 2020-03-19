@@ -9,6 +9,7 @@ class Dashboard extends Component {
     this.state = {
       item_name: '',
       item_rarity: '',
+      item_image: '',
       item_lowest_price: '',
       item_median_price: '',
       rarity_class: '',
@@ -46,6 +47,7 @@ class Dashboard extends Component {
           return {
             item_name: response.data['name'],
             item_rarity: response.data['rarity'],
+            item_image: response.data['item_image'],
             item_lowest_price: response.data['lowest_price'],
             item_median_price: response.data['median_prices'][response.data['median_prices'].length - 1]['median_price'],
             rarity_class: rarity_class,
@@ -103,7 +105,7 @@ class Dashboard extends Component {
           <div className="row">
             <div className="col-lg p-3">
               <div className="csruby-bg-darkest text-center p-3">
-                <img src="/static/csruby_frontend_app/images/m4a4_howl.png" className="img-fluid text-center" alt="Responsive image" />
+                <img src={this.state.item_image} className="img-fluid text-center" alt={this.state.item_name} />
               </div>
               <div className="row mt-3 py-3">
                 <div className="col-4">

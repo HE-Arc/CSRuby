@@ -59,5 +59,27 @@
 }
 
 .csruby-rarity-EXG {
-  color: #eb4b4b;
+  color: #eb4b4b !important;
+}
+
+.csruby-item-search-img {
+  width: 128px;
+  height: 96px;
+}
+
+.csruby-hover-link:hover {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Bootstrap classes overwrite */
+
+.form-control {
+  color: #e8e5e0 !important;
+  background-color: #27282f !important;
+  border: none !important;
+}
+
+.form-control:focus {
+  color: inherit !important;
 }
