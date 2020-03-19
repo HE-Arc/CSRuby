@@ -4,7 +4,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state={
-      username:'',
+      email:'',
       password:''
     }
   }
@@ -13,8 +13,8 @@ class Login extends Component {
     return (
       <div>
         <input type="text"
-               placeholder="Enter Username"
-               onChange = {(event,newValue) => this.setState({username:newValue})}
+               placeholder="Enter Email"
+               onChange = {(event,newValue) => this.setState({email:newValue})}
         />
         <br/>
         <input type="text"
@@ -27,7 +27,7 @@ class Login extends Component {
   }
 
   handleClick(event){
-    
+
   }
 }
 

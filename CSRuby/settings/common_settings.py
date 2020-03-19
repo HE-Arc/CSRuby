@@ -32,8 +32,12 @@ INSTALLED_APPS = [
     'csruby_app',
     'csruby_frontend_app',
     'rest_framework',
+    'knox'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -130,3 +134,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# replacing default django auth user with ours
+AUTH_USER_MODEL = 'csruby_app.CSRuby_User'

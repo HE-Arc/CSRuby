@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import User, Item, Price
-from .serializers import UserSerializer, ItemSerializer
+from .models import CSRuby_User, Item, Price
+from .serializers import ItemSerializer, RegisterSerializer, UserSerializer, LoginSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 from django.db import models
 import csruby_app.utils.item_utils as item_utils
+from knox.models import AuthToken
 
 def convertArgToFloat(str):
     try:
@@ -19,21 +20,55 @@ def convertArgToFloat(str):
 
 
 # Create your views here.
-class UserListCreate(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    renderer_classes = [JSONRenderer]
+# class UserListCreate(generics.ListCreateAPIView):
+#     queryset = CSRuby_User.objects.all()
+#     serializer_class = UserSerializer
+#     renderer_classes = [JSONRenderer]
+#     permission_classes = [
+#         permissions.AllowAny
+#     ]
+#
+#     def create(self, request, *args, **kwargs):
+#         model_serializer = UserSerializer(data=request.data)
+#         model_serializer.is_valid(raise_exception=True)
+#
+#         model_serializer.save()
+#
+#         return Response(model_serializer.data)
+
+class RegistrationAPI(generics.GenericAPIView):
+    serializer_class= RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+        "user": UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
+
+class LoginAPI(generics.GenericAPIView):
+    serializer_class= LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        return Response({
+        "user": UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
+
+class UserAPI(generics.RetrieveAPIView):
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated,
     ]
 
-    def create(self, request, *args, **kwargs):
-        model_serializer = UserSerializer(data=request.data)
-        model_serializer.is_valid(raise_exception=True)
+    serializer_class=UserSerializer
 
-        model_serializer.save()
-
-        return Response(model_serializer.data)
+    def get_object(self):
+        return self.request.user
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
