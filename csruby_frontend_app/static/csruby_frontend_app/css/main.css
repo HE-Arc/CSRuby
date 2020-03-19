@@ -72,6 +72,10 @@
   text-decoration: none !important;
 }
 
+.csruby-card-shadow {
+  box-shadow: rgba(17, 6, 1, 0.5) 0px 2px 4px 0px;
+}
+
 /* Bootstrap classes overwrite */
 
 .form-control {
