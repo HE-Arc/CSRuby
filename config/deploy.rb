@@ -38,10 +38,9 @@ after 'deploy:published', 'node:install_packages'
 namespace :node do
   desc 'Install node packages'
   task :install_packages do
-    on roles([:app, :web]) do |h|
-      execute "cd #{release_path}/csruby_frontend_app"
-      execute "npm install"
-      execute "npm run build"
+    on roles(:web) do |h|
+      execute "cd /var/www/CSRuby/current/csruby_frontend_app/ && npm install"
+      execute "cd /var/www/CSRuby/current/csruby_frontend_app/ && npm run build"
     end
   end
 end
