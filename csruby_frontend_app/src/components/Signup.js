@@ -122,7 +122,7 @@ class Signup extends Component {
   }
   render() {
     if (this.state.is_created) {
-      return (<Redirect to ="/" />)
+      return (<Redirect to ="/login" />)
     }
     return (
       <div className="content text-light mt-5">
