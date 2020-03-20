@@ -6,13 +6,13 @@ class Signup extends Component {
   constructor(props) {
     super(props);
     this.state={
-      profilename:'',
+      username:'',
       email:'',
       password:'',
       confirm_password:'',
       is_created: false,
       errors: {
-        profilename:'',
+        username:'',
         email: '',
         password: '',
         confirm_password: ''
@@ -31,12 +31,12 @@ class Signup extends Component {
     var errors = {...this.state.errors}
 
     switch(name){
-      case "profilename":
+      case "username":
         if(value.length < 4){
-          errors.profilename = "The username is too small!";
+          errors.username = "The username is too small!";
         }
         else {
-          errors.profilename = "";
+          errors.username = "";
         }
         break;
       case "password":
@@ -77,7 +77,7 @@ class Signup extends Component {
     event.preventDefault();
 
     var userFormData = new FormData();
-    userFormData.append('profilename', this.state.profilename);
+    userFormData.append('username', this.state.username);
     userFormData.append('email', this.state.email);
     userFormData.append('password', this.state.password);
 
@@ -86,7 +86,7 @@ class Signup extends Component {
 
     axios({
       method: 'post',
-      url: '/user/',
+      url: '/auth/register',
       data: userFormData
       })
       .then((response) => {
@@ -102,9 +102,7 @@ class Signup extends Component {
             errors.email = error.response.data["email"];
             this.setState({errors})
           }
-          // console.log(error.response.data);
-          // console.log(error.response.status);
-          // console.log(error.response.headers);
+          // console.log(error);
         }
       });
   };
@@ -122,25 +120,25 @@ class Signup extends Component {
   }
   render() {
     if (this.state.is_created) {
-      return (<Redirect to ="/" />)
+      return (<Redirect to ="/login" />)
     }
     return (
       <div className="content text-light mt-5">
         <div className="container">
           <form onSubmit={this.submit_form}>
             <div className="form-group">
-              <label htmlFor="profilename">Profile name</label>
+              <label htmlFor="username">Profile name</label>
               <input
                 type="text"
                 className="form-control"
-                name="profilename"
+                name="username"
                 placeholder="Enter Profilename"
-                value={this.state.profilename}
+                value={this.state.username}
                 onChange={this.handle_change}
                 required
               />
-              {this.state.errors.profilename.length > 0 &&
-                <span className='error'>{this.state.errors.profilename}</span>}
+              {this.state.errors.username.length > 0 &&
+                <span className='error'>{this.state.errors.username}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
