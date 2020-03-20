@@ -41,6 +41,7 @@ namespace :node do
     on roles([:app, :web]) do |h|
       execute "cd #{release_path}/csruby_frontend_app"
       execute "npm install"
+      execute "npm run build"
     end
   end
 end
