@@ -1,6 +1,6 @@
 
 /******************************************************************************************
-* This file serves as the app frame of the SPA, meaning some elemnts never changes
+* This file serves as the app frame of the SPA, meaning some elements never changes
 * - In this case, the element is
 *   - Header (usually the case)
 *******************************************************************************************/
@@ -22,12 +22,14 @@ import Logout from "./Logout";
 
 import AuthProvider from "./AuthProvider";
 import {AuthContext} from "./AuthProvider";
+import Provider from "./Provider";
+
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
 class Main extends Component {
   render() {
+    // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
     return (
-      // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
       <HashRouter>
         <AuthProvider>
           <div>
@@ -43,6 +45,11 @@ class Main extends Component {
                     <li className="nav-item active">
                       <NavLink className="nav-link" exact to="/">Dashboard<span className="sr-only">(current)</span></NavLink>
                     </li>
+                    <li className="nav-item active">
+                      <NavLink className="nav-link" exact to="/search">Search</NavLink>
+                    </li>
+                  </ul>
+                  <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
                       <AuthContext.Consumer>
                       {(context) =>
@@ -63,32 +70,27 @@ class Main extends Component {
                       </AuthContext.Consumer>
                     </li>
                   </ul>
-                  <form className="form-inline my-2 my-lg-0">
-                    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button className="btn btn-outline-success my-2 my-sm-0 d-none" type="submit">Search</button>
-                  </form>
                 </div>
               </nav>
             </header>
             <div className="content text-light mt-5">
-              <Route exact path="/" component={Dashboard}/>
+              <Provider>
+                <Route exact path="/" component={Dashboard}/>
 
-              <Route exact path="/profile" component={Profile}/>
-              <Route exact path="/search" component={Search}/>
+                <Route exact path="/profile" component={Profile}/>
+                <Route exact path="/search" component={Search}/>
 
-              <Route exact path="/login" component={Login}/>
-              <Route exact path="/signup" component={Signup}/>
-              <Route exact path="/logout" component={Logout}/>
+                <Route exact path="/login" component={Login}/>
+                <Route exact path="/signup" component={Signup}/>
+                <Route exact path="/logout" component={Logout}/>
+              </Provider>
             </div>
           </div>
         </AuthProvider>
       </HashRouter>
-
-      // This prop ('exact') ensures the Route is active only if the path is an exact match for what is being loaded
-      // without the 'exact', the content of home would always be displayed
-
-      // NavLink is
-    )
+    );
+    // This prop ('exact') ensures the Route is active only if the path is an exact match for what is being loaded
+    // without the 'exact', the content of home would always be displayed
   }
 }
 

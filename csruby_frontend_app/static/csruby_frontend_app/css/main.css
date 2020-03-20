@@ -13,3 +13,77 @@
 .csruby-height-100 {
   height: 100% !important;
 }
+
+.csruby-rarity-COG {
+  color: #b0c3d9 !important;
+}
+
+.csruby-rarity-ING {
+  color: #5e98d9 !important;
+}
+
+.csruby-rarity-MIS {
+  color: #4b69ff !important;
+}
+
+.csruby-rarity-RST {
+  color: #8847ff !important;
+}
+
+.csruby-rarity-CLA {
+  color: #d32ee6 !important;
+}
+
+.csruby-rarity-COV {
+  color: #eb4b4b !important;
+}
+
+.csruby-rarity-EXR {
+  color: #ffcc00 !important;
+}
+
+.csruby-rarity-CON {
+  color: #ffae39 !important;
+}
+
+.csruby-rarity-RES {
+  color: #8847ff !important;
+}
+
+.csruby-rarity-HGS {
+  color: #4b69ff !important;
+}
+
+.csruby-rarity-EXS {
+  color: #eb4b4b !important;
+}
+
+.csruby-rarity-EXG {
+  color: #eb4b4b !important;
+}
+
+.csruby-item-search-img {
+  width: 128px;
+  height: 96px;
+}
+
+.csruby-hover-link:hover {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.csruby-card-shadow {
+  box-shadow: rgba(17, 6, 1, 0.5) 0px 2px 4px 0px;
+}
+
+/* Bootstrap classes overwrite */
+
+.form-control {
+  color: #e8e5e0 !important;
+  background-color: #27282f !important;
+  border: none !important;
+}
+
+.form-control:focus {
+  color: inherit !important;
+}
