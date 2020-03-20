@@ -39,8 +39,25 @@ namespace :node do
   desc 'Install node packages'
   task :install_packages do
     on roles(:web) do |h|
-      execute "cd /var/www/CSRuby/current/csruby_frontend_app/ && npm install"
-      execute "cd /var/www/CSRuby/current/csruby_frontend_app/ && npm run build"
+      execute "cd #{release_path}/csruby_frontend_app/ && npm install"
+      execute "cd #{release_path}/csruby_frontend_app/ && npm run build"
+    end
+  end
+end
+
+after 'node:install_packages', 'static_files:deploy_static_files'
+
+namespace :static_files do
+
+  def venv_path
+    File.join(shared_path, 'env')
+  end
+
+  desc 'Deploy static files'
+  task :deploy_static_files do
+    on roles(:web) do |h|
+      execute "source #{venv_path}/bin/activate"
+      execute "cd #{release_path} && python manage collectstatic"
     end
   end
 end
