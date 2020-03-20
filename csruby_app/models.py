@@ -94,6 +94,8 @@ class Item(models.Model):
         HIGH_GRADE_STICKER = 'HGS', _('High Grade Sticker')
         EXTRAORDINARY_STICKER = 'EXS', _('Extraordinary Sticker')
         EXTRAORDINARY_GLOVES = 'EXG', _('Extraordinary Gloves')
+        CRATE = 'CRT', _('Crate')
+
 
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)

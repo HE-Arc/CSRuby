@@ -49,7 +49,7 @@ class Main extends Component {
                       <NavLink className="nav-link" exact to="/search">Search</NavLink>
                     </li>
                   </ul>
-                  <ul className="navbar-nav mr-auto">
+                  <ul className="navbar-nav">
                     <li className="nav-item active">
                       <AuthContext.Consumer>
                       {(context) =>
