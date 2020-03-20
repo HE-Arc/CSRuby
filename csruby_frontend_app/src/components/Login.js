@@ -48,25 +48,20 @@ class Login extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          // this.context.setLoginInfo(
-          //   {
-          //     isAuthenticated: true,
-          //     user: response.data["user"],
-          //     token: response.data["token"]
-          //   }
-          // );
-          this.context.setToken(response.data["token"])
-          this.context.setUser(response.data["user"])
-          this.context.setIsAuthenticated(true)
+          this.context.setLoginInfo(
+            {
+              isAuthenticated: true,
+              user: response.data['user'],
+              token: response.data['token']
+            }
+          );
           this.setState({ is_authenticated: true });
+          console.log("FINISHED");
         }
+        console.log("FINISHED IF");
       })
       .catch((error) => {
           this.setState({has_error: true})
-          console.log("ERROR");
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
         }
       );
   }

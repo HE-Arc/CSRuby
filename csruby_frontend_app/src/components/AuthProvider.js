@@ -11,7 +11,7 @@ class AuthProvider extends Component {
     }
 
   componentDidMount() {
-    let token = localStorage.getItem("token")
+    let token = sessionStorage.getItem("token")
     if(token != null){
       axios({
         method: 'get',
@@ -42,11 +42,11 @@ class AuthProvider extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.token !== prevState.token) {
       if(this.state.token == null){
-        localStorage.removeItem("token")
+        sessionStorage.removeItem("token")
       }
       else{
-        localStorage.setItem("token", this.state.token)
-      }  
+        sessionStorage.setItem("token", this.state.token)
+      }
     }
   }
 
@@ -64,9 +64,9 @@ class AuthProvider extends Component {
             isAuthenticated: value
           }),
           setLoginInfo: (value) => this.setState({
-            isAuthenticated: value[isAuthenticated],
-            user: value[user],
-            token: value[token]
+            isAuthenticated: value['isAuthenticated'],
+            user: value['user'],
+            token: value['token']
           }),
           getUsername: () => this.state.user.username,
           getIsAuthenticated: () => this.state.isAuthenticated,

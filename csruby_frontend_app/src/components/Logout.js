@@ -17,19 +17,20 @@ class Logout extends Component {
       headers: { 'Authorization': 'Token ' + this.context.getToken() }
       })
       .then((response) => {
-        console.log(response);
         if (response.status === 204) {
 
-          this.context.setIsAuthenticated(false);
-          this.context.setToken(null);
-          this.context.setUser(null);
+          this.context.setLoginInfo({
+            isAuthenticated: false,
+            token: null,
+            user: null
+          })
 
           this.setState({is_logged_out: true});
         }
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response);
+          console.log(error);
         }
       });
   }
