@@ -4,14 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
-
-# Create your models here.
-# class Role(models.Model):
-#     class RoleId(models.IntegerChoices):
-#         USER = 1
-#         ADMIN = 2
-#     role_id = models.IntegerField(choices=RoleId.choices, default=RoleId.USER);
-#     name = models.CharField(max_length=255, default="User")
+from django.utils import timezone
+import pytz
 
 class CSRuby_UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, steamid=None):
@@ -68,17 +62,11 @@ class CSRuby_User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
-    # def has_module_perms(self, app_label):
-    #     "Does the user have permissions to view the app `app_label`?"
-    #     # Simplest possible answer: Yes, always
-    #     return True
-
     @property
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
-
 
 class Item(models.Model):
     class Rarity(models.TextChoices):
@@ -109,11 +97,23 @@ class Price(models.Model):
     lowest_price = models.FloatField()
     median_price = models.FloatField(null=True)
 
+
+class User_ItemManager(models.Manager):
+    def create_buy(self, item, user, buy_created_at=timezone.now(), buy_item=True):
+        user_item = self.create(item=item, user=user, buy_created_at=buy_created_at, sell_created_at=None, buy_item=buy_item, sell_item=False, favorite_item=False)
+        return user_item
+
+    def create_sell(self, item, user, sell_created_at=timezone.now(), sell_item=True):
+        user_item = self.create(item=item, user=user, buy_created_at=None, sell_created_at=sell_created_at, buy_item=False, sell_item=True, favorite_item=False)
+        return user_item
+
 class User_Item(models.Model):
     item=models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
     user=models.ForeignKey(CSRuby_User, on_delete=models.CASCADE, null=True)
-    buy_created_at=models.DateTimeField()
-    sell_created_at=models.DateTimeField()
+    buy_created_at=models.DateTimeField(null=True)
+    sell_created_at=models.DateTimeField(null=True)
     buy_item=models.BooleanField(default=False)
     sell_item=models.BooleanField(default=False)
     favorite_item=models.BooleanField(default=False)
+
+    objects = User_ItemManager()

@@ -9,14 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = CSRuby_User
         fields = ('id','email', 'username', 'steamid')
 
-    # def create(self, validated_data):
-    #     password = validated_data.pop('password', None)
-    #     instance = self.Meta.model(**validated_data)
-    #     instance.password = make_password(password)
-    #
-    #     instance.save()
-    #     return instance
-
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CSRuby_User
@@ -60,3 +52,8 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
+
+class ItemActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ('item_id')

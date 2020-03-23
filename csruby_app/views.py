@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import CSRuby_User, Item, Price
-from .serializers import ItemSerializer, RegisterSerializer, UserSerializer, LoginSerializer
+from .models import *
+from .serializers import *
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,6 +9,8 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 from django.db import models
 import csruby_app.utils.item_utils as item_utils
 from knox.models import AuthToken
+from django.utils import timezone
+import pytz
 
 def convertArgToFloat(str):
     try:
@@ -17,24 +19,6 @@ def convertArgToFloat(str):
         return None
     except:
         return None
-
-
-# Create your views here.
-# class UserListCreate(generics.ListCreateAPIView):
-#     queryset = CSRuby_User.objects.all()
-#     serializer_class = UserSerializer
-#     renderer_classes = [JSONRenderer]
-#     permission_classes = [
-#         permissions.AllowAny
-#     ]
-#
-#     def create(self, request, *args, **kwargs):
-#         model_serializer = UserSerializer(data=request.data)
-#         model_serializer.is_valid(raise_exception=True)
-#
-#         model_serializer.save()
-#
-#         return Response(model_serializer.data)
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class= RegisterSerializer
@@ -73,8 +57,6 @@ class UserAPI(generics.RetrieveAPIView):
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
 
-
-
     def get_queryset(self):
         name = self.request.GET.get('name','')
         item_rarity = self.request.GET.get('rarity',None)
@@ -104,12 +86,14 @@ class ItemSearch(generics.ListAPIView):
 
 class ItemPriceDetail(generics.RetrieveAPIView):
     serializer_class = ItemSerializer
+
     def get_queryset(self):
         queryset = Item.objects.all()
         return queryset
 
 class ItemMostExpensive(generics.ListAPIView):
     serializer_class = ItemSerializer
+
     def get_queryset(self):
         queryset = Item.objects.all()
         lowest_price = -1
@@ -123,3 +107,77 @@ class ItemMostExpensive(generics.ListAPIView):
             if lowest_price > current_lowest_price:
                 queryset=queryset.exclude(item_id=item.item_id)
         return queryset
+
+class ItemActions(generics.GenericAPIView):
+    serializer_class = ItemActionSerializer
+
+    def post(self, request, *args, **kwargs):
+        item = None
+        user = None
+        item_id = ''
+        authed_user = ''
+        possible_actions = ['buy', 'sell', 'fav']
+        action = ''
+
+        unexpected_error_response = Response({
+        "status": "failed",
+        "description": "Something went wrong"
+        })
+
+        if request.data['action'] and request.data['action'] in possible_actions:
+            action = request.data['action']
+
+            success_msg = 'Undefined'
+            duplicate_msg = 'Undefined'
+
+            if action == 'buy':
+                success_msg = 'Added buy order on this item'
+                duplicate_msg = 'Buy order already placed on this item'
+            elif action == 'sell':
+                success_msg = 'Added sell order on this item'
+                duplicate_msg = 'Sell order already placed on this item'
+
+            duplicate_error_response = Response({
+            "status": "failed",
+            "description": duplicate_msg
+            })
+
+            success_response = Response({
+            "status": "success",
+            "description": success_msg
+            })
+
+            try:
+                if request.data['item_id'] and request.data['authed_user']:
+                    item_id = request.data['item_id']
+                    authed_user = request.data['authed_user']
+                    item = Item.objects.get(item_id__exact=item_id)
+                    user = CSRuby_User.objects.get(email__exact=authed_user)
+            except Exception as e:
+                return unexpected_error_response
+
+            if item and user:
+                if not User_Item.objects.filter(item__exact=item, user__exact=user).exists():
+                    if action == 'buy':
+                        user_item = User_Item.objects.create_buy(item=item, user=user)
+                    elif action == 'sell':
+                        user_item = User_Item.objects.create_sell(item=item, user=user)
+
+                    try:
+                        user_item.save()
+                        return success_response
+                    except Exception as e:
+                        return unexpected_error_response
+
+                user_item = User_Item.objects.get(item__exact=item, user__exact=user)
+                if action == 'buy' and user_item.buy_item == False:
+                    user_item.buy_item = True
+                    user_item.buy_created_at = timezone.now()
+                    user_item.save()
+
+                if action == 'sell' and user_item.sell_item == False:
+                    user_item.sell_item = True
+                    user_item.sell_created_at = timezone.now()
+                    user_item.save()
+                return duplicate_error_response
+            return unexpected_error_response

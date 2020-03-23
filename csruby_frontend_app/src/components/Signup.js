@@ -123,76 +123,78 @@ class Signup extends Component {
       return (<Redirect to ="/login" />)
     }
     return (
-      <div className="content text-light mt-5">
-        <div className="container">
-          <form onSubmit={this.submit_form}>
-            <div className="form-group">
-              <label htmlFor="username">Profile name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="username"
-                placeholder="Enter Profilename"
-                value={this.state.username}
-                onChange={this.handle_change}
-                required
-              />
-              {this.state.errors.username.length > 0 &&
-                <span className='error'>{this.state.errors.username}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="text"
-                className="form-control"
-                name="email"
-                placeholder="Enter email"
-                value={this.state.email}
-                onChange={this.handle_change}
-                required
-              />
-              {this.state.errors.email.length > 0 &&
-                <span className='error'>{this.state.errors.email}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                placeholder="Enter Password"
-                value={this.state.password}
-                onChange={this.handle_change}
-                required
-              />
-              {this.state.errors.password.length > 0 &&
-                <span className='error'>{this.state.errors.password}</span>}
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirm_password">Confirm password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="confirm_password"
-                placeholder="Confirm Password"
-                value={this.state.confirm_password}
-                onChange={this.handle_change}
-                required
-              />
-              {this.state.errors.confirm_password.length > 0 &&
-                <span className='error'>{this.state.errors.confirm_password}</span>}
-            </div>
-            <div className="form-group">
-            {this.has_errors()
-                ? <button type="submit" className="btn btn-primary" disabled>Submit</button>
-                : <button type="submit" className="btn btn-primary">Submit</button>
-              }
-            </div>
-          </form>
+      <div className="content">
+        <div className="container text-light mt-5">
+          <div className="csruby-bg-darkest p-3">
+            <form onSubmit={this.submit_form}>
+              <div className="form-group">
+                <label htmlFor="username">Profile name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="username"
+                  placeholder="Enter Profilename"
+                  value={this.state.username}
+                  onChange={this.handle_change}
+                  required
+                />
+                {this.state.errors.username.length > 0 &&
+                  <span className='error'>{this.state.errors.username}</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="email"
+                  placeholder="Enter email"
+                  value={this.state.email}
+                  onChange={this.handle_change}
+                  required
+                />
+                {this.state.errors.email.length > 0 &&
+                  <span className='error'>{this.state.errors.email}</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  placeholder="Enter Password"
+                  value={this.state.password}
+                  onChange={this.handle_change}
+                  required
+                />
+                {this.state.errors.password.length > 0 &&
+                  <span className='error'>{this.state.errors.password}</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="confirm_password">Confirm password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="confirm_password"
+                  placeholder="Confirm Password"
+                  value={this.state.confirm_password}
+                  onChange={this.handle_change}
+                  required
+                />
+                {this.state.errors.confirm_password.length > 0 &&
+                  <span className='error'>{this.state.errors.confirm_password}</span>}
+              </div>
+              <div className="form-group">
+              {this.has_errors()
+                  ? <button type="submit" className="btn btn-primary" disabled>Submit</button>
+                  : <button type="submit" className="btn btn-primary">Submit</button>
+                }
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    )
-  };
+    );
+  }
 }
 
 export default Signup;

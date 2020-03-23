@@ -68,6 +68,7 @@ class AuthProvider extends Component {
             user: value['user'],
             token: value['token']
           }),
+          getEmail: () => this.state.user.email,
           getUsername: () => this.state.user.username,
           getIsAuthenticated: () => this.state.isAuthenticated,
           getToken: () => this.state.token
