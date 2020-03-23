@@ -19,14 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jduk5ieuy&-%z1cr@!31c46#0kf^40-&fx3(sud-q#$o#az^ao'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -40,8 +32,12 @@ INSTALLED_APPS = [
     'csruby_app',
     'csruby_frontend_app',
     'rest_framework',
+    'knox'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -86,11 +82,14 @@ WSGI_APPLICATION = 'CSRuby.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'csruby_database',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.environ['DATABASE_PASSWORD'],
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS':{
+            'connect_timeout': 99999999,
+        },
     },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -131,8 +130,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# replacing default django auth user with ours
+AUTH_USER_MODEL = 'csruby_app.CSRuby_User'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

@@ -5,7 +5,10 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings.development_settings')
+    os.environ.setdefault('DATABASE_NAME', 'csruby_database')
+    os.environ.setdefault('DATABASE_USER', 'root')
+    os.environ.setdefault('DATABASE_PASSWORD', '')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
