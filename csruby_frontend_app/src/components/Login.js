@@ -34,7 +34,7 @@ class Login extends Component {
   submit_form(event){
     event.preventDefault();
 
-    var userFormData = new FormData();
+    let userFormData = new FormData();
     userFormData.append('email', this.state.email);
     userFormData.append('password', this.state.password);
 
@@ -45,34 +45,33 @@ class Login extends Component {
       method: 'post',
       url: '/auth/login',
       data: userFormData
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.context.setLoginInfo(
-            {
-              isAuthenticated: true,
-              user: response.data['user'],
-              token: response.data['token']
-            }
-          );
-          this.setState({ is_authenticated: true });
-          console.log("FINISHED");
-        }
-        console.log("FINISHED IF");
-      })
-      .catch((error) => {
-          this.setState({has_error: true})
-        }
-      );
-  }
-
-  render() {
-    if (this.state.is_authenticated) {
-      return (<Redirect to ="/" />)
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.context.setLoginInfo(
+          {
+            isAuthenticated: true,
+            user: response.data['user'],
+            token: response.data['token']
+          }
+        );
+        this.setState({ is_authenticated: true });
+      }
+    })
+    .catch((error) => {
+      this.setState({has_error: true});
     }
-      return (
-      <div className="content text-light mt-5">
-        <div className="container">
+  );
+}
+
+render() {
+  if (this.state.is_authenticated) {
+    return (<Redirect to ="/" />);
+  }
+  return (
+    <div className="content">
+      <div className="container text-light mt-5">
+        <div className="csruby-bg-darkest p-3">
           <form onSubmit={this.submit_form}>
             <div className="form-group">
               <label htmlFor="email">Email</label>
@@ -84,7 +83,7 @@ class Login extends Component {
                 value={this.state.email}
                 onChange={this.handle_change}
                 required
-              />
+                />
             </div>
             <div className="form-group">
               <label htmlFor="password">Password</label>
@@ -95,22 +94,23 @@ class Login extends Component {
                 placeholder="Enter Password"
                 value={this.state.password}
                 onChange={this.handle_change}
-              />
-            {this.state.has_error &&
-              <span className='error'>The credentials are false</span>}
-            </div>
-            <div className="form-group">
-              <button type="submit" className="btn btn-primary">Login</button>
-            </div>
-            <div className="form-group">
-    					<small id="emailHelp" className="form-text text-muted">
-                Don't have an account? Sign up <Link to="/signup">here</Link>
-    					</small>
-				    </div>
-          </form>
+                />
+              {this.state.has_error &&
+                <span className='error'>The credentials are false</span>}
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-primary">Login</button>
+                </div>
+                <div className="form-group">
+                  <small id="emailHelp" className="form-text text-muted">
+                    Don't have an account? Sign up <Link to="/signup">here</Link>
+                </small>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
-  )
+    );
   }
 }
 
