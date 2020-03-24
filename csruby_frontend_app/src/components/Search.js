@@ -130,7 +130,7 @@ class Search extends Component {
           {
             this.state.data.map(item => {
               return (
-                <ItemPreview itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
+                <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
               );
             })
           }

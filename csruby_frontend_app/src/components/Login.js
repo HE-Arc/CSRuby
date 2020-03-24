@@ -56,9 +56,7 @@ class Login extends Component {
           }
         );
         this.setState({ is_authenticated: true });
-        console.log("FINISHED");
       }
-      console.log("FINISHED IF");
     })
     .catch((error) => {
       this.setState({has_error: true});

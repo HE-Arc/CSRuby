@@ -7,6 +7,7 @@ import {
 
 import { MContext } from './Provider';
 import { AuthContext } from './AuthProvider';
+import TraderPreview from './traders/TraderPreview.js';
 
 class Dashboard extends Component {
 
@@ -21,6 +22,10 @@ class Dashboard extends Component {
       item_image: '',
       item_lowest_price: '',
       item_median_price: '',
+      buyers: [],
+      sellers: [],
+      empty_buyers: 'd-none',
+      empty_sellers: 'd-none',
       rarity_class: '',
       isAuthenticated: '',
       user_email: '',
@@ -32,7 +37,14 @@ class Dashboard extends Component {
     let item_prices = [];
     let labels = [];
 
-    let url = '/items/getMostExpensive';
+    this.not_logged_link = document.getElementsByClassName('notLoggedLink');
+    this.item_action_urls = ['/item/buyItem', '/item/sellItem', '/item/favItem'];
+    this.item_action_buttons = document.getElementsByClassName('item-action');
+    this.buyers_div = document.getElementById('buyers-div');
+    this.sellers_div = document.getElementById('sellers-div');
+    this.trader_links = document.getElementsByClassName('traders-link');
+
+    let url = '/item/getMostExpensive';
     if (this.state.item_id) {
       url = '/items/' + this.state.item_id;
     }
@@ -60,6 +72,8 @@ class Dashboard extends Component {
           item_image: response.data['item_image'],
           item_lowest_price: response.data['lowest_price'],
           item_median_price: response.data['median_prices'][response.data['median_prices'].length - 1]['median_price'],
+          buyers: response.data['buyers'],
+          sellers: response.data['sellers'],
           rarity_class: rarity_class,
           isAuthenticated: this.context.getIsAuthenticated(),
         });
@@ -70,99 +84,153 @@ class Dashboard extends Component {
           });
         }
 
-        let buy_button = document.getElementById('buy');
-
-        let not_logged_link = document.getElementsByClassName('notLoggedLink');
-
-        for (let i = 0; i < not_logged_link.length; i++) {
-          not_logged_link[i].addEventListener('click', event => {
-            $('#loginWarningModal').modal('hide');
-          });
-        }
-
-        let item_action_urls = ['/item/buyItem', '/item/sellItem', '/item/favItem'];
-
-        let item_action_buttons = document.getElementsByClassName('item-action');
-
-        for (let i = 0; i < item_action_buttons.length; i++) {
-          item_action_buttons[i].addEventListener('click', event => {
-            if(!this.state.isAuthenticated) {
-              $('#loginWarningModal').modal('show');
-            } else {
-              axios({
-                method: 'post',
-                url: item_action_urls[i],
-                data: {
-                  item_id: response.data['item_id'],
-                  authed_user: this.state.user_email,
-                  action: item_action_buttons[i].id
-                }
-              })
-              .then((response) => {
-                if(response.status === 200) {
-                  if(response.data.status.includes('failed')) {
-                    this.setState({
-                      response_description: response.data.description
-                    });
-                    $('#buyOrderExists').modal('show');
-                  }
-                }
-              })
-            }
-          });
-        }
-
         response.data['timestamps'].forEach((element) => {
           let date_time = element['timestamp'];
           date_time = date_time.split('T')
           labels.push(String(date_time[0]));
         });
 
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myLineChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Price at datetime',
-              backgroundColor: 'rgba(255, 0, 0, 1.0)',
-              borderColor: 'rgba(255, 0, 0, 1.0)',
-              fill: false,
-              data: item_prices
-            }]
-          },
-          options: {
-            scales: {
-              yAxes: [{
-                gridLines: {
-                  color: '#d63031',
-                },
-                ticks: {
-                  beginAtZero: false,
-                  callback: function(value, index, values) {
-                    return '$' + value;
-                  }
-                }
-              }],
-              xAxes: [{
-                gridLines: {
-                  color: '#d63031',
-                  drawTicks: false
-                },
-                ticks: {
-                  display: false
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Days'
-                }
-              }]
-            }
-          }
-        });
+        this.drawChart(labels, item_prices);
+
+        if(this.state.buyers.length == 0) {
+          this.setState({
+            empty_buyers: ''
+          });
+        }
+
+        if(this.state.sellers.length == 0) {
+          this.setState({
+            empty_sellers: ''
+          });
+        }
+
+        this.hideModalOnRedirect();
+        this.addEventToTradersLinks();
+        this.addClickEventToItemActions(response);
       }
     });
   }
+
+  hideModalOnRedirect() {
+    for (let i = 0; i < this.not_logged_link.length; i++) {
+      this.not_logged_link[i].addEventListener('click', event => {
+        $('#loginWarningModal').modal('hide');
+      });
+    }
+  }
+
+  addClickEventToItemActions(response) {
+    for (let i = 0; i < this.item_action_buttons.length; i++) {
+      this.item_action_buttons[i].addEventListener('click', event => {
+        if(!this.state.isAuthenticated) {
+          $('#loginWarningModal').modal('show');
+        } else {
+          axios({
+            method: 'post',
+            url: this.item_action_urls[i],
+            data: {
+              item_id: response.data['item_id'],
+              authed_user: this.state.user_email,
+              action: this.item_action_buttons[i].id
+            }
+          })
+          .then((response) => {
+            if(response.status === 200) {
+              if(response.data.status.includes('success')) {
+                // TODO: show success message and tell user to refresh the page
+              }
+              if(response.data.status.includes('failed')) {
+                this.setState({
+                  response_description: response.data.description
+                });
+                $('#buyOrderExists').modal('show');
+              }
+            }
+          })
+        }
+      });
+    }
+  }
+
+  addEventToTradersLinks() {
+    this.trader_links[0].addEventListener('click', event => {
+      event.preventDefault();
+
+      this.toggleBuyLink();
+    });
+
+    this.trader_links[1].addEventListener('click', event => {
+      event.preventDefault();
+
+      this.toggleSellLink();
+    });
+  }
+
+  toggleBuyLink() {
+    this.trader_links[1].classList.remove('text-secondary');
+    this.trader_links[1].classList.add('text-light');
+    this.trader_links[0].classList.add('text-secondary');
+    this.trader_links[0].classList.remove('text-light');
+
+    this.buyers_div.classList.remove('d-none');
+    this.sellers_div.classList.add('d-none');
+  }
+
+  toggleSellLink() {
+    this.trader_links[0].classList.remove('text-secondary');
+    this.trader_links[0].classList.add('text-light');
+    this.trader_links[1].classList.add('text-secondary');
+    this.trader_links[1].classList.remove('text-light');
+
+    this.buyers_div.classList.add('d-none');
+    this.sellers_div.classList.remove('d-none');
+  }
+
+  drawChart(labels, item_prices) {
+    let ctx = document.getElementById('piceChart').getContext('2d');
+    let priceLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Price at datetime',
+          backgroundColor: 'rgba(255, 0, 0, 1.0)',
+          borderColor: 'rgba(255, 0, 0, 1.0)',
+          fill: false,
+          data: item_prices
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            gridLines: {
+              color: '#d63031',
+            },
+            ticks: {
+              beginAtZero: false,
+              callback: function(value, index, values) {
+                return '$' + value;
+              }
+            }
+          }],
+          xAxes: [{
+            gridLines: {
+              color: '#d63031',
+              drawTicks: false
+            },
+            ticks: {
+              display: false
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Days'
+            }
+          }]
+        }
+      }
+    });
+  }
+
 
   render() {
     return (
@@ -224,7 +292,7 @@ class Dashboard extends Component {
             </div>
             <div className="col-lg p-3">
               <div className="csruby-bg-darkest csruby-height-100 p-3">
-                <canvas id="myChart" width="540" height="450"></canvas>
+                <canvas id="piceChart" width="540" height="450"></canvas>
               </div>
             </div>
           </div>
@@ -233,7 +301,27 @@ class Dashboard extends Component {
             <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
             <p className="lead">Median price : ${this.state.item_median_price}</p>
           </div>
-          <h2>Buyers | Sellers</h2>
+          <h2 className="mt-3"><a className="traders-link text-secondary" href="#">Buyers</a> | <a className="traders-link text-light" href="#">Sellers</a></h2>
+          <div id="buyers-div" className="mb-5">
+            {this.state.buyers.length > 0 &&
+              this.state.buyers.map(item => {
+                return(
+                  <TraderPreview key={item.user__username + item.buy_created_at} username={item.user__username} createdAt={item.buy_created_at} action='buy'/>
+                );
+              })
+            }
+            <p className={this.state.empty_buyers + ' lead'}>There doesn't seem to be anyone interested in buying this item...</p>
+          </div>
+          <div id="sellers-div" className="d-none mb-5">
+            {this.state.sellers.length > 0 &&
+              this.state.sellers.map(item => {
+                return(
+                  <TraderPreview key={item.user__username + item.sell_created_at} username={item.user__username} createdAt={item.sell_created_at} action='sell'/>
+                );
+              })
+            }
+            <p className={this.state.empty_sellers + ' lead'}>There doesn't seem to be anyone interested in selling this item...</p>
+          </div>
           <MContext.Consumer>
             {(context) => {
               this.state.item_id = context.state.message

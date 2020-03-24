@@ -120,8 +120,8 @@ class ItemActions(generics.GenericAPIView):
         action = ''
 
         unexpected_error_response = Response({
-        "status": "failed",
-        "description": "Something went wrong"
+        'status': 'failed',
+        'description': 'Something went wrong'
         })
 
         if request.data['action'] and request.data['action'] in possible_actions:
@@ -138,13 +138,15 @@ class ItemActions(generics.GenericAPIView):
                 duplicate_msg = 'Sell order already placed on this item'
 
             duplicate_error_response = Response({
-            "status": "failed",
-            "description": duplicate_msg
+            'status': 'failed',
+            'description': duplicate_msg,
+            'action': action,
             })
 
             success_response = Response({
-            "status": "success",
-            "description": success_msg
+            'status': 'success',
+            'description': success_msg,
+            'action': action,
             })
 
             try:
@@ -174,10 +176,12 @@ class ItemActions(generics.GenericAPIView):
                     user_item.buy_item = True
                     user_item.buy_created_at = timezone.now()
                     user_item.save()
+                    return success_response
 
                 if action == 'sell' and user_item.sell_item == False:
                     user_item.sell_item = True
                     user_item.sell_created_at = timezone.now()
                     user_item.save()
+                    return success_response
                 return duplicate_error_response
             return unexpected_error_response

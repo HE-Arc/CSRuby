@@ -36,6 +36,8 @@ class ItemSerializer(serializers.ModelSerializer):
     lowest_prices = serializers.SerializerMethodField('get_lowest_prices')
     median_prices = serializers.SerializerMethodField('get_median_prices')
     timestamps = serializers.SerializerMethodField('get_timestamps')
+    buyers = serializers.SerializerMethodField('get_buyers')
+    sellers = serializers.SerializerMethodField('get_sellers')
 
     def get_lowest_price(self, item):
         try:
@@ -48,10 +50,14 @@ class ItemSerializer(serializers.ModelSerializer):
         return item.price_set.values('median_price')
     def get_timestamps(self, item):
         return item.price_set.values('timestamp')
+    def get_buyers(self, item):
+        return item.user_item_set.filter(buy_item__exact='1').values('user__username', 'buy_created_at')
+    def get_sellers(self, item):
+        return item.user_item_set.filter(sell_item__exact='1').values('user__username', 'sell_created_at')
 
     class Meta:
         model = Item
-        fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
+        fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps', 'buyers', 'sellers')
 
 class ItemActionSerializer(serializers.ModelSerializer):
     class Meta:
