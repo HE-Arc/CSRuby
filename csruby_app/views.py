@@ -185,3 +185,9 @@ class ItemActions(generics.GenericAPIView):
                     return success_response
                 return duplicate_error_response
             return unexpected_error_response
+
+    def delete(self, request, *args, **kwargs):
+        return Response({
+        'message': 'hello world!',
+        'data': request.data
+        })

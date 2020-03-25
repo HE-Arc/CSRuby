@@ -27,7 +27,8 @@ class ItemPreview extends Component {
               <MContext.Consumer>
                 {(context) => (
                   <NavLink className={'nav-link p-0 stretched-link csruby-hover-link ' + this.state.rarity_class} exact to="/" onClick={() => {
-                      context.setMessage(this.state.itemId)
+                      context.setMessage(this.state.itemId);
+                      sessionStorage.setItem('session_item_id', this.state.itemId);
                     }}>
                     <h5>{this.state.name}</h5>
                   </NavLink>
@@ -39,7 +40,8 @@ class ItemPreview extends Component {
               <MContext.Consumer>
                 {(context) => (
                   <NavLink className={'nav-link p-0 stretched-link csruby-hover-link ' + this.state.rarity_class} exact to="/" onClick={() => {
-                      context.setMessage(this.state.itemId)
+                      context.setMessage(this.state.itemId);
+                      sessionStorage.setItem('session_item_id', this.state.itemId);
                     }}>
                     <h6>{this.state.name}</h6>
                   </NavLink>

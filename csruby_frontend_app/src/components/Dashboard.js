@@ -11,7 +11,7 @@ import TraderPreview from './traders/TraderPreview.js';
 
 class Dashboard extends Component {
 
-  static contextType = AuthContext
+  static contextType = AuthContext;
 
   constructor(props) {
     super(props);
@@ -27,13 +27,13 @@ class Dashboard extends Component {
       empty_buyers: 'd-none',
       empty_sellers: 'd-none',
       rarity_class: '',
-      isAuthenticated: '',
-      user_email: '',
+      authed_user: '',
       response_description: '',
     }
   }
 
   componentDidMount() {
+    let session_item_id = sessionStorage.getItem('session_item_id');
     let item_prices = [];
     let labels = [];
 
@@ -47,6 +47,8 @@ class Dashboard extends Component {
     let url = '/item/getMostExpensive';
     if (this.state.item_id) {
       url = '/items/' + this.state.item_id;
+    } else if (session_item_id !== null) {
+      url = '/items/' + session_item_id;
     }
 
     axios({
@@ -75,14 +77,7 @@ class Dashboard extends Component {
           buyers: response.data['buyers'],
           sellers: response.data['sellers'],
           rarity_class: rarity_class,
-          isAuthenticated: this.context.getIsAuthenticated(),
         });
-
-        if(this.state.isAuthenticated) {
-          this.setState({
-            user_email: this.context.getEmail()
-          });
-        }
 
         response.data['timestamps'].forEach((element) => {
           let date_time = element['timestamp'];
@@ -122,7 +117,7 @@ class Dashboard extends Component {
   addClickEventToItemActions(response) {
     for (let i = 0; i < this.item_action_buttons.length; i++) {
       this.item_action_buttons[i].addEventListener('click', event => {
-        if(!this.state.isAuthenticated) {
+        if(!this.context.getIsAuthenticated()) {
           $('#loginWarningModal').modal('show');
         } else {
           axios({
@@ -130,7 +125,7 @@ class Dashboard extends Component {
             url: this.item_action_urls[i],
             data: {
               item_id: response.data['item_id'],
-              authed_user: this.state.user_email,
+              authed_user: this.context.getEmail(),
               action: this.item_action_buttons[i].id
             }
           })
@@ -298,7 +293,7 @@ class Dashboard extends Component {
           </div>
           <div id="itemInformation" className="csruby-bg-darkest p-3">
             <h4 className={this.state.rarity_class}>{this.state.item_name}</h4>
-            <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
+            <p className="lead">Selling price : ${this.state.item_lowest_price}</p>
             <p className="lead">Median price : ${this.state.item_median_price}</p>
           </div>
           <h2 className="mt-3"><a className="traders-link text-secondary" href="#">Buyers</a> | <a className="traders-link text-light" href="#">Sellers</a></h2>
@@ -306,7 +301,7 @@ class Dashboard extends Component {
             {this.state.buyers.length > 0 &&
               this.state.buyers.map(item => {
                 return(
-                  <TraderPreview key={item.user__username + item.buy_created_at} username={item.user__username} createdAt={item.buy_created_at} action='buy'/>
+                  <TraderPreview key={item.user__username + item.buy_created_at} authedUser={this.context.getIsAuthenticated() ? this.context.getEmail() : null} id={item.id} email={item.user__email} username={item.user__username} createdAt={item.buy_created_at} action='buy'/>
                 );
               })
             }
@@ -316,7 +311,7 @@ class Dashboard extends Component {
             {this.state.sellers.length > 0 &&
               this.state.sellers.map(item => {
                 return(
-                  <TraderPreview key={item.user__username + item.sell_created_at} username={item.user__username} createdAt={item.sell_created_at} action='sell'/>
+                  <TraderPreview key={item.user__username + item.sell_created_at} authedUser={this.context.getIsAuthenticated() ? this.context.getEmail() : null} id={item.id} email={item.user__email} username={item.user__username} createdAt={item.sell_created_at} action='sell'/>
                 );
               })
             }

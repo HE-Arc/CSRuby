@@ -51,9 +51,9 @@ class ItemSerializer(serializers.ModelSerializer):
     def get_timestamps(self, item):
         return item.price_set.values('timestamp')
     def get_buyers(self, item):
-        return item.user_item_set.filter(buy_item__exact='1').values('user__username', 'buy_created_at')
+        return item.user_item_set.filter(buy_item__exact='1').values('id', 'user__email', 'user__username', 'buy_created_at')
     def get_sellers(self, item):
-        return item.user_item_set.filter(sell_item__exact='1').values('user__username', 'sell_created_at')
+        return item.user_item_set.filter(sell_item__exact='1').values('id', 'user__email', 'user__username', 'sell_created_at')
 
     class Meta:
         model = Item
