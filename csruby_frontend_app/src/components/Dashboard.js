@@ -131,15 +131,12 @@ class Dashboard extends Component {
           })
           .then((response) => {
             if(response.status === 200) {
-              if(response.data.status.includes('success')) {
-                // TODO: show success message and tell user to refresh the page
-              }
-              if(response.data.status.includes('failed')) {
+              if(response.data.status.includes('success') || response.data.status.includes('failed')) {
                 this.setState({
                   response_description: response.data.description
                 });
-                $('#buyOrderExists').modal('show');
               }
+              $('#tradeModal').modal('show');
             }
           })
         }
@@ -267,11 +264,11 @@ class Dashboard extends Component {
                 </div>
               </div>
             </div>
-            <div className="modal fade" id="buyOrderExists" tabIndex="-1" role="dialog" aria-labelledby="buyOrderExistsLabel" aria-hidden="true">
+            <div className="modal fade" id="tradeModal" tabIndex="-1" role="dialog" aria-labelledby="tradeModalLabel" aria-hidden="true">
               <div className="modal-dialog" role="document">
                 <div className="modal-content text-light csruby-bg-darkest">
                   <div className="modal-header">
-                    <h5 className="modal-title" id="buyOrderExistsLabel">Buy Order</h5>
+                    <h5 className="modal-title" id="tradeModalLabel">Buy Order</h5>
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>

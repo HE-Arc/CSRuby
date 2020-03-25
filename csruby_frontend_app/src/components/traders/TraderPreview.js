@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 import { Redirect, NavLink } from "react-router-dom";
+import axios from 'axios';
 
 class TraderPreview extends Component {
   constructor(props) {
@@ -13,10 +14,12 @@ class TraderPreview extends Component {
       created_at: props.createdAt,
       action: props.action,
       belongsToAuthedUser: false,
+      response_description: '',
     }
   }
 
   componentDidMount() {
+    console.log(this.state.authed_user);
     if(this.state.authed_user === this.state.email) {
       this.setState({
         belongsToAuthedUser: true
@@ -40,12 +43,18 @@ class TraderPreview extends Component {
           method: 'delete',
           url: '/item/deleteTrade',
           data: {
-            id: this.state.id
+            trade_id: this.state.id,
+            action: this.state.action
           }
         })
         .then((response) => {
           if(response.status === 200) {
-            // TODO: inform user that it has been deleted
+            if(response.data.status.includes('success') || response.data.status.includes('failed')) {
+              this.setState({
+                response_description: response.data.description
+              });
+            }
+            $('#itemActionModal').modal('show');
           }
         });
       });
@@ -61,7 +70,27 @@ class TraderPreview extends Component {
           <small className="text-muted">Created on {date}</small>
           <p className="card-text mb-2">Is looking to {this.state.action} this item</p>
           {this.state.belongsToAuthedUser === true &&
-            <a id={'removeTradeOf' + encodeURI(this.state.username)} href="#" className="btn btn-secondary">Remove</a>
+            <div className="itemActions">
+              <a id={'removeTradeOf' + encodeURI(this.state.username)} href="#" className="btn btn-secondary">Remove</a>
+              <div className="modal fade" id="itemActionModal" tabIndex="-1" role="dialog" aria-labelledby="itemActionModalLabel" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content text-light csruby-bg-darkest">
+                    <div className="modal-header">
+                      <h5 className="modal-title" id="itemActionModalLabel">Buy Order</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <p>{this.state.response_description}</p>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           }
         </div>
       </div>

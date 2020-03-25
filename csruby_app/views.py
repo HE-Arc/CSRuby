@@ -131,10 +131,10 @@ class ItemActions(generics.GenericAPIView):
             duplicate_msg = 'Undefined'
 
             if action == 'buy':
-                success_msg = 'Added buy order on this item'
+                success_msg = 'Added buy order on this item. Refresh the page to see your sell order'
                 duplicate_msg = 'Buy order already placed on this item'
             elif action == 'sell':
-                success_msg = 'Added sell order on this item'
+                success_msg = 'Added sell order on this item. Refresh the page to see your sell order'
                 duplicate_msg = 'Sell order already placed on this item'
 
             duplicate_error_response = Response({
@@ -187,7 +187,29 @@ class ItemActions(generics.GenericAPIView):
             return unexpected_error_response
 
     def delete(self, request, *args, **kwargs):
+        action = ''
+        possible_actions = ['buy', 'sell', 'fav']
+
+        if request.data['trade_id'] and request.data['action']:
+            trade_id = request.data['trade_id']
+            action = request.data['action']
+            if User_Item.objects.filter(id__exact=trade_id).exists() and action in possible_actions:
+                user_item = User_Item.objects.get(id__exact=trade_id)
+
+                if action == 'buy':
+                    user_item.buy_item = False
+                if action == 'sell':
+                    user_item.sell_item = False
+                user_item.save()
+
+                return Response({
+                'status': 'success',
+                'action': action,
+                'description': 'Trade has been deleted. Refresh the page to see your modifcation',
+                })
+
         return Response({
-        'message': 'hello world!',
-        'data': request.data
+        'status': 'failed',
+        'description': 'Something went wrong',
+        'action': action,
         })
