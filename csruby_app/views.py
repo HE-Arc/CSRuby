@@ -54,6 +54,94 @@ class UserAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+class UserView(generics.GenericAPIView):
+    serializer_class=UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user_id = None
+
+        response_body = {
+            'status': 'failed',
+            'data': None,
+        }
+
+        if 'pk' in kwargs:
+            user_id = kwargs['pk']
+            user = None
+
+            try:
+                user = CSRuby_User.objects.get(id__exact=user_id)
+            except Exception as e:
+                return Response(response_body)
+
+            buy_orders = None
+            buy_orders_item_ids = set()
+            items_to_buy = []
+
+            sell_orders = None
+            sell_orders_item_ids = set()
+            items_to_sell = []
+
+            # Get the items from the buy and sell orders
+            if User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).exists():
+                buy_orders = User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).all()
+
+                for buy_order in buy_orders:
+                    buy_orders_item_ids.add(buy_order.item_id)
+
+                for item_id in buy_orders_item_ids:
+                    item = Item.objects.get(item_id__exact=item_id)
+                    items_to_buy.append(item)
+
+            if User_Item.objects.filter(sell_item__exact='1', user_id__exact=user_id).exists():
+                sell_orders = User_Item.objects.filter(sell_item__exact='1', user_id__exact=user_id).all()
+
+                for sell_order in sell_orders:
+                    sell_orders_item_ids.add(sell_order.item_id)
+
+                for item_id in sell_orders_item_ids:
+                    item = Item.objects.get(item_id__exact=item_id)
+                    items_to_buy.append(item)
+
+            response_body =  {
+                'status': 'success',
+                'user_info': {
+                    'id': user.id,
+                    'email': user.email,
+                    'username': user.username,
+                    'steamid': user.steamid,
+                    'date_joined': user.date_joined,
+                }
+            }
+
+            if items_to_buy:
+                for item_to_buy in items_to_buy:
+                    response_body['user_info']['items_to_buy'] = [
+                        {
+                            'item_id': item_to_buy.item_id,
+                            'name': item_to_buy.name,
+                            'item_image': item_to_buy.item_image,
+                            'rarity': item_to_buy.rarity,
+                        }
+                    ]
+            else:
+                response_body['user_info']['items_to_buy'] = None
+
+            if items_to_sell:
+                for item_to_sell in items_to_sell:
+                    response_body['user_info']['items_to_sell'] = [
+                        {
+                            'item_id': items_to_sell.item_id,
+                            'name': items_to_sell.name,
+                            'item_image': items_to_sell.item_image,
+                            'rarity': items_to_sell.rarity,
+                        }
+                    ]
+            else:
+                response_body['user_info']['items_to_sell'] = None
+
+        return Response(response_body)
+
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
 
@@ -131,10 +219,10 @@ class ItemActions(generics.GenericAPIView):
             duplicate_msg = 'Undefined'
 
             if action == 'buy':
-                success_msg = 'Added buy order on this item'
+                success_msg = 'Added buy order on this item. Refresh the page to see your sell order'
                 duplicate_msg = 'Buy order already placed on this item'
             elif action == 'sell':
-                success_msg = 'Added sell order on this item'
+                success_msg = 'Added sell order on this item. Refresh the page to see your sell order'
                 duplicate_msg = 'Sell order already placed on this item'
 
             duplicate_error_response = Response({
@@ -185,3 +273,31 @@ class ItemActions(generics.GenericAPIView):
                     return success_response
                 return duplicate_error_response
             return unexpected_error_response
+
+    def delete(self, request, *args, **kwargs):
+        action = ''
+        possible_actions = ['buy', 'sell', 'fav']
+
+        if request.data['trade_id'] and request.data['action']:
+            trade_id = request.data['trade_id']
+            action = request.data['action']
+            if User_Item.objects.filter(id__exact=trade_id).exists() and action in possible_actions:
+                user_item = User_Item.objects.get(id__exact=trade_id)
+
+                if action == 'buy':
+                    user_item.buy_item = False
+                if action == 'sell':
+                    user_item.sell_item = False
+                user_item.save()
+
+                return Response({
+                'status': 'success',
+                'action': action,
+                'description': 'Trade has been deleted. Refresh the page to see your modifcation',
+                })
+
+        return Response({
+        'status': 'failed',
+        'description': 'Something went wrong',
+        'action': action,
+        })

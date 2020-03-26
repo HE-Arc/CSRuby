@@ -38,8 +38,8 @@ class Logout extends Component {
   render() {
     if (this.state.is_logged_out) {
       return (<Redirect to ="/login" />)
-      }
-      return (
+    }
+    return (
       null
     );
   }

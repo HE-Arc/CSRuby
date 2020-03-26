@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CSRuby_User, Item, Price, CSRuby_UserManager
+from .models import *
 from django.forms import ModelForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CSRuby_User
-        fields = ('id','email', 'username', 'steamid')
+        fields = ('id','email', 'username', 'steamid', 'date_joined', 'user_item_set')
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,9 +51,9 @@ class ItemSerializer(serializers.ModelSerializer):
     def get_timestamps(self, item):
         return item.price_set.values('timestamp')
     def get_buyers(self, item):
-        return item.user_item_set.filter(buy_item__exact='1').values('user__username', 'buy_created_at')
+        return item.user_item_set.filter(buy_item__exact='1').values('id', 'user__email', 'user__username', 'buy_created_at')
     def get_sellers(self, item):
-        return item.user_item_set.filter(sell_item__exact='1').values('user__username', 'sell_created_at')
+        return item.user_item_set.filter(sell_item__exact='1').values('id', 'user__email', 'user__username', 'sell_created_at')
 
     class Meta:
         model = Item

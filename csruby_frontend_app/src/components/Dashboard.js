@@ -11,7 +11,7 @@ import TraderPreview from './traders/TraderPreview.js';
 
 class Dashboard extends Component {
 
-  static contextType = AuthContext
+  static contextType = AuthContext;
 
   constructor(props) {
     super(props);
@@ -27,13 +27,13 @@ class Dashboard extends Component {
       empty_buyers: 'd-none',
       empty_sellers: 'd-none',
       rarity_class: '',
-      isAuthenticated: '',
-      user_email: '',
+      authed_user: '',
       response_description: '',
     }
   }
 
   componentDidMount() {
+    let session_item_id = sessionStorage.getItem('session_item_id');
     let item_prices = [];
     let labels = [];
 
@@ -47,6 +47,8 @@ class Dashboard extends Component {
     let url = '/item/getMostExpensive';
     if (this.state.item_id) {
       url = '/items/' + this.state.item_id;
+    } else if (session_item_id !== null) {
+      url = '/items/' + session_item_id;
     }
 
     axios({
@@ -75,14 +77,7 @@ class Dashboard extends Component {
           buyers: response.data['buyers'],
           sellers: response.data['sellers'],
           rarity_class: rarity_class,
-          isAuthenticated: this.context.getIsAuthenticated(),
         });
-
-        if(this.state.isAuthenticated) {
-          this.setState({
-            user_email: this.context.getEmail()
-          });
-        }
 
         response.data['timestamps'].forEach((element) => {
           let date_time = element['timestamp'];
@@ -122,7 +117,7 @@ class Dashboard extends Component {
   addClickEventToItemActions(response) {
     for (let i = 0; i < this.item_action_buttons.length; i++) {
       this.item_action_buttons[i].addEventListener('click', event => {
-        if(!this.state.isAuthenticated) {
+        if(!this.context.getIsAuthenticated()) {
           $('#loginWarningModal').modal('show');
         } else {
           axios({
@@ -130,21 +125,18 @@ class Dashboard extends Component {
             url: this.item_action_urls[i],
             data: {
               item_id: response.data['item_id'],
-              authed_user: this.state.user_email,
+              authed_user: this.context.getEmail(),
               action: this.item_action_buttons[i].id
             }
           })
           .then((response) => {
             if(response.status === 200) {
-              if(response.data.status.includes('success')) {
-                // TODO: show success message and tell user to refresh the page
-              }
-              if(response.data.status.includes('failed')) {
+              if(response.data.status.includes('success') || response.data.status.includes('failed')) {
                 this.setState({
                   response_description: response.data.description
                 });
-                $('#buyOrderExists').modal('show');
               }
+              $('#tradeModal').modal('show');
             }
           })
         }
@@ -234,100 +226,98 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="content">
-        <div className="container text-light mt-5">
-          <div className="row">
-            <div className="col-lg p-3">
-              <div className="csruby-bg-darkest text-center p-3">
-                <img src={this.state.item_image} className="img-fluid text-center" alt={this.state.item_name} />
-              </div>
-              <div className="row mt-3 py-3">
-                <div className="col-4">
-                  <button id="buy" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Buy</button>
-                </div>
-                <div className="col-4">
-                  <button id="sell" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Sell</button>
-                </div>
-                <div className="col-4">
-                  <button id="fav" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Favourite</button>
-                </div>
-              </div>
+      <div className="container text-light mt-5">
+        <div className="row">
+          <div className="col-lg p-3">
+            <div className="csruby-bg-darkest text-center p-3">
+              <img src={this.state.item_image} className="img-fluid text-center" alt={this.state.item_name} />
             </div>
-            <div className="modal fade" id="loginWarningModal" tabIndex="-1" role="dialog" aria-labelledby="loginWarningModalLabel" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content text-light csruby-bg-darkest">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="loginWarningModalLabel">Login first</h5>
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <p>You must be logged in to use this feature !</p>
-                    <p>Click <NavLink className="notLoggedLink" exact to="/login">here</NavLink> to login or <NavLink className="notLoggedLink" exact to="/login">here</NavLink> to create an account if you don't have one.</p>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
+            <div className="row mt-3 py-3">
+              <div className="col-4">
+                <button id="buy" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Buy</button>
               </div>
-            </div>
-            <div className="modal fade" id="buyOrderExists" tabIndex="-1" role="dialog" aria-labelledby="buyOrderExistsLabel" aria-hidden="true">
-              <div className="modal-dialog" role="document">
-                <div className="modal-content text-light csruby-bg-darkest">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="buyOrderExistsLabel">Buy Order</h5>
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <p>{this.state.response_description}</p>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
+              <div className="col-4">
+                <button id="sell" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Sell</button>
               </div>
-            </div>
-            <div className="col-lg p-3">
-              <div className="csruby-bg-darkest csruby-height-100 p-3">
-                <canvas id="piceChart" width="540" height="450"></canvas>
+              <div className="col-4">
+                <button id="fav" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Favourite</button>
               </div>
             </div>
           </div>
-          <div id="itemInformation" className="csruby-bg-darkest p-3">
-            <h4 className={this.state.rarity_class}>{this.state.item_name}</h4>
-            <p className="lead">Lowest price : ${this.state.item_lowest_price}</p>
-            <p className="lead">Median price : ${this.state.item_median_price}</p>
+          <div className="modal fade" id="loginWarningModal" tabIndex="-1" role="dialog" aria-labelledby="loginWarningModalLabel" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content text-light csruby-bg-darkest">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="loginWarningModalLabel">Login first</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p>You must be logged in to use this feature !</p>
+                  <p>Click <NavLink className="notLoggedLink" exact to="/login">here</NavLink> to login or <NavLink className="notLoggedLink" exact to="/login">here</NavLink> to create an account if you don't have one.</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <h2 className="mt-3"><a className="traders-link text-secondary" href="#">Buyers</a> | <a className="traders-link text-light" href="#">Sellers</a></h2>
-          <div id="buyers-div" className="mb-5">
-            {this.state.buyers.length > 0 &&
-              this.state.buyers.map(item => {
-                return(
-                  <TraderPreview key={item.user__username + item.buy_created_at} username={item.user__username} createdAt={item.buy_created_at} action='buy'/>
-                );
-              })
-            }
-            <p className={this.state.empty_buyers + ' lead'}>There doesn't seem to be anyone interested in buying this item...</p>
+          <div className="modal fade" id="tradeModal" tabIndex="-1" role="dialog" aria-labelledby="tradeModalLabel" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content text-light csruby-bg-darkest">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="tradeModalLabel">Buy Order</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p>{this.state.response_description}</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div id="sellers-div" className="d-none mb-5">
-            {this.state.sellers.length > 0 &&
-              this.state.sellers.map(item => {
-                return(
-                  <TraderPreview key={item.user__username + item.sell_created_at} username={item.user__username} createdAt={item.sell_created_at} action='sell'/>
-                );
-              })
-            }
-            <p className={this.state.empty_sellers + ' lead'}>There doesn't seem to be anyone interested in selling this item...</p>
+          <div className="col-lg p-3">
+            <div className="csruby-bg-darkest csruby-height-100 p-3">
+              <canvas id="piceChart" width="540" height="450"></canvas>
+            </div>
           </div>
-          <MContext.Consumer>
-            {(context) => {
-              this.state.item_id = context.state.message
-            }}
-          </MContext.Consumer>
         </div>
+        <div id="itemInformation" className="csruby-bg-darkest p-3">
+          <h4 className={this.state.rarity_class}>{this.state.item_name}</h4>
+          <p className="lead">Selling price : ${this.state.item_lowest_price}</p>
+          <p className="lead">Median price : ${this.state.item_median_price}</p>
+        </div>
+        <h2 className="mt-3"><a className="traders-link text-secondary" href="#">Buyers</a> | <a className="traders-link text-light" href="#">Sellers</a></h2>
+        <div id="buyers-div" className="mb-5">
+          {this.state.buyers.length > 0 &&
+            this.state.buyers.map(item => {
+              return(
+                <TraderPreview key={item.user__username + item.buy_created_at} authedUser={this.context.getIsAuthenticated() ? this.context.getEmail() : null} id={item.id} email={item.user__email} username={item.user__username} createdAt={item.buy_created_at} action='buy'/>
+              );
+            })
+          }
+          <p className={this.state.empty_buyers + ' lead'}>There doesn't seem to be anyone interested in buying this item...</p>
+        </div>
+        <div id="sellers-div" className="d-none mb-5">
+          {this.state.sellers.length > 0 &&
+            this.state.sellers.map(item => {
+              return(
+                <TraderPreview key={item.user__username + item.sell_created_at} authedUser={this.context.getIsAuthenticated() ? this.context.getEmail() : null} id={item.id} email={item.user__email} username={item.user__username} createdAt={item.sell_created_at} action='sell'/>
+              );
+            })
+          }
+          <p className={this.state.empty_sellers + ' lead'}>There doesn't seem to be anyone interested in selling this item...</p>
+        </div>
+        <MContext.Consumer>
+          {(context) => {
+            this.state.item_id = context.state.message
+          }}
+        </MContext.Consumer>
       </div>
     );
   }

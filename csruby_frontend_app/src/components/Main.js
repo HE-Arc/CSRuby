@@ -32,49 +32,51 @@ class Main extends Component {
     return (
       <HashRouter>
         <AuthProvider>
-          <div>
-            <header>
-              <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-red">
-                <NavLink className="navbar-brand" exact to="/">CSRuby</NavLink>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-                </button>
+          <Provider>
+            <div>
+              <header>
+                <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-red">
+                  <NavLink className="navbar-brand" exact to="/">CSRuby</NavLink>
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                      <NavLink className="nav-link" exact to="/">Dashboard<span className="sr-only">(current)</span></NavLink>
-                    </li>
-                    <li className="nav-item active">
-                      <NavLink className="nav-link" exact to="/search">Search</NavLink>
-                    </li>
-                  </ul>
-                  <ul className="navbar-nav">
-                    <li className="nav-item active">
-                      <AuthContext.Consumer>
-                      {(context) =>
-                        (context.getIsAuthenticated()
-                          ? <NavLink className="nav-link" exact to="/profile">{context.getUsername()}</NavLink>
-                          : <NavLink className="nav-link" exact to="/login">Login</NavLink>
-                        )
-                      }
-                      </AuthContext.Consumer>
-                    </li>
-                    <li className="nav-item active">
-                      <AuthContext.Consumer>
-                      {(context) =>
-                        (context.getIsAuthenticated() &&
-                          <NavLink className="nav-link" exact to="/logout">Logout</NavLink>
-                        )
-                      }
-                      </AuthContext.Consumer>
-                    </li>
-                  </ul>
-                </div>
-              </nav>
-            </header>
-            <div className="content text-light mt-5">
-              <Provider>
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                      <li className="nav-item active">
+                        <NavLink className="nav-link" exact to="/">Dashboard<span className="sr-only">(current)</span></NavLink>
+                      </li>
+                      <li className="nav-item active">
+                        <NavLink className="nav-link" exact to="/search">Search</NavLink>
+                      </li>
+                    </ul>
+                    <ul className="navbar-nav">
+                      <li className="nav-item active">
+                        <AuthContext.Consumer>
+                        {(context) =>
+                          (context.getIsAuthenticated()
+                            ? <NavLink className="nav-link" exact to="/profile" onClick={() => {
+                                    sessionStorage.setItem('user_id', context.getUser().id);
+                                  }}>{context.getUsername()}</NavLink>
+                            : <NavLink className="nav-link" exact to="/login">Login</NavLink>
+                          )
+                        }
+                        </AuthContext.Consumer>
+                      </li>
+                      <li className="nav-item active">
+                        <AuthContext.Consumer>
+                        {(context) =>
+                          (context.getIsAuthenticated() &&
+                            <NavLink className="nav-link" exact to="/logout">Logout</NavLink>
+                          )
+                        }
+                        </AuthContext.Consumer>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+              </header>
+              <div className="content text-light mt-5">
                 <Route exact path="/" component={Dashboard}/>
 
                 <Route exact path="/profile" component={Profile}/>
@@ -83,9 +85,9 @@ class Main extends Component {
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/logout" component={Logout}/>
-              </Provider>
+              </div>
             </div>
-          </div>
+          </Provider>
         </AuthProvider>
       </HashRouter>
     );

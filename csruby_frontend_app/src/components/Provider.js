@@ -4,7 +4,10 @@ import React, { Component } from "react";
 export const MContext = React.createContext();
 
 class Provider extends Component {
-  state = { message: ""}
+  constructor(props) {
+    super(props)
+    this.state = { message: ""}
+  }
 
   render() {
     return (
