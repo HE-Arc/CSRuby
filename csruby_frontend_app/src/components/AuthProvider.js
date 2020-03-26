@@ -4,11 +4,14 @@ import axios from "axios";
 export const AuthContext = React.createContext();  //exporting context object
 
 class AuthProvider extends Component {
-  state={
-      isAuthenticated: false,
-      user: null,
-      token: null
-    }
+  constructor(props) {
+    super(props)
+    this.state={
+        isAuthenticated: false,
+        user: null,
+        token: null
+      }
+  }
 
   componentDidMount() {
     let token = sessionStorage.getItem("token")
@@ -42,10 +45,12 @@ class AuthProvider extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.token !== prevState.token) {
       if(this.state.token == null){
-        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem('authed_user_id');
       }
       else{
-        sessionStorage.setItem("token", this.state.token)
+        sessionStorage.setItem("token", this.state.token);
+        sessionStorage.setItem('authed_user_id', this.state.user.id);
       }
     }
   }
@@ -68,6 +73,7 @@ class AuthProvider extends Component {
             user: value['user'],
             token: value['token']
           }),
+          getUser: () => this.state.user,
           getEmail: () => this.state.user.email,
           getUsername: () => this.state.user.username,
           getIsAuthenticated: () => this.state.isAuthenticated,

@@ -9,6 +9,7 @@ urlpatterns = [
     path('item/sellItem', views.ItemActions.as_view()),
     path('item/deleteTrade', views.ItemActions.as_view()),
     path('item/getMostExpensive', views.ItemMostExpensive.as_view()),
+    path('users/<int:pk>', views.UserView.as_view()),
     path('auth/', include('knox.urls')),
     path('auth/register', views.RegistrationAPI.as_view()),
     path('auth/login', views.LoginAPI.as_view()),

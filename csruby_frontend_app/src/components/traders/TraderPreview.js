@@ -19,7 +19,6 @@ class TraderPreview extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state.authed_user);
     if(this.state.authed_user === this.state.email) {
       this.setState({
         belongsToAuthedUser: true

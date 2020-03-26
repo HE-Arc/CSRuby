@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CSRuby_User, Item, Price, CSRuby_UserManager
+from .models import *
 from django.forms import ModelForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CSRuby_User
-        fields = ('id','email', 'username', 'steamid')
+        fields = ('id','email', 'username', 'steamid', 'date_joined', 'user_item_set')
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:

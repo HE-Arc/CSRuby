@@ -34,7 +34,9 @@ class ItemPreview extends Component {
                   </NavLink>
                 )}
               </MContext.Consumer>
-              <p className="card-text">Selling price {this.state.price}$</p>
+              {this.state.price &&
+                <p className="card-text">Selling price {this.state.price}$</p>
+              }
             </div>
             <div className="card-body d-lg-none">
               <MContext.Consumer>

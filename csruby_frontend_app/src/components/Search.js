@@ -76,7 +76,6 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    //console.log("onMount");
     this.search("item/search/");
   }
 
