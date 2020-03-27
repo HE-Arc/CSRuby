@@ -21,6 +21,7 @@ class Profile extends Component {
       date_joined: '',
       items_to_buy: [],
       items_to_sell: [],
+      response_description: '',
     }
   }
 
@@ -70,13 +71,15 @@ class Profile extends Component {
           <tbody>
             {this.state.email
               ? <tr>
-                  <th scope="row">Email</th>
-                  <td>{this.state.email}</td>
+                  <th scope="row" className="align-middle">Email</th>
+                  <td className="align-middle">
+                    <p className="m-0">{this.state.email}</p>
+                  </td>
                 </tr>
               : null
             }
             <tr>
-              <th scope="row">SteamID</th>
+              <th scope="row">Steam profile</th>
               <td>{this.state.steamid ? <a href={'https://steamcommunity.com/' + this.state.steamid}>Steam profile</a> : 'None'}</td>
             </tr>
             <tr>
@@ -85,7 +88,24 @@ class Profile extends Component {
             </tr>
           </tbody>
         </table>
-
+        <div className="modal fade" id="modifyInfo" tabIndex="-1" role="dialog" aria-labelledby="modifyInfoLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content text-light csruby-bg-darkest">
+              <div className="modal-header">
+                <h5 className="modal-title" id="modifyInfoLabel">Login first</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>{this.state.response_description}</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="csruby-bg-darkest">
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">

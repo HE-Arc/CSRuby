@@ -142,6 +142,35 @@ class UserView(generics.GenericAPIView):
 
         return Response(response_body)
 
+    def patch(self, request, *args, **kwargs):
+        email = ''
+        user_id = None
+
+        response_body = {
+            'status': 'failed',
+            'description': 'Something went wrong',
+        }
+
+        if 'pk' in kwargs:
+            user_id = kwargs['id']
+            user = None
+
+            try:
+                user = CSRuby_User.objects.get(id__exact=user_id)
+            except Exception as e:
+                raise
+
+            if request.data['email']:
+                email = request.data['email']
+                user.email = email
+                user.save()
+
+                response_body = {
+                    'status': 'success',
+                    'description': 'Your email has been modified. Refresh this page to see the changes',
+                }
+        return Response(response_body)
+
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
 
