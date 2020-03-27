@@ -76,6 +76,10 @@
   box-shadow: rgba(17, 6, 1, 0.5) 0px 2px 4px 0px;
 }
 
+.csruby-email-fixed-width {
+  width: 250px !important;
+}
+
 /* Bootstrap classes overwrite */
 
 .form-control {
