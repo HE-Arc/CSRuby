@@ -56,8 +56,23 @@ namespace :static_files do
   desc 'Deploy static files'
   task :deploy_static_files do
     on roles(:web) do |h|
-      execute "source #{venv_path}/bin/activate"
-      execute "cd #{release_path} && python manage collectstatic"
+      execute "source #{venv_path}/bin/activate && cd #{release_path} && python manage.py collectstatic"
+    end
+  end
+end
+
+after 'static_files:deploy_static_files', 'migrations:run_migrations'
+
+namespace :migrations do
+
+  def venv_path
+    File.join(shared_path, 'env')
+  end
+
+  desc 'Run migrations'
+  task :run_migrations do
+    on roles(:web) do |h|
+      execute "source #{venv_path}/bin/activate && cd #{release_path} && python manage.py migrate"
     end
   end
 end
