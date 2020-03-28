@@ -39,7 +39,7 @@ class TraderPreview extends Component {
         event.preventDefault();
 
         axios({
-          method: 'delete',
+          method: 'patch',
           url: '/item/deleteTrade',
           data: {
             trade_id: this.state.id,
