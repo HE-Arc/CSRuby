@@ -24,15 +24,54 @@ class Dashboard extends Component {
       item_median_price: '',
       buyers: [],
       sellers: [],
+      has_placed_buy_order: false,
+      has_places_sell_order: false,
       is_favorite: false,
       empty_buyers: 'd-none',
       empty_sellers: 'd-none',
       rarity_class: '',
       authed_user: '',
-      response_description: '',
+      response_detail: '',
     }
 
-    this.onFavClick=this.onFavClick.bind(this);
+    this.buy_button = null;
+    this.sell_button = null;
+    this.fav_button = null;
+
+    this.onFavClick = this.onFavClick.bind(this);
+  }
+
+  handleItemAction() {
+    let method = 'get';
+    let url = '/item/action/' + this.state.item_id + '/' + this.context.getUser().id;
+
+    axios({
+      method: method,
+      url: url,
+    }).then((response) => {
+      if(response.status === 200) {
+      }
+
+      if(response.status === 204) {
+        this.buy_button.addEventListener('click', (event) => {
+          axios({
+            method: 'post',
+            url: '/item/action/',
+            data: {
+              action: 'buy',
+              item_id: this.state.item_id,
+              authed_user: this.context.getUser().id,
+            },
+          }).then((response) => {
+            if(response.status === 200) {
+              this.setState({
+
+              })
+            }
+          });
+        });
+      }
+    });
   }
 
   onFavClick(){
@@ -53,21 +92,21 @@ class Dashboard extends Component {
       }
     }).then((response) => {
       if(response.status === 200) {
-          this.setState({
-            response_description: response.data.description
-          });
-          if (response.data.status.includes('success')){
-            if(method === 'post'){
-              this.setState({
-                is_favorite: true
-              });
-            }else{
-              this.setState({
-                is_favorite: false
-              });
-            }
-
+        this.setState({
+          response_description: response.data.description
+        });
+        if (response.data.status.includes('success')){
+          if(method === 'post'){
+            this.setState({
+              is_favorite: true
+            });
+          }else{
+            this.setState({
+              is_favorite: false
+            });
           }
+
+        }
 
         $('#tradeModal').modal('show');
       }
@@ -75,6 +114,12 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this.buy_button = document.getElementById('buy');
+    this.sell_button = document.getElementById('sell');
+    this.fav_button = document.getElementById('fav');
+
+    this.handleItemAction();
+
     let session_item_id = sessionStorage.getItem('session_item_id');
     let item_prices = [];
     let labels = [];
@@ -292,7 +337,7 @@ class Dashboard extends Component {
                 <button id="sell" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Sell</button>
               </div>
               <div className="col-4">
-                {this.state.is_favorite ? <button id="unfav" type="button" onClick={this.onFavClick} className="btn btn-lg btn-block csruby-bg-red">UnFavourite</button> : <button id="fav" type="button" onClick={this.onFavClick} className="btn btn-lg btn-block csruby-bg-red">Favourite</button>}
+                <button id="fav" type="button" className="btn btn-lg btn-block csruby-bg-red">{this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
               </div>
             </div>
           </div>

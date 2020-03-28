@@ -19,24 +19,10 @@ class CSRuby_UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             username=username,
-            steamid=steamid
+            steamid=steamid,
         )
 
         user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, date_of_birth, password=None):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.create_user(
-            email,
-            password=password,
-            date_of_birth=date_of_birth,
-        )
-        user.is_admin = True
         user.save(using=self._db)
         return user
 
@@ -47,7 +33,7 @@ class CSRuby_User(AbstractBaseUser):
         unique=True,
     )
 
-    username=models.CharField(max_length=150)
+    username = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     steamid = models.CharField(max_length=17, default=None, blank=True, null=True)
@@ -57,16 +43,15 @@ class CSRuby_User(AbstractBaseUser):
 
     objects = CSRuby_UserManager()
 
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
+    # TODO: REMOVE IF USELESS
+    # def has_perm(self, perm, obj=None):
+    #     "Does the user have a specific permission?"
+    #     return True
+    #
+    # @property
+    # def is_staff(self):
+    #     "Is the user a member of staff?"
+    #     return self.is_admin
 
 class Item(models.Model):
     class Rarity(models.TextChoices):
@@ -88,7 +73,7 @@ class Item(models.Model):
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     item_image = models.CharField(max_length=255)
-    rarity = models.CharField(max_length=3,choices=Rarity.choices,default=Rarity.CONSUMER_GRADE,)
+    rarity = models.CharField(max_length=3, choices=Rarity.choices, default=Rarity.CONSUMER_GRADE,)
 
 class Price(models.Model):
     price_id = models.AutoField(primary_key=True)
@@ -105,6 +90,10 @@ class User_ItemManager(models.Manager):
 
     def create_sell(self, item, user, sell_created_at=timezone.now(), sell_item=True):
         user_item = self.create(item=item, user=user, buy_created_at=None, sell_created_at=sell_created_at, buy_item=False, sell_item=True, favorite_item=False)
+        return user_item
+
+    def create_fav(self, item, user, favorite_item=True):
+        user_item = self.create(item=item, user=user, buy_created_at=None, sell_created_at=None, buy_item=False, sell_item=False, favorite_item=favorite_item)
         return user_item
 
 class User_Item(models.Model):

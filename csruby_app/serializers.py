@@ -7,17 +7,20 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CSRuby_User
-        fields = ('id','email', 'username', 'steamid', 'date_joined', 'user_item_set')
+        fields = ('id', 'email', 'username', 'steamid', 'date_joined', 'user_item_set')
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CSRuby_User
-        fields = ('id','email', 'username', 'steamid', 'password')
+        fields = ('id', 'email', 'username', 'steamid', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CSRuby_User.objects.create_user(validated_data['email'],
-        validated_data['username'], validated_data['password'])
+        user = CSRuby_User.objects.create_user(
+            validated_data['email'],
+            validated_data['username'],
+            validated_data['password'],
+        )
 
         return user
 
@@ -29,7 +32,7 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Incorrect credentials")
+        raise serializers.ValidationError('Incorrect credentials')
 
 class ItemSerializer(serializers.ModelSerializer):
     lowest_price = serializers.SerializerMethodField('get_lowest_price')
@@ -60,14 +63,19 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps', 'buyers', 'sellers','favorite_users')
+        fields = ('item_id', 'name', 'item_image', 'rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps', 'buyers', 'sellers', 'favorite_users')
+
+class ItemProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ('item_id', 'name', 'item_image', 'rarity')
 
 class ItemActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ('item_id','name','item_image','rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
+        fields = ('item_id', 'name', 'item_image', 'rarity', 'lowest_price', 'lowest_prices', 'median_prices', 'timestamps')
 
 class UserItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Item
-        fields = ('id','item','user','buy_created_at','sell_created_at', 'buy_item', 'sell_item', 'favorite_item')
+        fields = ('id', 'item', 'user', 'buy_created_at', 'sell_created_at', 'buy_item', 'sell_item', 'favorite_item')
