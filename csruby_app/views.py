@@ -44,7 +44,7 @@ class LoginAPI(generics.GenericAPIView):
         "token": AuthToken.objects.create(user)[1]
         })
 
-class UserAPI(generics.RetrieveAPIView):
+class AuthAPI(generics.RetrieveAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -152,7 +152,7 @@ class UserView(generics.GenericAPIView):
         }
 
         if 'pk' in kwargs:
-            user_id = kwargs['id']
+            user_id = kwargs['pk']
             user = None
 
             try:
@@ -160,15 +160,48 @@ class UserView(generics.GenericAPIView):
             except Exception as e:
                 raise
 
-            if request.data['email']:
-                email = request.data['email']
-                user.email = email
-                user.save()
+            if request.data['username']:
+                username = request.data['username']
+                user.username = username
 
-                response_body = {
-                    'status': 'success',
-                    'description': 'Your email has been modified. Refresh this page to see the changes',
-                }
+            steamid = request.data['steamid']
+            user.steamid = steamid
+
+            if request.data['password']:
+                password = request.data['password']
+                user.set_password(password)
+
+            user.save()
+            response_body = {
+                'status': 'success',
+                'description': 'Your profile has been modified.',
+                'user': UserSerializer(user, context=self.get_serializer_context()).data,
+            }
+
+        return Response(response_body)
+
+    def delete(self, request, *args, **kwargs):
+        response_body = {
+            'status': 'failed',
+            'description': 'Something went wrong',
+        }
+
+        if 'pk' in kwargs:
+            user_id = kwargs['pk']
+            user = None
+
+            try:
+                user = CSRuby_User.objects.get(id__exact=user_id)
+            except Exception as e:
+                raise
+
+            user.delete()
+
+            response_body = {
+                'status': 'success',
+                'description': 'Your profile has been successfully deleted.',
+            }
+
         return Response(response_body)
 
 class ItemSearch(generics.ListAPIView):

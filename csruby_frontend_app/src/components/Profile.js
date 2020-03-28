@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import axios from 'axios';
-
+import { Redirect } from 'react-router';
 import {
   NavLink
 } from "react-router-dom";
 
 import { AuthContext } from './AuthProvider';
-import ItemPreview from "./item/ItemPreview"
+import ItemPreview from "./item/ItemPreview";
 
 class Profile extends Component {
 
@@ -17,12 +17,44 @@ class Profile extends Component {
     this.state = {
       email: '',
       username: '',
-      steam_id: '',
+      steamid: '',
       date_joined: '',
       items_to_buy: [],
       items_to_sell: [],
       response_description: '',
-    }
+      redirect_to_update: false,
+      redirect_after_delete: false
+    };
+
+    this.delete = this.delete.bind(this);
+  }
+
+  delete(){
+
+    let authed_user_id = sessionStorage.getItem('authed_user_id');
+
+    console.log(this.context.getUser());
+
+    axios({
+      method: 'delete',
+      url: '/users/' + authed_user_id,
+    }).then((response) => {
+      if(response.status === 200) {
+        this.context.setLoginInfo(
+          {
+            isAuthenticated: false,
+            user: null,
+            token: null
+          });
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('authed_user_id');
+
+        $('#deleteModal').modal('hide');
+        this.setState({redirect_after_delete: true});
+      }
+    }).catch((error) => {
+      console.log(error);
+    })
   }
 
   componentDidMount() {
@@ -42,7 +74,7 @@ class Profile extends Component {
 
         this.setState({
           username: response.data.user_info.username,
-          steam_id: response.data.user_info.steamid,
+          steamid: response.data.user_info.steamid,
           date_joined: response.data.user_info.date_joined,
           items_to_buy: response.data.user_info.items_to_buy,
           items_to_sell: response.data.user_info.items_to_sell,
@@ -52,6 +84,12 @@ class Profile extends Component {
   }
 
   render() {
+    if (this.state.redirect_to_update){
+      return (<Redirect to ='/profile/update' />);
+    }
+    if (this.state.redirect_after_delete){
+      return (<Redirect to ='/login' />);
+    }
     return (
       <div className="container text-light mt-5">
         {this.context.getIsAuthenticated() &&
@@ -88,24 +126,37 @@ class Profile extends Component {
             </tr>
           </tbody>
         </table>
-        <div className="modal fade" id="modifyInfo" tabIndex="-1" role="dialog" aria-labelledby="modifyInfoLabel" aria-hidden="true">
+
+        <div className="modal fade" id="deleteModal" data-backdrop="static" tabIndex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content text-light csruby-bg-darkest">
               <div className="modal-header">
-                <h5 className="modal-title" id="modifyInfoLabel">Login first</h5>
+                <h5 className="modal-title" id="staticBackdropLabel">Delete profile</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div className="modal-body">
-                <p>{this.state.response_description}</p>
+                <p>Are you sure you want to delete your profile ?</p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" className="btn csruby-bg-red" onClick={this.delete}>Yes</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
               </div>
             </div>
           </div>
         </div>
+        {
+          this.context.getIsAuthenticated() && this.state.email === this.context.getEmail() &&
+        <div className="row mb-3 py-2">
+          <div className="col-6">
+            <button id="update" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={() => this.setState({ redirect_to_update: true})}>Update Profile</button>
+          </div>
+          <div className="col-6">
+            <button id="delete" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" data-toggle="modal" data-target="#deleteModal">Delete Profile</button>
+          </div>
+        </div>
+        }
         <div className="csruby-bg-darkest">
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">

@@ -14,6 +14,8 @@ import {
 import Dashboard from "./Dashboard";
 
 import Profile from "./Profile";
+import UpdateUser from "./UpdateUser";
+
 import Search from "./Search";
 
 import Login from "./Login";
@@ -80,6 +82,7 @@ class Main extends Component {
                 <Route exact path="/" component={Dashboard}/>
 
                 <Route exact path="/profile" component={Profile}/>
+                <Route exact path="/profile/update" component={UpdateUser}/>
                 <Route exact path="/search" component={Search}/>
 
                 <Route exact path="/login" component={Login}/>
