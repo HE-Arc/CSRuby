@@ -32,8 +32,12 @@ INSTALLED_APPS = [
     'csruby_app',
     'csruby_frontend_app',
     'rest_framework',
+    'knox'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -78,8 +82,8 @@ WSGI_APPLICATION = 'CSRuby.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'csruby_database',
-        'USER': 'root',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
         'HOST': '127.0.0.1',
         'PORT': '3306',
@@ -130,3 +134,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# replacing default django auth user with ours
+AUTH_USER_MODEL = 'csruby_app.CSRuby_User'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

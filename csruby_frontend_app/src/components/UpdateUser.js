@@ -1,21 +1,26 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Redirect } from 'react-router';
+import { AuthContext } from './AuthProvider';
 
-class Signup extends Component {
+class UpdateUser extends Component {
+
+  static contextType = AuthContext
+
   constructor(props) {
     super(props);
     this.state={
       username:'',
-      email:'',
       password:'',
       confirm_password:'',
-      is_created: false,
+      steamid:'',
+      is_updated: false,
       errors: {
         username:'',
-        email: '',
+        steamid:'',
         password: '',
-        confirm_password: ''
+        confirm_password: '',
+        other: ''
       }
     };
 
@@ -23,6 +28,17 @@ class Signup extends Component {
     this.submit_form = this.submit_form.bind(this);
     this.has_errors = this.has_errors.bind(this);
   };
+
+  componentDidMount()
+  {
+    let user = this.context.getUser();
+
+    this.setState({
+      username: user.username,
+      steamid: user.steamid === null ? '' : user.steamid
+    })
+
+  }
 
   handle_change(event){
     const name = event.target.name;
@@ -40,7 +56,7 @@ class Signup extends Component {
         }
         break;
       case "password":
-        if(value.length < 8){
+        if(value.length != 0 && value.length < 8){
           errors.password = "The password is too small!";
         }
         else{
@@ -49,8 +65,8 @@ class Signup extends Component {
           }
           else{
             errors.confirm_password = "";
-            errors.password = "";
           }
+          errors.password = "";
         }
         break;
       case "confirm_password":
@@ -61,9 +77,14 @@ class Signup extends Component {
           errors.confirm_password = "";
         }
         break;
-      case "email":
-        errors.email = "";
-        break;
+
+      case "steamid":
+        if(!(/^\d*$/.test(value))){
+          errors.steamid = "The id can only have numbers!"
+        }
+        else{
+          errors.steamid = "";
+        }
       default: break;
     }
     this.setState({
@@ -76,35 +97,34 @@ class Signup extends Component {
   submit_form(event){
     event.preventDefault();
 
-    var userFormData = new FormData();
-    userFormData.append('username', this.state.username);
-    userFormData.append('email', this.state.email);
-    userFormData.append('password', this.state.password);
+    let authed_user_id = sessionStorage.getItem('authed_user_id');
 
-    axios.defaults.xsrfCookieName = 'csrftoken';
-    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+    let userFormData = new FormData();
+    userFormData.append('username', this.state.username);
+    userFormData.append('password', this.state.password);
+    userFormData.append('steamid', this.state.steamid);
 
     axios({
-      method: 'post',
-      url: '/auth/register',
+      method: 'patch',
+      url: '/users/' + authed_user_id,
       data: userFormData
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({ is_created: true });
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          var errors = {...this.state.errors}
+    })
+    .then((response) => {
+      if(response.status === 200) {
+        sessionStorage.setItem('username', response.data.user.username);
+        this.context.setUser(response.data.user);
 
-          if("email" in error.response.data){
-            errors.email = error.response.data["email"];
-            this.setState({errors})
-          }
-          // console.log(error);
-        }
-      });
+        this.setState({ is_updated: true});
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        var errors = {...this.state.errors}
+
+        errors.other = error.response.data;
+        this.setState({errors})
+      }
+    })
   };
 
   has_errors(){
@@ -119,8 +139,8 @@ class Signup extends Component {
     return has_error;
   }
   render() {
-    if (this.state.is_created) {
-      return (<Redirect to ="/login" />)
+    if (this.state.is_updated) {
+      return (<Redirect to ="/profile" />)
     }
     return (
       <div className="content">
@@ -136,24 +156,22 @@ class Signup extends Component {
                   placeholder="Enter Profilename"
                   value={this.state.username}
                   onChange={this.handle_change}
-                  required
                 />
                 {this.state.errors.username.length > 0 &&
                   <span className='error'>{this.state.errors.username}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="steamid">Steam id</label>
                 <input
                   type="text"
                   className="form-control"
-                  name="email"
-                  placeholder="Enter email"
-                  value={this.state.email}
+                  name="steamid"
+                  placeholder="Enter Steamid"
+                  value={this.state.steamid}
                   onChange={this.handle_change}
-                  required
                 />
-                {this.state.errors.email.length > 0 &&
-                  <span className='error'>{this.state.errors.email}</span>}
+                {this.state.errors.steamid.length > 0 &&
+                  <span className='error'>{this.state.errors.steamid}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
@@ -164,7 +182,6 @@ class Signup extends Component {
                   placeholder="Enter Password"
                   value={this.state.password}
                   onChange={this.handle_change}
-                  required
                 />
                 {this.state.errors.password.length > 0 &&
                   <span className='error'>{this.state.errors.password}</span>}
@@ -178,16 +195,17 @@ class Signup extends Component {
                   placeholder="Confirm Password"
                   value={this.state.confirm_password}
                   onChange={this.handle_change}
-                  required
                 />
                 {this.state.errors.confirm_password.length > 0 &&
                   <span className='error'>{this.state.errors.confirm_password}</span>}
+                {this.state.errors.other.length > 0 &&
+                  <span className='error'>{this.state.errors.other}</span>}
               </div>
               <div className="form-group">
               {this.has_errors()
                   ? <button type="submit" className="btn btn-primary" disabled>Submit</button>
                   : <button type="submit" className="btn btn-primary">Submit</button>
-                }
+              }
               </div>
             </form>
           </div>
@@ -197,4 +215,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+export default UpdateUser;

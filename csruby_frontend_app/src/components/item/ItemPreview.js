@@ -10,24 +10,51 @@ class ItemPreview extends Component {
       itemId: props.itemId,
       url: props.url,
       name: props.name,
-      price: props.price
+      price: props.price,
+      rarity_class: 'csruby-rarity-' + props.rarity_class,
     };
   }
 
   render() {
     return (
-      <div>
-          <img src={this.state.url} alt={this.state.name}/>
-          <p>Selling price {this.state.price}$</p>
-          <MContext.Consumer>
-            {(context) => (
-              <NavLink className="nav-link" exact to="/" onClick={() => {
-                  context.setMessage(this.state.itemId)
-                }}>
-                <h3>{this.state.name}</h3>
-              </NavLink>
-            )}
-          </MContext.Consumer>
+      <div className="card csruby-card-shadow csruby-bg-darkest mb-3">
+        <div className="row no-gutters">
+          <div className="col-md-2 text-center">
+            <img className="card-img img-fluid csruby-item-search-img mt-2" src={this.state.url} alt={this.state.name}/>
+          </div>
+          <div className="col-md-10">
+            <div className="card-body d-none d-lg-block">
+              <MContext.Consumer>
+                {(context) => (
+                  <NavLink className={'nav-link p-0 stretched-link csruby-hover-link ' + this.state.rarity_class} exact to="/" onClick={() => {
+                      context.setMessage(this.state.itemId);
+                      sessionStorage.setItem('session_item_id', this.state.itemId);
+                    }}>
+                    <h5>{this.state.name}</h5>
+                  </NavLink>
+                )}
+              </MContext.Consumer>
+              {this.state.price &&
+                <p className="card-text">Selling price {this.state.price}$</p>
+              }
+            </div>
+            <div className="card-body d-lg-none">
+              <MContext.Consumer>
+                {(context) => (
+                  <NavLink className={'nav-link p-0 stretched-link csruby-hover-link ' + this.state.rarity_class} exact to="/" onClick={() => {
+                      context.setMessage(this.state.itemId);
+                      sessionStorage.setItem('session_item_id', this.state.itemId);
+                    }}>
+                    <h6>{this.state.name}</h6>
+                  </NavLink>
+                )}
+              </MContext.Consumer>
+              {this.state.price &&
+                <p className="card-text">Selling price {this.state.price}$</p>
+              }
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

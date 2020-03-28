@@ -1,33 +1,116 @@
 import React, { Component } from "react";
+import axios from "axios";
+import { AuthContext } from './AuthProvider';
+import { Link } from "react-router-dom";
+import { Redirect } from 'react-router';
 
 class Login extends Component {
+
+  static contextType = AuthContext
+
   constructor(props) {
     super(props);
     this.state={
-      username:'',
-      password:''
-    }
+      email:'',
+      password:'',
+      is_authenticated: false,
+      has_error: false
+    };
+
+    this.handle_change = this.handle_change.bind(this);
+    this.submit_form = this.submit_form.bind(this);
+  };
+
+  handle_change(event){
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState({
+      [name]: value
+    });
   }
 
-  render() {
-    return (
-      <div>
-        <input type="text"
-               placeholder="Enter Username"
-               onChange = {(event,newValue) => this.setState({username:newValue})}
-        />
-        <br/>
-        <input type="text"
-               placeholder="Enter Password"
-               onChange = {(event,newValue) => this.setState({password:newValue})}
-        />
-        <button type="submit" onClick={(event) => this.handleClick(event)}>Login</button>
+
+  submit_form(event){
+    event.preventDefault();
+
+    let userFormData = new FormData();
+    userFormData.append('email', this.state.email);
+    userFormData.append('password', this.state.password);
+
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+    axios({
+      method: 'post',
+      url: '/auth/login',
+      data: userFormData
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.context.setLoginInfo(
+          {
+            isAuthenticated: true,
+            user: response.data['user'],
+            token: response.data['token']
+          }
+        );
+        this.setState({ is_authenticated: true });
+      }
+    })
+    .catch((error) => {
+      this.setState({has_error: true});
+    }
+  );
+}
+
+render() {
+  if (this.state.is_authenticated) {
+    return (<Redirect to ="/" />);
+  }
+  return (
+    <div className="content">
+      <div className="container text-light mt-5">
+        <div className="csruby-bg-darkest p-3">
+          <form onSubmit={this.submit_form}>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="text"
+                className="form-control"
+                name="email"
+                placeholder="Enter Email"
+                value={this.state.email}
+                onChange={this.handle_change}
+                required
+                />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                placeholder="Enter Password"
+                value={this.state.password}
+                onChange={this.handle_change}
+                />
+              {this.state.has_error &&
+                <span className='error'>The credentials are false</span>}
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-primary">Login</button>
+                </div>
+                <div className="form-group">
+                  <small id="emailHelp" className="form-text text-muted">
+                    Don't have an account? Sign up <Link to="/signup">here</Link>
+                </small>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     );
-  }
-
-  handleClick(event){
-    
   }
 }
 

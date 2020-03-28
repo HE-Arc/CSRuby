@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from csruby_app.models import User, Item, Price
+from csruby_app.models import CSRuby_User, Item, Price
 from rest_framework import generics
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 from django.db import models
