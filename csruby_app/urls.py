@@ -13,6 +13,6 @@ urlpatterns = [
     path('auth/', include('knox.urls')),
     path('auth/register', views.RegistrationAPI.as_view()),
     path('auth/login', views.LoginAPI.as_view()),
-    path('auth/user', views.UserAPI.as_view()),
+    path('auth/user', views.AuthAPI.as_view()),
     path('auth/logout', knox_views.LogoutView.as_view(), name='knox_logout'),
 ]

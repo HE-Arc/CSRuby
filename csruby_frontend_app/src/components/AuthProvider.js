@@ -45,12 +45,14 @@ class AuthProvider extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.token !== prevState.token) {
       if(this.state.token == null){
-        sessionStorage.removeItem("token");
+        sessionStorage.removeItem('token');
         sessionStorage.removeItem('authed_user_id');
+        sessionStorage.removeItem('username');
       }
       else{
-        sessionStorage.setItem("token", this.state.token);
+        sessionStorage.setItem('token', this.state.token);
         sessionStorage.setItem('authed_user_id', this.state.user.id);
+        sessionStorage.setItem('username', this.state.user.username);
       }
     }
   }
@@ -75,7 +77,7 @@ class AuthProvider extends Component {
           }),
           getUser: () => this.state.user,
           getEmail: () => this.state.user.email,
-          getUsername: () => this.state.user.username,
+          getUsername: () => sessionStorage.getItem('username') ? sessionStorage.getItem('username') : this.state.user.username,
           getIsAuthenticated: () => this.state.isAuthenticated,
           getToken: () => this.state.token
       }}>
