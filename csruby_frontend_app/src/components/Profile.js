@@ -48,6 +48,7 @@ class Profile extends Component {
           });
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('authed_user_id');
+        sessionStorage.removeItem('username');
 
         $('#deleteModal').modal('hide');
         this.setState({redirect_after_delete: true});
