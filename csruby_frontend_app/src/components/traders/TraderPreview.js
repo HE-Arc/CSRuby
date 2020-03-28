@@ -27,12 +27,7 @@ class TraderPreview extends Component {
   componentDidMount() {
     this.closeButtons = document.getElementsByClassName('refresh-on-close');
     // TODO : refresh la fenêtre après la fermeture de la boîte modale
-    // console.log("HERE");
-    // console.log(this.closeButtons);
-    // console.log(this.closeButtons.length;
     for (let button of this.closeButtons) {
-      // console.log(button);
-      // console.log("DANS BOUCLE");
       button.addEventListener('click', event => {console.log("closing");window.location.reload();});
     }
   }
