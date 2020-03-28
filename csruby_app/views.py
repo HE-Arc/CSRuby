@@ -258,22 +258,6 @@ class ItemMostExpensive(generics.ListAPIView):
                 queryset=queryset.exclude(item_id=item.item_id)
         return queryset
 
-class ItemAddFavorite(generics.ListCreateAPIView):
-    queryset=User_Item.objects.all();
-    serializer_class=UserItemSerializer;
-    def create(self, request, *args, **kwargs):
-        model_serializer = UserItemSerializer(data=request.data)
-        model_serializer.is_valid(raise_exception=True)
-
-        user_item = User_Item.objects.filter(user=request.data['user'],item=request.data['item']).first()
-        if user_item:
-            # if the user_item exists, we only update it
-            model_serializer.update(user_item,model_serializer.validated_data)
-        else:
-            # if the user_item doesn't exists, we create it
-            model_serializer.save()
-        return Response(model_serializer.data)
-
 class ItemActions(generics.GenericAPIView):
     serializer_class = ItemActionSerializer
 
@@ -302,6 +286,9 @@ class ItemActions(generics.GenericAPIView):
             elif action == 'sell':
                 success_msg = 'Added sell order on this item. Refresh the page to see your sell order'
                 duplicate_msg = 'Sell order already placed on this item'
+            elif action == 'fav':
+                success_msg = 'Item has been added to favorites. Refresh the page to see the modifications'
+                duplicate_msg = 'Item already in your favorites'
 
             duplicate_error_response = Response({
             'status': 'failed',
@@ -349,13 +336,26 @@ class ItemActions(generics.GenericAPIView):
                     user_item.sell_created_at = timezone.now()
                     user_item.save()
                     return success_response
+
+                if action == 'fav' and user_item.favorite_item == False:
+                    user_item.favorite_item = True
+                    user_item.save()
+                    return success_response
                 return duplicate_error_response
             return unexpected_error_response
 
-    def delete(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         action = ''
         possible_actions = ['buy', 'sell', 'fav']
-
+        if request.data['item_id'] and request.data['action'] and request.data['user_id']:
+            user_item = User_Item.objects.get(user__exact=request.data['user_id'], item__exact=request.data['item_id'])
+            user_item.favorite_item = False
+            user_item.save()
+            return Response({
+            'status': 'success',
+            'action': action,
+            'description': 'Item has been removed from favorites. Refresh the page to see your modifcation',
+            })
         if request.data['trade_id'] and request.data['action']:
             trade_id = request.data['trade_id']
             action = request.data['action']

@@ -24,12 +24,54 @@ class Dashboard extends Component {
       item_median_price: '',
       buyers: [],
       sellers: [],
+      is_favorite: false,
       empty_buyers: 'd-none',
       empty_sellers: 'd-none',
       rarity_class: '',
       authed_user: '',
       response_description: '',
     }
+
+    this.onFavClick=this.onFavClick.bind(this);
+  }
+
+  onFavClick(){
+    let url = 'item/favItem';
+    let method = 'post';
+    if(this.state.is_favorite){
+      url = 'item/unfavItem';
+      method = 'patch';
+    }
+    axios({
+      method: method,
+      url: url,
+      data: {
+        item_id: sessionStorage.getItem('session_item_id'),
+        user_id: this.context.getUser().id,
+        authed_user: this.context.getEmail(),
+        action: 'fav'
+      }
+    }).then((response) => {
+      if(response.status === 200) {
+          this.setState({
+            response_description: response.data.description
+          });
+          if (response.data.status.includes('success')){
+            if(method === 'post'){
+              this.setState({
+                is_favorite: true
+              });
+            }else{
+              this.setState({
+                is_favorite: false
+              });
+            }
+
+          }
+
+        $('#tradeModal').modal('show');
+      }
+    });
   }
 
   componentDidMount() {
@@ -67,6 +109,16 @@ class Dashboard extends Component {
         });
 
         let rarity_class = 'csruby-rarity-' + response.data['rarity'];
+        let isFavorite = false;
+
+        response.data['favorite_users'].map(favUser=>{
+          if(this.context.getIsAuthenticated() && favUser.user__email===this.context.getEmail()){
+            this.setState({
+              is_favorite: true,
+            });
+          }
+        });
+
 
         this.setState({
           item_name: response.data['name'],
@@ -138,7 +190,7 @@ class Dashboard extends Component {
               }
               $('#tradeModal').modal('show');
             }
-          })
+          });
         }
       });
     }
@@ -240,7 +292,7 @@ class Dashboard extends Component {
                 <button id="sell" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Sell</button>
               </div>
               <div className="col-4">
-                <button id="fav" type="button" className="item-action btn btn-lg btn-block csruby-bg-red">Favourite</button>
+                {this.state.is_favorite ? <button id="unfav" type="button" onClick={this.onFavClick} className="btn btn-lg btn-block csruby-bg-red">UnFavourite</button> : <button id="fav" type="button" onClick={this.onFavClick} className="btn btn-lg btn-block csruby-bg-red">Favourite</button>}
               </div>
             </div>
           </div>

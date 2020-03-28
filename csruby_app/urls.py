@@ -5,9 +5,10 @@ from knox import views as knox_views
 urlpatterns = [
     path('item/search/', views.ItemSearch.as_view()),
     path('items/<int:pk>', views.ItemPriceDetail.as_view()),
-    path('items/favorite', views.ItemAddFavorite.as_view()),
     path('item/buyItem', views.ItemActions.as_view()),
     path('item/sellItem', views.ItemActions.as_view()),
+    path('item/favItem', views.ItemActions.as_view()),
+    path('item/unfavItem', views.ItemActions.as_view()),
     path('item/deleteTrade', views.ItemActions.as_view()),
     path('item/getMostExpensive', views.ItemMostExpensive.as_view()),
     path('users/<int:pk>', views.UserView.as_view()),
