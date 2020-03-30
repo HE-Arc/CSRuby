@@ -43,16 +43,6 @@ class CSRuby_User(AbstractBaseUser):
 
     objects = CSRuby_UserManager()
 
-    # TODO: REMOVE IF USELESS
-    # def has_perm(self, perm, obj=None):
-    #     "Does the user have a specific permission?"
-    #     return True
-    #
-    # @property
-    # def is_staff(self):
-    #     "Is the user a member of staff?"
-    #     return self.is_admin
-
 class Item(models.Model):
     class Rarity(models.TextChoices):
         CONSUMER_GRADE = 'COG', _('Consumer grade')

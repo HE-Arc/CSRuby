@@ -251,7 +251,10 @@ class ItemActions(generics.GenericAPIView):
             user = kwargs['user']
 
             if User_Item.objects.filter(item_id__exact=item, user_id__exact=user).exists():
-                return Response(data={'detail': 'Row found'})
+                return Response(data={
+                    'detail': 'Row found',
+                    'user_item': UserItemSerializer(User_Item.objects.get(item_id__exact=item, user_id__exact=user)).data,
+                })
             return Response(data={'detail': 'Row not found'}, status=status.HTTP_204_NO_CONTENT)
         return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -275,19 +278,19 @@ class ItemActions(generics.GenericAPIView):
                 try:
                     item = Item.objects.get(item_id__exact=item_id)
                 except Exception as e:
-                    return item_not_found
+                    return self.item_not_found
 
                 try:
-                    user = CSRuby_User.objects.get(email__exact=authed_user)
+                    user = CSRuby_User.objects.get(id__exact=authed_user)
                 except Exception as e:
-                    return user_not_found
+                    return self.user_not_found
 
                 if action == 'buy':
-                    user_item = User_Item.objects.create_buy(item_id__exact=item, user_id__exact=user)
+                    user_item = User_Item.objects.create_buy(item=item, user=user)
                 elif action == 'sell':
-                    user_item = User_Item.objects.create_sell(item_id__exact=item, user_id__exact=user)
+                    user_item = User_Item.objects.create_sell(item=item, user=user)
                 elif action == 'fav':
-                    user_item = User_Item.objects.create_fav(item_id__exact=item, user_id__exact=user)
+                    user_item = User_Item.objects.create_fav(item=item, user=user)
 
                 user_item.save()
 
@@ -308,12 +311,13 @@ class ItemActions(generics.GenericAPIView):
 
             if action == 'buy':
                 if request.data['trade']:
+                    trade = request.data['trade']
                     try:
                         user_item = User_Item.objects.get(id__exact=trade)
                     except Exception as e:
                         return Response(data={'detail': 'Trade not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-                    response = Response()
+                    response = Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                     if intention == 'add':
                         user_item.buy_item = True
@@ -327,16 +331,17 @@ class ItemActions(generics.GenericAPIView):
 
                     user_item.save()
 
-                    return Response(response)
+                    return response
 
             if action == 'sell':
                 if request.data['trade']:
+                    trade = request.data['trade']
                     try:
                         user_item = User_Item.objects.get(id__exact=trade)
                     except Exception as e:
                         return Response(data={'detail': 'Trade not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-                    response = Response()
+                    response = Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                     if intention == 'add':
                         user_item.sell_item = True
@@ -353,21 +358,21 @@ class ItemActions(generics.GenericAPIView):
                     return response
 
             if action == 'fav':
-                if request.data['item_id'] and request.data['user_id']:
+                if request.data['item_id'] and request.data['authed_user']:
                     try:
-                         user_item = User_Item.objects.get(user__exact=request.data['user_id'], item__exact=request.data['item_id'])
+                         user_item = User_Item.objects.get(user__exact=request.data['authed_user'], item__exact=request.data['item_id'])
                     except Exception as e:
                         return Response(data={'detail': 'Trade not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-                    response = Response()
+                    response = Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                     if intention == 'add':
                         user_item.favorite_item = True
-                        response = Response(data={'detail': 'Added item to favorites', 'action': action})
+                        response = Response(data={'detail': 'Added item to favorites', 'action': action, 'favorite_item': True})
 
                     if intention == 'remove':
                         user_item.favorite_item = False
-                        response = Response(data={'detail': 'Removed item from favorites', 'action': action})
+                        response = Response(data={'detail': 'Removed item from favorites', 'action': action, 'favorite_item': False})
 
                     user_item.save()
 

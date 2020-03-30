@@ -1,19 +1,21 @@
-import React, { Component } from "react";
-import ItemPreview from "./item/ItemPreview"
+import React, { Component } from 'react';
+import ItemPreview from './item/ItemPreview';
+import axios from 'axios';
 
 class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchValue:'',
+      search_value:'',
       rarity:'',
-      minPrice:0,
-      maxPrice:7500,
+      min_price:0,
+      max_price:7500,
       ordering:'',
       data: [],
       loaded: false,
-      placeholder: "Loading"
+      placeholder: 'Loading',
     };
+
     this.onSubmit = this.onSubmit.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleRarityChange = this.handleRarityChange.bind(this);
@@ -22,61 +24,64 @@ class Search extends Component {
     this.handleOrderingChange = this.handleOrderingChange.bind(this);
   }
 
-  handleSearchChange(event){
-    this.setState({searchValue: event.target.value},this.updateSearchResult);
+  handleSearchChange(event) {
+    this.setState({search_value: event.target.value}, this.updateSearchResult);
   }
 
-  handleRarityChange(event){
-    this.setState({rarity: event.target.value},this.updateSearchResult);
+  handleRarityChange(event) {
+    this.setState({rarity: event.target.value}, this.updateSearchResult);
   }
 
-  handleMinPriceChange(event){
-    this.setState({minPrice: event.target.value},this.updateSearchResult);
+  handleMinPriceChange(event) {
+    this.setState({min_price: event.target.value}, this.updateSearchResult);
   }
 
-  handleMaxPriceChange(event){
-    this.setState({maxPrice: event.target.value},this.updateSearchResult);
+  handleMaxPriceChange(event) {
+    this.setState({max_price: event.target.value}, this.updateSearchResult);
   }
 
-  handleOrderingChange(event){
-    this.setState({ordering: event.target.value},this.updateSearchResult);
+  handleOrderingChange(event) {
+    this.setState({ordering: event.target.value}, this.updateSearchResult);
   }
 
   updateSearchResult = () => {
-    var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
-    this.search(route);
-  };
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering;
+    this.fetchItems(url);
+  }
 
   onSubmit(event) {
-    var route = "item/search/?name="+this.state.searchValue+"&rarity="+this.state.rarity+"&min_price="+this.state.minPrice+"&max_price="+this.state.maxPrice+"&order_by="+this.state.ordering;
-    this.search(route);
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering;
+    this.fetchItems(url);
     event.preventDefault();
   }
 
-  search(route){
-    this.setState({loaded: false});
-    this.setState({data: []});
-    fetch(route)
-    .then(response => {
-      if (response.status > 400) {
-        return this.setState(() => {
-          return { placeholder: "Something went wrong!" };
-        });
-      }
-      return response.json();
+  fetchItems(url) {
+    this.setState({
+      loaded: false,
+      data: [],
+    });
+
+    axios({
+      method: 'get',
+      url: url,
     })
-    .then(data => {
-      this.setState(() => {
-        return {
-          data,
-          loaded: true
-        };
-      });
+    .then((response) => {
+      if(response.status === 200) {
+        this.setState({
+          data: response.data,
+          loaded: true,
+        })
+      }
+    })
+    .catch((error) => {
+      this.setState({
+        placeholder: 'Something went wrong!'
+      })
     });
   }
 
   componentDidMount() {
-    this.search("item/search/");
+    this.fetchItems('/item/search');
   }
 
   render() {
@@ -86,7 +91,7 @@ class Search extends Component {
           <form onSubmit={this.onSubmit} ref="form">
             <div className="form-row">
               <div className="form-group col mb-0">
-                <input className="form-control" id="searchbar" type="text" placeholder="Search item..." name="search" value={this.state.searchValue} onChange={this.handleSearchChange}/>
+                <input className="form-control" id="searchbar" type="text" placeholder="Search item..." name="search" value={this.state.search_value} onChange={this.handleSearchChange}/>
               </div>
               <div className="form-group col mb-0">
                 <select className="form-control" id="rarity" value={this.state.rarity} onChange={this.handleRarityChange}>
@@ -106,10 +111,10 @@ class Search extends Component {
                 </select>
               </div>
               <div className="form-group col mb-0">
-                <input className="form-control" id="minPrice" type="number" min="0" max="7500" value="0" name="minPrice" value={this.state.minPrice} onChange={this.handleMinPriceChange} placeholder="Min price..."/>
+                <input className="form-control" id="min_price" type="number" min="0" max="7500" value="0" name="min_price" value={this.state.min_price} onChange={this.handleMinPriceChange} placeholder="Min price..."/>
               </div>
               <div className="form-group col mb-0">
-                <input className="form-control" id="maxPrice" type="number" min="0" max="7500" value="7500" name="maxPrice" value={this.state.maxPrice} onChange={this.handleMaxPriceChange} placeholder="Max price..."/>
+                <input className="form-control" id="max_price" type="number" min="0" max="7500" value="7500" name="max_price" value={this.state.max_price} onChange={this.handleMaxPriceChange} placeholder="Max price..."/>
               </div>
               <div className="form-group col mb-0">
                 <select className="form-control" id="ordering" value={this.state.ordering} onChange={this.handleOrderingChange}>

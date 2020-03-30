@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import {
   NavLink
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import { AuthContext } from './AuthProvider';
-import ItemPreview from "./item/ItemPreview";
+import ItemPreview from './item/ItemPreview';
 
 class Profile extends Component {
 
@@ -29,79 +29,71 @@ class Profile extends Component {
     this.delete = this.delete.bind(this);
   }
 
-  delete(){
+  // TODO: CHECK WHY WEAPONS ARE NOT THE ONE BUYED/SELLED AND WHY DUPLICATE
+  //       TEST LOGIN/SIGNUP/MODIFY/DELETE
+  //       IMPLEMENT PUBLIC PROFILES
 
-    let authed_user_id = sessionStorage.getItem('authed_user_id');
+  delete() {
 
-    console.log(this.context.getUser());
+    let authed_user = sessionStorage.getItem('authed_user');
 
     axios({
       method: 'delete',
-      url: '/users/' + authed_user_id,
-    }).then((response) => {
+      url: '/users/' + authed_user,
+    })
+    .then((response) => {
       if(response.status === 200) {
         this.context.setLoginInfo(
           {
             isAuthenticated: false,
             user: null,
-            token: null
+            token: null,
           });
         sessionStorage.removeItem('token');
-        sessionStorage.removeItem('authed_user_id');
+        sessionStorage.removeItem('authed_user');
         sessionStorage.removeItem('username');
 
         $('#deleteModal').modal('hide');
         this.setState({redirect_after_delete: true});
       }
-    }).catch((error) => {
-      console.log(error);
-    })
+    });
   }
 
   componentDidMount() {
-    let user_id = sessionStorage.getItem('user_id');
-    let authed_user_id = sessionStorage.getItem('authed_user_id');
+    let authed_user = sessionStorage.getItem('authed_user');
 
     axios({
       method: 'get',
-      url: '/users/' + user_id,
-    }).then((response) => {
+      url: '/users/' + authed_user,
+    })
+    .then((response) => {
       if(response.status === 200) {
-        if(authed_user_id !== null && authed_user_id == response.data.user_info.id) {
+        if(authed_user !== null && authed_user == response.data.user.id) {
           this.setState({
-            email: response.data.user_info.email,
+            email: response.data.user.email
           });
         }
 
         this.setState({
-          username: response.data.user_info.username,
-          steamid: response.data.user_info.steamid,
-          date_joined: response.data.user_info.date_joined,
-          items_to_buy: response.data.user_info.items_to_buy,
-          items_to_sell: response.data.user_info.items_to_sell,
+          username: response.data.user.username,
+          steamid: response.data.user.steamid,
+          date_joined: response.data.user.date_joined,
+          items_to_buy: response.data.user.items_to_buy,
+          items_to_sell: response.data.user.items_to_sell,
         });
       }
     });
   }
 
   render() {
-    if (this.state.redirect_to_update){
+    if (this.state.redirect_to_update) {
       return (<Redirect to ='/profile/update' />);
     }
-    if (this.state.redirect_after_delete){
+    if (this.state.redirect_after_delete) {
       return (<Redirect to ='/login' />);
     }
     return (
       <div className="container text-light mt-5">
-        {this.context.getIsAuthenticated() &&
-          <div>
-            {sessionStorage.getItem('user_id') === null &&
-              <div>
-                {sessionStorage.setItem('user_id', this.context.getUser().id)}
-              </div>
-            }
-          </div>
-        }
         <div className="csruby-bg-darkest text-center">
           <h1 className="py-5 mb-0">{this.state.username}</h1>
         </div>
@@ -147,17 +139,19 @@ class Profile extends Component {
             </div>
           </div>
         </div>
-        {
-          this.context.getIsAuthenticated() && this.state.email === this.context.getEmail() &&
-        <div className="row mb-3 py-2">
-          <div className="col-6">
-            <button id="update" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={() => this.setState({ redirect_to_update: true})}>Update Profile</button>
-          </div>
-          <div className="col-6">
-            <button id="delete" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" data-toggle="modal" data-target="#deleteModal">Delete Profile</button>
-          </div>
-        </div>
-        }
+        <AuthContext.Consumer>
+          {(context) => (
+            context.getIsAuthenticated() && this.state.email === context.getEmail() &&
+            <div className="row mb-3 py-2">
+              <div className="col-6">
+                <button id="update" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={() => this.setState({ redirect_to_update: true})}>Update Profile</button>
+              </div>
+              <div className="col-6">
+                <button id="delete" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" data-toggle="modal" data-target="#deleteModal">Delete Profile</button>
+              </div>
+            </div>
+          )}
+        </AuthContext.Consumer>
         <div className="csruby-bg-darkest">
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">

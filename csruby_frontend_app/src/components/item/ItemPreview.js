@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { render } from "react-dom";
-import { MContext } from "../Provider.js";
-import { Redirect, NavLink } from "react-router-dom";
+import React, { Component } from 'react';
+import { render } from 'react-dom';
+import { MContext } from '../MessageProvider';
+import { Redirect, NavLink } from 'react-router-dom';
 
 class ItemPreview extends Component {
   constructor(props){
