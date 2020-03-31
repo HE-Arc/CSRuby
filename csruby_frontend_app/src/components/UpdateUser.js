@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 import { Redirect } from 'react-router';
 import { AuthContext } from './AuthProvider';
 
@@ -29,61 +29,59 @@ class UpdateUser extends Component {
     this.has_errors = this.has_errors.bind(this);
   };
 
-  componentDidMount()
-  {
+  componentDidMount() {
     let user = this.context.getUser();
 
     this.setState({
       username: user.username,
-      steamid: user.steamid === null ? '' : user.steamid
+      steamid: user.steamid === null ? '' : user.steamid,
     })
-
   }
 
-  handle_change(event){
+  handle_change(event) {
     const name = event.target.name;
     const value = event.target.value;
 
     var errors = {...this.state.errors}
 
     switch(name){
-      case "username":
+      case 'username':
         if(value.length < 4){
-          errors.username = "The username is too small!";
+          errors.username = 'The username is too small!';
         }
         else {
-          errors.username = "";
+          errors.username = '';
         }
         break;
-      case "password":
+      case 'password':
         if(value.length != 0 && value.length < 8){
-          errors.password = "The password is too small!";
+          errors.password = 'The password is too small!';
         }
         else{
           if(this.state.confirm_password.length > 0 && value != this.state.confirm_password){
-            errors.confirm_password = "This password doesn't match!";
+            errors.confirm_password = 'This password doesn\'t match!';
           }
           else{
-            errors.confirm_password = "";
+            errors.confirm_password = '';
           }
-          errors.password = "";
+          errors.password = '';
         }
         break;
-      case "confirm_password":
+      case 'confirm_password':
         if(value != this.state.password){
-          errors.confirm_password = "This password doesn't match!"
+          errors.confirm_password = 'This password doesn\'t match!'
         }
         else{
-          errors.confirm_password = "";
+          errors.confirm_password = '';
         }
         break;
 
-      case "steamid":
+      case 'steamid':
         if(!(/^\d*$/.test(value))){
-          errors.steamid = "The id can only have numbers!"
+          errors.steamid = 'The id can only have numbers!'
         }
         else{
-          errors.steamid = "";
+          errors.steamid = '';
         }
       default: break;
     }
@@ -91,13 +89,12 @@ class UpdateUser extends Component {
     [name]: value,
     errors
    });
+  }
 
-  };
-
-  submit_form(event){
+  submit_form(event) {
     event.preventDefault();
 
-    let authed_user_id = sessionStorage.getItem('authed_user_id');
+    let authed_user_id = sessionStorage.getItem('authed_user');
 
     let userFormData = new FormData();
     userFormData.append('username', this.state.username);
@@ -107,7 +104,7 @@ class UpdateUser extends Component {
     axios({
       method: 'patch',
       url: '/users/' + authed_user_id,
-      data: userFormData
+      data: userFormData,
     })
     .then((response) => {
       if(response.status === 200) {
@@ -122,16 +119,16 @@ class UpdateUser extends Component {
         var errors = {...this.state.errors}
 
         errors.other = error.response.data;
-        this.setState({errors})
+        this.setState({errors});
       }
     })
-  };
+  }
 
   has_errors(){
     let has_error = false;
     let errors = this.state.errors;
-    for (var error in this.state.errors){
-      if(errors[error].length > 0){
+    for (var error in this.state.errors) {
+      if(errors[error].length > 0) {
         has_error = true;
       }
     }

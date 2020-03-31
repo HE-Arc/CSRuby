@@ -4,27 +4,27 @@
 * - In this case, the element is
 *   - Header (usually the case)
 *******************************************************************************************/
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Route,
   NavLink,
   HashRouter
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import Dashboard from "./Dashboard";
+import Dashboard from './Dashboard';
 
-import Profile from "./Profile";
-import UpdateUser from "./UpdateUser";
+import Profile from './Profile';
+import UpdateUser from './UpdateUser';
 
-import Search from "./Search";
+import Search from './Search';
 
-import Login from "./Login";
-import Signup from "./Signup";
-import Logout from "./Logout";
+import Login from './Login';
+import Signup from './Signup';
+import Logout from './Logout';
 
-import AuthProvider from "./AuthProvider";
-import {AuthContext} from "./AuthProvider";
-import Provider from "./Provider";
+import AuthProvider from './AuthProvider';
+import {AuthContext} from './AuthProvider';
+import MessageProvider from './MessageProvider';
 
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
@@ -34,7 +34,7 @@ class Main extends Component {
     return (
       <HashRouter>
         <AuthProvider>
-          <Provider>
+          <MessageProvider>
             <div>
               <header>
                 <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-red">
@@ -57,9 +57,8 @@ class Main extends Component {
                         <AuthContext.Consumer>
                         {(context) =>
                           (context.getIsAuthenticated()
-                            ? <NavLink className="nav-link" exact to="/profile" onClick={() => {
-                                    sessionStorage.setItem('user_id', context.getUser().id);
-                                  }}>{context.getUsername()}</NavLink>
+                            ? <NavLink className="nav-link" exact to="/myprofile" onClick={() => sessionStorage.setItem('user', context.getUser().id)}>
+                            {context.getUsername()}</NavLink>
                             : <NavLink className="nav-link" exact to="/login">Login</NavLink>
                           )
                         }
@@ -81,6 +80,7 @@ class Main extends Component {
               <div className="content text-light mt-5">
                 <Route exact path="/" component={Dashboard}/>
 
+                <Route exact path="/myprofile" component={Profile}/>
                 <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/profile/update" component={UpdateUser}/>
                 <Route exact path="/search" component={Search}/>
@@ -90,7 +90,7 @@ class Main extends Component {
                 <Route exact path="/logout" component={Logout}/>
               </div>
             </div>
-          </Provider>
+          </MessageProvider>
         </AuthProvider>
       </HashRouter>
     );

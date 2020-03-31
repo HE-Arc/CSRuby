@@ -1,12 +1,12 @@
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export const MContext = React.createContext();
 
-class Provider extends Component {
+class MessageProvider extends Component {
   constructor(props) {
     super(props)
-    this.state = { message: ""}
+    this.state = { message: ''}
   }
 
   render() {
@@ -26,4 +26,4 @@ class Provider extends Component {
   }
 }
 
-export default Provider;
+export default MessageProvider;
