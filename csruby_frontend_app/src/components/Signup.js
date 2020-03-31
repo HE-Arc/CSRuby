@@ -33,7 +33,7 @@ class Signup extends Component {
     switch(name) {
       case 'username':
       if(value.length < 4) {
-        errors.username = 'The username is too small!';
+        errors.username = 'The username is too small !';
       } else {
         errors.username = '';
       }
@@ -41,10 +41,10 @@ class Signup extends Component {
 
       case 'password':
       if(value.length < 8) {
-        errors.password = 'The password is too small!';
+        errors.password = 'The password is too small !';
       } else {
         if(this.state.confirm_password.length > 0 && value != this.state.confirm_password) {
-          errors.confirm_password = 'This password doesn\'t match!';
+          errors.confirm_password = 'This password doesn\'t match !';
         } else {
           errors.confirm_password = '';
           errors.password = '';
@@ -54,9 +54,12 @@ class Signup extends Component {
 
       case 'confirm_password':
       if(value != this.state.password) {
-        errors.confirm_password = 'This password doesn\'t match!'
+        errors.confirm_password = 'This password doesn\'t match !'
       } else {
         errors.confirm_password = '';
+        if(this.state.password.length >= 8) {
+          errors.password = '';
+        }
       }
       break;
 
@@ -99,7 +102,7 @@ class Signup extends Component {
         var errors = {...this.state.errors}
 
         if('email' in error.response.data) {
-          errors.email = error.response.data.email;
+          errors.email = 'A user with this email already exists !';
           this.setState({errors});
         }
       }

@@ -80,26 +80,28 @@ class UserView(generics.GenericAPIView):
             sell_orders_item_ids = set()
             items_to_sell = []
 
+            favorite_user_items = None
+            favorite_item_ids = set()
+            favorite_items = []
+
             # Get the items from the buy and sell orders
             if User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).exists():
                 buy_orders = User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).all()
 
-                for buy_order in buy_orders:
-                    buy_orders_item_ids.add(buy_order.item_id)
-
-                for item_id in buy_orders_item_ids:
-                    item = Item.objects.get(item_id__exact=item_id)
-                    items_to_buy.append(item)
+                buy_orders_item_ids = {buy_order.item_id for buy_order in buy_orders}
+                items_to_buy = [Item.objects.get(item_id__exact=item_id) for item_id in buy_orders_item_ids]
 
             if User_Item.objects.filter(sell_item__exact='1', user_id__exact=user_id).exists():
                 sell_orders = User_Item.objects.filter(sell_item__exact='1', user_id__exact=user_id).all()
 
-                for sell_order in sell_orders:
-                    sell_orders_item_ids.add(sell_order.item_id)
+                sell_orders_item_ids = {sell_order.item_id for sell_order in sell_orders}
+                items_to_sell = [Item.objects.get(item_id__exact=item_id) for item_id in sell_orders_item_ids]
 
-                for item_id in sell_orders_item_ids:
-                    item = Item.objects.get(item_id__exact=item_id)
-                    items_to_buy.append(item)
+            if User_Item.objects.filter(favorite_item__exact='1', user_id__exact=user_id).exists():
+                favorite_user_items = User_Item.objects.filter(favorite_item__exact='1', user_id__exact=user_id).all()
+
+                favorite_item_ids = {favorite_item.item_id for favorite_item in favorite_user_items}
+                favorite_items = [Item.objects.get(item_id__exact=item_id) for item_id in favorite_item_ids]
 
             response_body =  {
                 'user': UserSerializer(user).data,
@@ -109,7 +111,7 @@ class UserView(generics.GenericAPIView):
 
             if items_to_buy:
                 for item_to_buy in items_to_buy:
-                    response_body['user']['items_to_buy'].append(ItemProfileSerializer(item).data)
+                    response_body['user']['items_to_buy'].append(ItemProfileSerializer(item_to_buy).data)
             else:
                 response_body['user']['items_to_buy'] = None
 
@@ -117,9 +119,17 @@ class UserView(generics.GenericAPIView):
 
             if items_to_sell:
                 for item_to_sell in items_to_sell:
-                    response_body['user']['items_to_sell'].append(ItemProfileSerializer(item).data)
+                    response_body['user']['items_to_sell'].append(ItemProfileSerializer(item_to_sell).data)
             else:
                 response_body['user']['items_to_sell'] = None
+
+            response_body['user']['favorite_items'] = []
+
+            if favorite_items:
+                for favorite_item in favorite_items:
+                    response_body['user']['favorite_items'].append(ItemProfileSerializer(favorite_item).data)
+            else:
+                response_body['user']['favorite_items'] = None
 
             return Response(response_body)
         return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

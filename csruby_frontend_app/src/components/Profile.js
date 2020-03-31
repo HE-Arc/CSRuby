@@ -21,6 +21,7 @@ class Profile extends Component {
       date_joined: '',
       items_to_buy: [],
       items_to_sell: [],
+      favorite_items: [],
       response_description: '',
       redirect_to_update: false,
       redirect_after_delete: false
@@ -29,12 +30,7 @@ class Profile extends Component {
     this.delete = this.delete.bind(this);
   }
 
-  // TODO: CHECK WHY WEAPONS ARE NOT THE ONE BUYED/SELLED AND WHY DUPLICATE
-  //       TEST LOGIN/SIGNUP/MODIFY/DELETE
-  //       IMPLEMENT PUBLIC PROFILES
-
   delete() {
-
     let authed_user = sessionStorage.getItem('authed_user');
 
     axios({
@@ -61,25 +57,22 @@ class Profile extends Component {
 
   componentDidMount() {
     let authed_user = sessionStorage.getItem('authed_user');
+    let user = sessionStorage.getItem('user');
 
     axios({
       method: 'get',
-      url: '/users/' + authed_user,
+      url: '/users/' + (user ? user : authed_user),
     })
     .then((response) => {
       if(response.status === 200) {
-        if(authed_user !== null && authed_user == response.data.user.id) {
-          this.setState({
-            email: response.data.user.email
-          });
-        }
-
         this.setState({
+          email : authed_user !== null && authed_user == response.data.user.id ? response.data.user.email : '',
           username: response.data.user.username,
           steamid: response.data.user.steamid,
           date_joined: response.data.user.date_joined,
           items_to_buy: response.data.user.items_to_buy,
           items_to_sell: response.data.user.items_to_sell,
+          favorite_items: response.data.user.favorite_items,
         });
       }
     });
@@ -152,7 +145,7 @@ class Profile extends Component {
             </div>
           )}
         </AuthContext.Consumer>
-        <div className="csruby-bg-darkest">
+        <div>
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">
               <a className="nav-link active text-danger" id="buying-tab" data-toggle="tab" href="#buying" role="tab" aria-controls="buying" aria-selected="false">Buying</a>
@@ -166,24 +159,35 @@ class Profile extends Component {
           </ul>
           <div className="tab-content" id="myTabContent">
             <div className="tab-pane fade show active" id="buying" role="tabpanel" aria-labelledby="buying-tab">
-              {this.state.items_to_buy &&
-                this.state.items_to_buy.map((item) => {
+              {this.state.items_to_buy
+                ? this.state.items_to_buy.map((item) => {
                   return(
-                    <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                    <ItemPreview key={item.item_id + 'buy'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
+                : <p>You have no items to buy...</p>
               }
             </div>
             <div className="tab-pane fade" id="selling" role="tabpanel" aria-labelledby="selling-tab">
-              {this.state.items_to_sell &&
-                this.state.items_to_sell.map((item) => {
+              {this.state.items_to_sell
+                ? this.state.items_to_sell.map((item) => {
                   return(
-                    <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                    <ItemPreview key={item.item_id + 'sell'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
+                : <p>You have no items to sell...</p>
               }
             </div>
-            <div className="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">...</div>
+            <div className="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">
+            {this.state.favorite_items
+              ? this.state.favorite_items.map((item) => {
+                return(
+                  <ItemPreview key={item.item_id + 'fav'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                )
+              })
+              : <p>You have no favorite items...</p>
+            }
+            </div>
           </div>
         </div>
       </div>

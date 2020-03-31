@@ -12,7 +12,7 @@ class TraderPreview extends Component {
     super(props);
     this.state = {
       trade: '',
-      authed_user: '',
+      user: '',
       email: '',
       username: '',
       created_at: '',
@@ -26,12 +26,12 @@ class TraderPreview extends Component {
     if(prevProps.trade !== this.props.trade) {
       this.setState({
         trade: prevProps.trade,
-        authed_user: prevProps.authed_user,
+        user: prevProps.user,
         email: prevProps.email,
         username: prevProps.username,
         created_at: prevProps.created_at,
         action: prevProps.action,
-      })
+      });
     }
   }
 
@@ -43,7 +43,6 @@ class TraderPreview extends Component {
         action: this.props.action,
         intention: 'remove',
         trade: this.props.trade,
-        authed_user: sessionStorage.getItem('authed_user'),
       }
     }).then((response) => {
       if(response.status === 200) {
@@ -63,7 +62,7 @@ class TraderPreview extends Component {
     return(
       <div className="card csruby-card-shadow csruby-bg-darkest mb-3">
         <div className="card-body">
-          <h5 className="card-title">{this.props.username}</h5>
+          <NavLink className="nav-link text-light p-0" exact to="/profile" onClick={() => sessionStorage.setItem('user', this.props.user)}><h5 className="card-title">{this.props.username}</h5></NavLink>
           <small className="text-muted">Created on {date}</small>
           <p className="card-text mb-2">Is looking to {this.props.action} this item</p>
           {this.context.getIsAuthenticated() && this.props.email === this.context.getEmail() &&

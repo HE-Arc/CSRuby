@@ -94,7 +94,8 @@ class UpdateUser extends Component {
   submit_form(event) {
     event.preventDefault();
 
-    let authed_user_id = sessionStorage.getItem('authed_user_id');
+    let authed_user_id = sessionStorage.getItem('authed_user');
+    console.log(authed_user_id);
 
     let userFormData = new FormData();
     userFormData.append('username', this.state.username);

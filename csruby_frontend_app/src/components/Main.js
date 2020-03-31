@@ -57,8 +57,8 @@ class Main extends Component {
                         <AuthContext.Consumer>
                         {(context) =>
                           (context.getIsAuthenticated()
-                            ? <NavLink className="nav-link" exact to="/profile" onClick={() => {
-                                  }}>{context.getUsername()}</NavLink>
+                            ? <NavLink className="nav-link" exact to="/myprofile" onClick={() => sessionStorage.setItem('user', context.getUser().id)}>
+                            {context.getUsername()}</NavLink>
                             : <NavLink className="nav-link" exact to="/login">Login</NavLink>
                           )
                         }
@@ -80,6 +80,7 @@ class Main extends Component {
               <div className="content text-light mt-5">
                 <Route exact path="/" component={Dashboard}/>
 
+                <Route exact path="/myprofile" component={Profile}/>
                 <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/profile/update" component={UpdateUser}/>
                 <Route exact path="/search" component={Search}/>

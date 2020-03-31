@@ -474,7 +474,7 @@ class Dashboard extends Component {
               {this.state.buyers.length > 0 &&
                 this.state.buyers.map(item => {
                   return(
-                    <TraderPreview key={item.user__username + item.buy_created_at} authedUser={context.getIsAuthenticated() ? context.getEmail() : null} trade={this.state.trade} email={item.user__email} username={item.user__username} createdAt={item.buy_created_at} action='buy' removeBuyOrder={this.removeBuyOrder}/>
+                    <TraderPreview key={item.user__username + item.buy_created_at} trade={this.state.trade} user={item.user__id} email={item.user__email} username={item.user__username} created_at={item.buy_created_at} action='buy' removeBuyOrder={this.removeBuyOrder}/>
                   );
                 })
               }
@@ -484,7 +484,7 @@ class Dashboard extends Component {
               {this.state.sellers.length > 0 &&
                 this.state.sellers.map(item => {
                   return(
-                    <TraderPreview key={item.user__username + item.sell_created_at} authedUser={context.getIsAuthenticated() ? context.getEmail() : null} trade={this.state.trade} email={item.user__email} username={item.user__username} createdAt={item.sell_created_at} action='sell' removeSellOrder={this.removeSellOrder}/>
+                    <TraderPreview key={item.user__username + item.sell_created_at} trade={this.state.trade} user={item.user__id} email={item.user__email} username={item.user__username} created_at={item.sell_created_at} action='sell' removeSellOrder={this.removeSellOrder}/>
                   );
                 })
               }
