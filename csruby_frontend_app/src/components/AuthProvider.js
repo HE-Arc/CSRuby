@@ -1,41 +1,41 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 
-export const AuthContext = React.createContext();  //exporting context object
+export const AuthContext = React.createContext();
 
 class AuthProvider extends Component {
   constructor(props) {
     super(props)
     this.state={
-        isAuthenticated: false,
+        is_authenticated: false,
         user: null,
         token: null
       }
   }
 
   componentDidMount() {
-    let token = sessionStorage.getItem("token")
-    if(token != null){
+    let token = sessionStorage.getItem('token')
+    if(token != null) {
       axios({
         method: 'get',
         url: '/auth/user',
-        headers: { 'Authorization': 'Token ' + token }
+        headers: { 'Authorization': 'Token ' + token },
         })
         .then((response) => {
           if (response.status === 200) {
             this.setState({
-                isAuthenticated: true,
+                is_authenticated: true,
                 user: response.data,
-                token: token
+                token: token,
               })
           }
         })
         .catch((error) => {
           if (error.response) {
             this.setState({
-                isAuthenticated: false,
+                is_authenticated: false,
                 user: null,
-                token: null
+                token: null,
               })
           }
         });
@@ -44,13 +44,14 @@ class AuthProvider extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.token !== prevState.token) {
-      if(this.state.token == null){
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem('authed_user_id');
-      }
-      else{
-        sessionStorage.setItem("token", this.state.token);
-        sessionStorage.setItem('authed_user_id', this.state.user.id);
+      if(this.state.token == null) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('authed_user');
+        sessionStorage.removeItem('username');
+      } else {
+        sessionStorage.setItem('token', this.state.token);
+        sessionStorage.setItem('authed_user', this.state.user.id);
+        sessionStorage.setItem('username', this.state.user.username);
       }
     }
   }
@@ -66,18 +67,18 @@ class AuthProvider extends Component {
             token: value
           }),
           setIsAuthenticated: (value) => this.setState({
-            isAuthenticated: value
+            is_authenticated: value
           }),
           setLoginInfo: (value) => this.setState({
-            isAuthenticated: value['isAuthenticated'],
+            is_authenticated: value['is_authenticated'],
             user: value['user'],
-            token: value['token']
+            token: value['token'],
           }),
           getUser: () => this.state.user,
           getEmail: () => this.state.user.email,
-          getUsername: () => this.state.user.username,
-          getIsAuthenticated: () => this.state.isAuthenticated,
-          getToken: () => this.state.token
+          getUsername: () => sessionStorage.getItem('username') ? sessionStorage.getItem('username') : this.state.user.username,
+          getIsAuthenticated: () => this.state.is_authenticated,
+          getToken: () => this.state.token,
       }}>
 
       {this.props.children}

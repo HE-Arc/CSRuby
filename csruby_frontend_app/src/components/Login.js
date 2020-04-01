@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 import { AuthContext } from './AuthProvider';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
 class Login extends Component {
@@ -14,14 +14,14 @@ class Login extends Component {
       email:'',
       password:'',
       is_authenticated: false,
-      has_error: false
+      has_error: false,
     };
 
     this.handle_change = this.handle_change.bind(this);
     this.submit_form = this.submit_form.bind(this);
   };
 
-  handle_change(event){
+  handle_change(event) {
     const name = event.target.name;
     const value = event.target.value;
 
@@ -44,15 +44,15 @@ class Login extends Component {
     axios({
       method: 'post',
       url: '/auth/login',
-      data: userFormData
+      data: userFormData,
     })
     .then((response) => {
       if (response.status === 200) {
         this.context.setLoginInfo(
           {
-            isAuthenticated: true,
-            user: response.data['user'],
-            token: response.data['token']
+            is_authenticated: true,
+            user: response.data.user,
+            token: response.data.token,
           }
         );
         this.setState({ is_authenticated: true });

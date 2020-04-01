@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 
@@ -22,15 +22,10 @@ class Logout extends Component {
           this.context.setLoginInfo({
             isAuthenticated: false,
             token: null,
-            user: null
+            user: null,
           })
 
           this.setState({is_logged_out: true});
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error);
         }
       });
   }

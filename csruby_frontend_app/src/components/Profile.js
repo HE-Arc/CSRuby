@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import axios from 'axios';
-
+import { Redirect } from 'react-router';
 import {
   NavLink
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import { AuthContext } from './AuthProvider';
-import ItemPreview from "./item/ItemPreview"
+import ItemPreview from './item/ItemPreview';
 
 class Profile extends Component {
 
@@ -17,52 +17,76 @@ class Profile extends Component {
     this.state = {
       email: '',
       username: '',
-      steam_id: '',
+      steamid: '',
       date_joined: '',
       items_to_buy: [],
       items_to_sell: [],
+      favorite_items: [],
       response_description: '',
-    }
+      redirect_to_update: false,
+      redirect_after_delete: false
+    };
+
+    this.delete = this.delete.bind(this);
+  }
+
+  delete() {
+    let authed_user = sessionStorage.getItem('authed_user');
+
+    axios({
+      method: 'delete',
+      url: '/users/' + authed_user,
+    })
+    .then((response) => {
+      if(response.status === 200) {
+        this.context.setLoginInfo(
+          {
+            isAuthenticated: false,
+            user: null,
+            token: null,
+          });
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('authed_user');
+        sessionStorage.removeItem('username');
+
+        $('#deleteModal').modal('hide');
+        this.setState({redirect_after_delete: true});
+      }
+    });
   }
 
   componentDidMount() {
-    let user_id = sessionStorage.getItem('user_id');
-    let authed_user_id = sessionStorage.getItem('authed_user_id');
+    let authed_user = sessionStorage.getItem('authed_user');
+    let user = sessionStorage.getItem('user');
 
     axios({
       method: 'get',
-      url: '/users/' + user_id,
-    }).then((response) => {
+      url: '/users/' + (user ? user : authed_user),
+    })
+    .then((response) => {
       if(response.status === 200) {
-        if(authed_user_id !== null && authed_user_id == response.data.user_info.id) {
-          this.setState({
-            email: response.data.user_info.email,
-          });
-        }
-
         this.setState({
-          username: response.data.user_info.username,
-          steam_id: response.data.user_info.steamid,
-          date_joined: response.data.user_info.date_joined,
-          items_to_buy: response.data.user_info.items_to_buy,
-          items_to_sell: response.data.user_info.items_to_sell,
+          email : authed_user !== null && authed_user == response.data.user.id ? response.data.user.email : '',
+          username: response.data.user.username,
+          steamid: response.data.user.steamid,
+          date_joined: response.data.user.date_joined,
+          items_to_buy: response.data.user.items_to_buy,
+          items_to_sell: response.data.user.items_to_sell,
+          favorite_items: response.data.user.favorite_items,
         });
       }
     });
   }
 
   render() {
+    if (this.state.redirect_to_update) {
+      return (<Redirect to ='/profile/update' />);
+    }
+    if (this.state.redirect_after_delete) {
+      return (<Redirect to ='/login' />);
+    }
     return (
       <div className="container text-light mt-5">
-        {this.context.getIsAuthenticated() &&
-          <div>
-            {sessionStorage.getItem('user_id') === null &&
-              <div>
-                {sessionStorage.setItem('user_id', this.context.getUser().id)}
-              </div>
-            }
-          </div>
-        }
         <div className="csruby-bg-darkest text-center">
           <h1 className="py-5 mb-0">{this.state.username}</h1>
         </div>
@@ -88,25 +112,40 @@ class Profile extends Component {
             </tr>
           </tbody>
         </table>
-        <div className="modal fade" id="modifyInfo" tabIndex="-1" role="dialog" aria-labelledby="modifyInfoLabel" aria-hidden="true">
+
+        <div className="modal fade" id="deleteModal" data-backdrop="static" tabIndex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content text-light csruby-bg-darkest">
               <div className="modal-header">
-                <h5 className="modal-title" id="modifyInfoLabel">Login first</h5>
+                <h5 className="modal-title" id="staticBackdropLabel">Delete profile</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div className="modal-body">
-                <p>{this.state.response_description}</p>
+                <p>Are you sure you want to delete your profile ?</p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" className="btn csruby-bg-red" onClick={this.delete}>Yes</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
               </div>
             </div>
           </div>
         </div>
-        <div className="csruby-bg-darkest">
+        <AuthContext.Consumer>
+          {(context) => (
+            context.getIsAuthenticated() && this.state.email === context.getEmail() &&
+            <div className="row mb-3 py-2">
+              <div className="col-6">
+                <button id="update" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={() => this.setState({ redirect_to_update: true})}>Update Profile</button>
+              </div>
+              <div className="col-6">
+                <button id="delete" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" data-toggle="modal" data-target="#deleteModal">Delete Profile</button>
+              </div>
+            </div>
+          )}
+        </AuthContext.Consumer>
+        <div>
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">
               <a className="nav-link active text-danger" id="buying-tab" data-toggle="tab" href="#buying" role="tab" aria-controls="buying" aria-selected="false">Buying</a>
@@ -120,24 +159,35 @@ class Profile extends Component {
           </ul>
           <div className="tab-content" id="myTabContent">
             <div className="tab-pane fade show active" id="buying" role="tabpanel" aria-labelledby="buying-tab">
-              {this.state.items_to_buy &&
-                this.state.items_to_buy.map((item) => {
+              {this.state.items_to_buy
+                ? this.state.items_to_buy.map((item) => {
                   return(
-                    <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                    <ItemPreview key={item.item_id + 'buy'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
+                : <p>You have no items to buy...</p>
               }
             </div>
             <div className="tab-pane fade" id="selling" role="tabpanel" aria-labelledby="selling-tab">
-              {this.state.items_to_sell &&
-                this.state.items_to_sell.map((item) => {
+              {this.state.items_to_sell
+                ? this.state.items_to_sell.map((item) => {
                   return(
-                    <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                    <ItemPreview key={item.item_id + 'sell'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
+                : <p>You have no items to sell...</p>
               }
             </div>
-            <div className="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">...</div>
+            <div className="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">
+            {this.state.favorite_items
+              ? this.state.favorite_items.map((item) => {
+                return(
+                  <ItemPreview key={item.item_id + 'fav'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
+                )
+              })
+              : <p>You have no favorite items...</p>
+            }
+            </div>
           </div>
         </div>
       </div>
