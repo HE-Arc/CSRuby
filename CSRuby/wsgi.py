@@ -11,6 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings.development_settings')
+if os.environ.get('DJANGO_SETTINGS_MODULE') == None:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings.development_settings')
 
 application = get_wsgi_application()
