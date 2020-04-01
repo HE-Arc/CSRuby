@@ -17,8 +17,6 @@ jobs:
         run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
-        env:
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         with:
           # The port of host
           host port: 3306 # optional, default is 3306
@@ -46,7 +44,8 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
         run: python manage.py migrate
       - name: Install npm dependencies
         run: cd csruby_frontend_app && npm install
@@ -54,7 +53,6 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          DATABASE_USER: ${{ secrets.DATABASE_USER }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
         run: cd csruby_app/tests/ && pytest --ds=CSRuby.settings.production_settings
