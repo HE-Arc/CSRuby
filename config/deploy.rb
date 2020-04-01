@@ -83,7 +83,7 @@ namespace :images do
   desc 'Create link to static images'
   task :create_soft_link do
     on roles(:web) do |h|
-      execute "ln -sv #{release_path}/CSRuby/static/csruby_frontend_app/images /home/poweruser/images"
+      execute "ln -sv /home/poweruser/images #{release_path}/CSRuby/static/csruby_frontend_app/images"
     end
   end
 end
