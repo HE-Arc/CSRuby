@@ -5,7 +5,8 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings.development_settings')
+    if os.environ.get('DJANGO_SETTINGS_MODULE') == None:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CSRuby.settings.development_settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
