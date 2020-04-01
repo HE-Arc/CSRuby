@@ -77,6 +77,17 @@ namespace :migrations do
   end
 end
 
+after 'migrations:run_migrations', 'images:create_soft_link'
+
+namespace :images do
+  desc 'Create link to static images'
+  task :create_soft_link do
+    on roles(:web) do |h|
+      execute "ln -sv #{release_path}/CSRuby/static/csruby_frontend_app/images /home/poweruser/images"
+    end
+  end
+end
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
