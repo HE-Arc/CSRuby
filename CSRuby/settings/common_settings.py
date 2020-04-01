@@ -82,14 +82,15 @@ WSGI_APPLICATION = 'CSRuby.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS':{
-            'connect_timeout': 99999999,
-        },
+        'NAME': os.environ.get('GROUPNAME', 'csruby_database'),
+        'USER': os.environ.get('GROUPNAME', 'root'),
+        'PASSWORD': os.environ.get('PASSWORD', ''),
+        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
+        'PORT': os.environ.get('MYSQL_PORT', '3306'),
+        'OPTIONS': {
+          'charset': 'utf8mb4',
+          'connect_timeout': 99999999,
+        }
     },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
