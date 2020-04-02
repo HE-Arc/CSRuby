@@ -241,7 +241,6 @@ class ResetPassord(generics.GenericAPIView):
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
-    limit_item=8
 
     def get_queryset(self):
         name = self.request.GET.get('name', '')
@@ -250,9 +249,12 @@ class ItemSearch(generics.ListAPIView):
         max_price = self.request.GET.get('max_price', None)
         order_by = self.request.GET.get('order_by', '')
         offset = self.request.GET.get('offset','0')
+        limit_item = self.request.GET.get('limit','')
         min_price = convertion_utils.convert_arg_to_float(min_price)
         max_price = convertion_utils.convert_arg_to_float(max_price)
         offset = convertion_utils.convert_arg_to_int(offset)
+        limit_item = convertion_utils.convert_arg_to_int(limit_item)
+        print(limit_item)
         queryset = Item.objects.filter(name__icontains=name)
 
         if item_rarity:
@@ -275,7 +277,9 @@ class ItemSearch(generics.ListAPIView):
             queryset = sorted(queryset, key=lambda item:item_utils.get_rarity_value(item.rarity), reverse=order_by=='rarity_reverse')
         elif order_by == 'name' or 'name_reverse':
             queryset = queryset.order_by('name' if order_by=='name' else '-name')
-        return queryset[offset:offset+self.limit_item]
+        if limit_item:
+            return queryset[offset:offset+limit_item]
+        return queryset[offset:]
 
 class ItemPriceDetail(generics.RetrieveAPIView):
     serializer_class = ItemSerializer
