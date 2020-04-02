@@ -10,6 +10,8 @@ from django.db import models
 import csruby_app.utils.item_utils as item_utils
 from knox.models import AuthToken
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
 import pytz
 
 def convert_arg_to_float(str):
@@ -183,6 +185,66 @@ class UserView(generics.GenericAPIView):
 
             return Response(data={'detail': 'User was deleted successfully'})
         return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ResetPassord(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    subject = 'CSRuby - Requested password reset'
+    sender = 'noreply@csruby.ch'
+    html_message ='''
+    <h2>Hello {0},</h2>
+
+    <p>You have requested to change your password for our website.</p>
+
+    <p>Your new password is: <b style="font-size:1.5em">{1}</b></p>
+
+    <p>You can change this password by updating your profile.</p>
+
+    <p>Have a nice day,<br>
+    The CSRuby team</p>
+    '''
+    message ='''
+    Hello {0},
+
+    You have requested to change your password for our website.
+
+    Your new password is: {1}
+
+    You can change this password by updating your profile.
+
+    Have a nice day,
+    The CSRuby team
+    '''
+
+    def patch(self, request, *args, **kwargs):
+        email = request.data['email']
+        if email:
+            dest=[]
+            try:
+                user = CSRuby_User.objects.get(email__exact=email)
+                dest.append(email)
+                new_password = get_random_string(8)
+                try:
+                    msg = self.message.format(user.username,new_password)
+                    html_msg = self.html_message.format(user.username,new_password)
+                    user.set_password(new_password)
+                    send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
+                    user.save()
+                except Exception as e:
+                    response_body = {
+                        'user': UserSerializer(user).data,
+                    }
+                    return Response(response_body)
+            except Exception as e1:
+                response_body = {
+                    'user': None,
+                }
+                return Response(response_body)
+
+        response_body = {
+            'user': None,
+        }
+        return Response(response_body)
+
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
