@@ -14,6 +14,7 @@ class ResetPassword extends Component {
       email:'',
       is_authenticated: false,
       is_reset: false,
+      has_error: false,
     };
 
     this.handle_change = this.handle_change.bind(this);
@@ -36,19 +37,19 @@ class ResetPassword extends Component {
     let userFormData = new FormData();
     userFormData.append('email', this.state.email);
 
-    //axios.defaults.xsrfCookieName = 'csrftoken';
-    //axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-
     axios({
       method: 'patch',
       url: '/auth/resetPassword',
       data: userFormData,
     })
     .then((response) => {
-      window.location='/';
+      this.setState({ is_reset: true });
+      console.log("RESET");
+      //window.location='/';
     })
     .catch((error) => {
-      
+      this.setState({ has_error: true });
+      console.log("ERROR");
     }
   );
 }
@@ -61,6 +62,19 @@ render() {
     <div className="content">
       <div className="container text-light mt-5">
         <div className="csruby-bg-darkest p-3">
+        {this.state.is_reset &&
+          <div>
+            <h1>Password reseted</h1>
+            <p>If the email you provided is linked to an account, you will soon recieve an email containing your new password.</p>
+            <p>Once you recieve the email and log in, don't forget to change your password (by updating profile inforamtions)</p>
+          </div>}
+        {this.state.has_error &&
+          <div>
+          <h1>Error while sending mail</h1>
+          <p>We encountered an error while sending you the email. Please try again later</p>
+          </div>}
+        {!this.state.is_reset && !this.state.has_error &&
+        <div>
         <p>To reset yout password, enter the email address linked to your account in the field below.</p>
           <form onSubmit={this.submit_form}>
             <div className="form-group">
@@ -79,6 +93,7 @@ render() {
               <button type="submit" className="btn btn-primary">Reset password</button>
             </div>
           </form>
+          </div>}
         </div>
       </div>
     </div>
