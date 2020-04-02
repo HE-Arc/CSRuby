@@ -10,6 +10,7 @@ from django.db import models
 import csruby_app.utils.item_utils as item_utils
 from knox.models import AuthToken
 from django.utils import timezone
+from django.core.mail import send_mail
 import pytz
 
 def convert_arg_to_float(str):
@@ -183,6 +184,69 @@ class UserView(generics.GenericAPIView):
 
             return Response(data={'detail': 'User was deleted successfully'})
         return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ResetPassord(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    subject = "CSRuby - Requested password reset"
+    sender = "noreply@csruby.ch"
+    html_message ='''
+    <h2>Hello {0},</h2>
+
+    <p>You have requested to change your password for our website.</p>
+
+    <p>Your new password is: <b>{1}</b></p>
+
+    <p>You can change this password by updating your profile.</p>
+
+    <p>Have a nice day,<br>
+    The CSRuby team</p>
+    '''
+    message ='''
+    Hello {0},
+
+    You have requested to change your password for our website.
+
+    Your new password is: {1}
+
+    You can change this password by updating your profile.
+
+    Have a nice day,
+    The CSRuby team
+    '''
+    def get(self, request, *args, **kwargs):
+        dest = ["test@testmail.ch"]
+        new_password = "password"
+        msg = self.message.format("USERNAME",new_password)
+        html_msg = self.html_message.format("USERNAME",new_password)
+        send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
+
+        response_body = {
+            'user': 'user',
+        }
+
+        return Response(response_body)
+
+    def patch(self, request, *args, **kwargs):
+        email = request.data['email']
+        if email:
+            dest=[]
+            try:
+                user = CSRuby_User.objects.get(email__exact=user_id)
+                dest.append(email)
+                new_password = "password"
+                try:
+                    msg = self.message.format(user.username,new_password)
+                    html_msg = self.html_message.format("USERNAME",new_password)
+                    send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
+                except Exception as e:
+                    print("Error sending mail")
+            except Exception as e:
+                print("user not found")
+        response_body = {
+            'user': UserSerializer(user).data,
+        }
+
+        return Response(response_body)
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
