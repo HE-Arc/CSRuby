@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ItemPreview from './item/ItemPreview';
 import axios from 'axios';
+import InfiniteScroll from 'react-infinite-scroller';
 
 class Search extends Component {
   constructor(props) {
@@ -14,6 +15,9 @@ class Search extends Component {
       data: [],
       loaded: false,
       placeholder: 'Loading',
+      offset: 0,
+      limit_item: 8,
+      has_more_item: true,
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -25,40 +29,45 @@ class Search extends Component {
   }
 
   handleSearchChange(event) {
-    this.setState({search_value: event.target.value}, this.updateSearchResult);
+    this.setState({search_value: event.target.value, offset: 0, data:[]}, this.updateSearchResult);
   }
 
   handleRarityChange(event) {
-    this.setState({rarity: event.target.value}, this.updateSearchResult);
+    this.setState({rarity: event.target.value, offset: 0, data:[]}, this.updateSearchResult);
   }
 
   handleMinPriceChange(event) {
-    this.setState({min_price: event.target.value}, this.updateSearchResult);
+    this.setState({min_price: event.target.value, offset: 0, data:[]}, this.updateSearchResult);
   }
 
   handleMaxPriceChange(event) {
-    this.setState({max_price: event.target.value}, this.updateSearchResult);
+    this.setState({max_price: event.target.value, offset: 0, data:[]}, this.updateSearchResult);
   }
 
   handleOrderingChange(event) {
-    this.setState({ordering: event.target.value}, this.updateSearchResult);
+    this.setState({ordering: event.target.value, offset: 0, data:[]}, this.updateSearchResult);
   }
 
   updateSearchResult = () => {
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering;
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
   onSubmit(event) {
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering;
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
     event.preventDefault();
+  }
+
+  fetchMore(){
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    this.fetchItems(url);
   }
 
   fetchItems(url) {
     this.setState({
       loaded: false,
-      data: [],
+      has_more_item:false,
     });
 
     axios({
@@ -67,10 +76,14 @@ class Search extends Component {
     })
     .then((response) => {
       if(response.status === 200) {
+        var allData = this.state.data;
+        response.data.map(item => allData.push(item));
         this.setState({
-          data: response.data,
+          data: allData,
           loaded: true,
-        })
+          offset: this.state.offset+this.state.limit_item,
+        });
+        this.setState({has_more_item:response.data.length==this.state.limit_item});
       }
     })
     .catch((error) => {
@@ -81,10 +94,18 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    this.fetchItems('/item/search');
+    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    this.fetchItems(url);
   }
 
-  render() {
+  render(){
+    const loader = <div className="text-center"><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
+    var items = [];
+    this.state.data.map(item=>{
+      items.push(
+        <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
+      )
+    });
     return (
       <div className="container">
         <div className="csruby-bg-darkest p-4 mb-3">
@@ -130,19 +151,23 @@ class Search extends Component {
             </div>
           </form>
         </div>
-        <div className="result-container">
+        <div className="result-container" id="result-container">
           {this.state.data.length > 0
-            ? this.state.data.map(item => {
-              return (
-                <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
-              );
-            })
+            ? <InfiniteScroll
+                initialLoad={ false }
+                loadMore={this.fetchMore.bind(this)}
+                hasMore={this.state.has_more_item}
+                loader={loader}
+                useWindow={true}
+                getScrollParent={() => document.getElementById('result-container')}>
+                  {items}
+            </InfiniteScroll>
             : <h3 className="text-dark text-center">{this.state.loaded == true && 'No items found...'}</h3>
           }
           {this.state.loaded == false &&
             <div className="text-center">
-              <div class="loadingio-spinner-rolling-oq809e0ojtq">
-                <div class="ldio-5u0wj89ps2u">
+              <div className="loadingio-spinner-rolling-oq809e0ojtq">
+                <div className="ldio-5u0wj89ps2u">
                   <div></div>
                 </div>
               </div>
