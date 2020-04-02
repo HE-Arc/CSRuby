@@ -67,6 +67,11 @@
   height: 96px;
 }
 
+.csruby-item-dashboard-img {
+  width: 472px;
+  height: 354px;
+}
+
 .csruby-hover-link:hover {
   color: inherit !important;
   text-decoration: none !important;

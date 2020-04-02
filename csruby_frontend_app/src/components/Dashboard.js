@@ -400,7 +400,7 @@ class Dashboard extends Component {
         <div className="row">
           <div className="col-lg p-3">
             <div className="csruby-bg-darkest text-center p-3">
-              <img src={this.state.item_image} className="img-fluid text-center" alt={this.state.item_name} />
+              <img src={this.state.item_image} className="img-fluid text-center csruby-item-dashboard-img" alt={this.state.item_name} />
             </div>
             <AuthContext.Consumer>
               {(context) => (
