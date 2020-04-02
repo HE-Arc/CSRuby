@@ -141,8 +141,8 @@ class Search extends Component {
           }
           {this.state.loaded == false &&
             <div className="text-center">
-              <div class="loadingio-spinner-rolling-oq809e0ojtq">
-                <div class="ldio-5u0wj89ps2u">
+              <div className="loadingio-spinner-rolling-oq809e0ojtq">
+                <div className="ldio-5u0wj89ps2u">
                   <div></div>
                 </div>
               </div>
