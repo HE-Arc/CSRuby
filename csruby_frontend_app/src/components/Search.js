@@ -131,12 +131,22 @@ class Search extends Component {
           </form>
         </div>
         <div className="result-container">
-          {
-            this.state.data.map(item => {
+          {this.state.data.length > 0
+            ? this.state.data.map(item => {
               return (
                 <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
               );
             })
+            : <h3 className="text-dark text-center">{this.state.loaded == true && 'No items found...'}</h3>
+          }
+          {this.state.loaded == false &&
+            <div className="text-center">
+              <div class="loadingio-spinner-rolling-oq809e0ojtq">
+                <div class="ldio-5u0wj89ps2u">
+                  <div></div>
+                </div>
+              </div>
+            </div>
           }
         </div>
       </div>
