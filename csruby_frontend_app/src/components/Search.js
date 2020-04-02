@@ -79,10 +79,10 @@ class Search extends Component {
     })
     .then((response) => {
       if(response.status === 200) {
-        var data = this.state.data;
-        response.data.map(item => data.push(item));
+        var allData = this.state.data;
+        response.data.map(item => allData.push(item));
         this.setState({
-          data: data,
+          data: allData,
           loaded: true,
           offset: this.state.offset+this.state.limit_item,
         });
