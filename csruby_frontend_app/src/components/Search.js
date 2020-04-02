@@ -18,6 +18,7 @@ class Search extends Component {
       offset: 0,
       limit_item: 8,
       has_more_item: true,
+      request_id:0,
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -65,9 +66,11 @@ class Search extends Component {
   }
 
   fetchItems(url) {
+    let request_id = this.state.request_id+1;
     this.setState({
       loaded: false,
       has_more_item:false,
+      request_id: this.state.request_id+1,
     });
 
     axios({
@@ -75,8 +78,8 @@ class Search extends Component {
       url: url,
     })
     .then((response) => {
-      if(response.status === 200) {
-        var allData = this.state.data;
+      if(response.status === 200 && request_id == this.state.request_id) {
+        let allData = this.state.data;
         response.data.map(item => allData.push(item));
         this.setState({
           data: allData,
@@ -99,9 +102,10 @@ class Search extends Component {
   }
 
   render(){
-    const loader = <div className="text-center"><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
+    const loader = <div className="text-center" key={0}><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
     var items = [];
-    this.state.data.map(item=>{
+    var dataCopy=this.state.data;
+    dataCopy.map(item=>{
       items.push(
         <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
       )
