@@ -188,8 +188,8 @@ class UserView(generics.GenericAPIView):
 
 class ResetPassord(generics.GenericAPIView):
     serializer_class = UserSerializer
-    subject = "CSRuby - Requested password reset"
-    sender = "noreply@csruby.ch"
+    subject = 'CSRuby - Requested password reset'
+    sender = 'noreply@csruby.ch'
     html_message ='''
     <h2>Hello {0},</h2>
 
@@ -217,12 +217,10 @@ class ResetPassord(generics.GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         email = request.data['email']
-        print(email)
         if email:
             dest=[]
             try:
                 user = CSRuby_User.objects.get(email__exact=email)
-                print(user.username)
                 dest.append(email)
                 new_password = get_random_string(8)
                 try:
