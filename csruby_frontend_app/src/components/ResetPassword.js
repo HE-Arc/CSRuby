@@ -66,12 +66,12 @@ render() {
           <div>
             <h1>Password reseted</h1>
             <p>If the email you provided is linked to an account, you will soon recieve an email containing your new password.</p>
-            <p>Once you recieve the email and log in, don't forget to change your password (by updating profile inforamtions)</p>
+            <p>Once you recieve the email and <Link to="/login">log in</Link>, don't forget to change your password (by updating profile inforamtions).</p>
           </div>}
         {this.state.has_error &&
           <div>
           <h1>Error while sending mail</h1>
-          <p>We encountered an error while sending you the email. Please try again later</p>
+          <p>We encountered an error while sending you the email. Please try again later.</p>
           </div>}
         {!this.state.is_reset && !this.state.has_error &&
         <div>
