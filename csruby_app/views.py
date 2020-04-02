@@ -8,19 +8,12 @@ from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
 from django.db import models
 import csruby_app.utils.item_utils as item_utils
+import csruby_app.utils.convertion_utils as convertion_utils
 from knox.models import AuthToken
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 import pytz
-
-def convert_arg_to_float(str):
-    try:
-        if str:
-            return float(str)
-        return None
-    except:
-        return None
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -248,6 +241,7 @@ class ResetPassord(generics.GenericAPIView):
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
+    limit_item=10
 
     def get_queryset(self):
         name = self.request.GET.get('name', '')
@@ -255,8 +249,10 @@ class ItemSearch(generics.ListAPIView):
         min_price = self.request.GET.get('min_price', None)
         max_price = self.request.GET.get('max_price', None)
         order_by = self.request.GET.get('order_by', '')
-        min_price = convert_arg_to_float(min_price)
-        max_price = convert_arg_to_float(max_price)
+        offset = self.request.GET.get('offset','0')
+        min_price = convertion_utils.convert_arg_to_float(min_price)
+        max_price = convertion_utils.convert_arg_to_float(max_price)
+        offset = convertion_utils.convert_arg_to_int(offset)
         queryset = Item.objects.filter(name__icontains=name)
 
         if item_rarity:
@@ -279,8 +275,7 @@ class ItemSearch(generics.ListAPIView):
             queryset = sorted(queryset, key=lambda item:item_utils.get_rarity_value(item.rarity), reverse=order_by=='rarity_reverse')
         elif order_by == 'name' or 'name_reverse':
             queryset = queryset.order_by('name' if order_by=='name' else '-name')
-
-        return queryset
+        return queryset[offset:offset+self.limit_item]
 
 class ItemPriceDetail(generics.RetrieveAPIView):
     serializer_class = ItemSerializer
