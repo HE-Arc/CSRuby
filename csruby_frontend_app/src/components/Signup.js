@@ -157,6 +157,7 @@ class Signup extends Component {
                   onChange={this.handle_change}
                   required
                   />
+                <small className="form-text text-muted">We'll never share your email with anyone else.</small>
                 {this.state.errors.email.length > 0 &&
                   <span className='error'>{this.state.errors.email}</span>
                 }
@@ -172,6 +173,7 @@ class Signup extends Component {
                   onChange={this.handle_change}
                   required
                   />
+                <small className="form-text text-muted">The password must be at least 8 characters long.</small>
                 {this.state.errors.password.length > 0 &&
                   <span className='error'>{this.state.errors.password}</span>
                 }
