@@ -131,3 +131,7 @@
 .form-control:focus {
   color: inherit !important;
 }
+
+.result-container{
+  padding-bottom: 10px;
+}
