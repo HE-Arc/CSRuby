@@ -254,7 +254,6 @@ class ItemSearch(generics.ListAPIView):
         max_price = convertion_utils.convert_arg_to_float(max_price)
         offset = convertion_utils.convert_arg_to_int(offset)
         limit_item = convertion_utils.convert_arg_to_int(limit_item)
-        print(limit_item)
         queryset = Item.objects.filter(name__icontains=name)
 
         if item_rarity:
