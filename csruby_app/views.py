@@ -10,6 +10,7 @@ from django.db import models
 import csruby_app.utils.item_utils as item_utils
 from knox.models import AuthToken
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 import pytz
 
@@ -194,7 +195,7 @@ class ResetPassord(generics.GenericAPIView):
 
     <p>You have requested to change your password for our website.</p>
 
-    <p>Your new password is: <b>{1}</b></p>
+    <p>Your new password is: <b style="font-size:1.5em">{1}</b></p>
 
     <p>You can change this password by updating your profile.</p>
 
@@ -215,7 +216,7 @@ class ResetPassord(generics.GenericAPIView):
     '''
     def get(self, request, *args, **kwargs):
         dest = ["test@testmail.ch"]
-        new_password = "password"
+        new_password = get_random_string(8)
         msg = self.message.format("USERNAME",new_password)
         html_msg = self.html_message.format("USERNAME",new_password)
         send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
@@ -233,7 +234,7 @@ class ResetPassord(generics.GenericAPIView):
             try:
                 user = CSRuby_User.objects.get(email__exact=user_id)
                 dest.append(email)
-                new_password = "password"
+                new_password = get_random_string(8)
                 try:
                     msg = self.message.format(user.username,new_password)
                     html_msg = self.html_message.format("USERNAME",new_password)
