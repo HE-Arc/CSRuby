@@ -233,7 +233,7 @@ class ResetPassord(generics.GenericAPIView):
                     response_body = {
                         'user': UserSerializer(user).data,
                     }
-                    return Response(response_body)
+                    return Response(response_body, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Exception as e1:
                 response_body = {
                     'user': None,
