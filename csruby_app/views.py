@@ -218,13 +218,14 @@ class ResetPassord(generics.GenericAPIView):
         dest = ["test@testmail.ch"]
         new_password = get_random_string(8)
         msg = self.message.format("USERNAME",new_password)
-        html_msg = self.html_message.format("USERNAME",new_password)
-        send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
-
         response_body = {
             'user': 'user',
         }
-
+        html_msg = self.html_message.format("USERNAME",new_password)
+        try:
+            send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
+        except Exception as e:
+            print("Error sending mail")
         return Response(response_body)
 
     def patch(self, request, *args, **kwargs):
@@ -237,17 +238,20 @@ class ResetPassord(generics.GenericAPIView):
                 new_password = get_random_string(8)
                 try:
                     msg = self.message.format(user.username,new_password)
-                    html_msg = self.html_message.format("USERNAME",new_password)
+                    html_msg = self.html_message.format(user.username,new_password)
+                    user.set_password(new_password)
                     send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
+                    user.save()
                 except Exception as e:
                     print("Error sending mail")
-            except Exception as e:
+            except Exception as e1:
                 print("user not found")
+
         response_body = {
             'user': UserSerializer(user).data,
         }
-
         return Response(response_body)
+
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
