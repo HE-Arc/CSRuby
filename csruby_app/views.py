@@ -214,19 +214,6 @@ class ResetPassord(generics.GenericAPIView):
     Have a nice day,
     The CSRuby team
     '''
-    def get(self, request, *args, **kwargs):
-        dest = ["test@testmail.ch"]
-        new_password = get_random_string(8)
-        msg = self.message.format("USERNAME",new_password)
-        response_body = {
-            'user': 'user',
-        }
-        html_msg = self.html_message.format("USERNAME",new_password)
-        try:
-            send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
-        except Exception as e:
-            print("Error sending mail")
-        return Response(response_body)
 
     def patch(self, request, *args, **kwargs):
         email = request.data['email']
