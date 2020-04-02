@@ -232,13 +232,11 @@ class ResetPassord(generics.GenericAPIView):
                     send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
                     user.save()
                 except Exception as e:
-                    print("Error sending mail")
                     response_body = {
                         'user': UserSerializer(user).data,
                     }
                     return Response(response_body)
             except Exception as e1:
-                print("user not found")
                 response_body = {
                     'user': None,
                 }

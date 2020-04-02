@@ -44,12 +44,9 @@ class ResetPassword extends Component {
     })
     .then((response) => {
       this.setState({ is_reset: true });
-      console.log("RESET");
-      //window.location='/';
     })
     .catch((error) => {
       this.setState({ has_error: true });
-      console.log("ERROR");
     }
   );
 }
