@@ -104,8 +104,13 @@ render() {
                 <div className="form-group">
                   <small id="emailHelp" className="form-text text-muted">
                     Don't have an account? Sign up <Link to="/signup">here</Link>
-                </small>
-              </div>
+                  </small>
+                </div>
+                <div className="form-group">
+                  <small id="resetHelp" className="form-text text-muted">
+                    You forgot your password? You can reset it <Link to="/resetPassword">here</Link>
+                  </small>
+                </div>
             </form>
           </div>
         </div>
