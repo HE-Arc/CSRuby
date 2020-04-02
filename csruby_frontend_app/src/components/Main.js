@@ -17,6 +17,7 @@ import Profile from './Profile';
 import UpdateUser from './UpdateUser';
 
 import Search from './Search';
+import ResetPassword from './ResetPassword'
 
 import Login from './Login';
 import Signup from './Signup';
@@ -88,6 +89,7 @@ class Main extends Component {
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/logout" component={Logout}/>
+                <Route exact path="/resetPassword" component={ResetPassword}/>
               </div>
             </div>
           </MessageProvider>
