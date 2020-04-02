@@ -241,7 +241,7 @@ class ResetPassord(generics.GenericAPIView):
 
 class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
-    limit_item=10
+    limit_item=8
 
     def get_queryset(self):
         name = self.request.GET.get('name', '')

@@ -16,7 +16,7 @@ class Search extends Component {
       loaded: false,
       placeholder: 'Loading',
       offset: 0,
-      limit_item: 10,
+      limit_item: 8,
       has_more_item: true,
     };
 
@@ -86,7 +86,7 @@ class Search extends Component {
           loaded: true,
           offset: this.state.offset+this.state.limit_item,
         });
-        this.setState({has_more_item:response.data.length==10});
+        this.setState({has_more_item:response.data.length==this.state.limit_item});
       }
     })
     .catch((error) => {
@@ -99,75 +99,6 @@ class Search extends Component {
   componentDidMount() {
     this.fetchItems('/item/search');
   }
-
-  /*render() {
-    return (
-      <div className="container">
-        <div className="csruby-bg-darkest p-4 mb-3">
-          <form onSubmit={this.onSubmit} ref="form">
-            <div className="form-row">
-              <div className="form-group col mb-0">
-                <input className="form-control" id="searchbar" type="text" placeholder="Search item..." name="search" value={this.state.search_value} onChange={this.handleSearchChange}/>
-              </div>
-              <div className="form-group col mb-0">
-                <select className="form-control" id="rarity" value={this.state.rarity} onChange={this.handleRarityChange}>
-                  <option value="">All rarities</option>
-                  <option value="COG">Consumer grade</option>
-                  <option value="ING">Industrial grade</option>
-                  <option value="MIS">Mil-spec</option>
-                  <option value="RST">Restricted</option>
-                  <option value="CLA">Classified</option>
-                  <option value="COV">Covert</option>
-                  <option value="EXR">Exceedingly Rare</option>
-                  <option value="CON">Contraband</option>
-                  <option value="RES">High Grade Sticker</option>
-                  <option value="HGS">Remarkable Sticker</option>
-                  <option value="EXS">Extraordinary Sticker</option>
-                  <option value="EXG">Extraordinary Gloves</option>
-                </select>
-              </div>
-              <div className="form-group col mb-0">
-                <input className="form-control" id="min_price" type="number" min="0" max="7500" value="0" name="min_price" value={this.state.min_price} onChange={this.handleMinPriceChange} placeholder="Min price..."/>
-              </div>
-              <div className="form-group col mb-0">
-                <input className="form-control" id="max_price" type="number" min="0" max="7500" value="7500" name="max_price" value={this.state.max_price} onChange={this.handleMaxPriceChange} placeholder="Max price..."/>
-              </div>
-              <div className="form-group col mb-0">
-                <select className="form-control" id="ordering" value={this.state.ordering} onChange={this.handleOrderingChange}>
-                  <option value="">None</option>
-                  <option value="price">Price ascending</option>
-                  <option value="price_reverse">Price descending</option>
-                  <option value="rarity">Rarity ascending</option>
-                  <option value="rarity_reverse">Rarity descending</option>
-                  <option value="name">Name A-Z</option>
-                  <option value="name_reverse">Name Z-A</option>
-                </select>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className="result-container">
-          {this.state.data.length > 0
-            ? this.state.data.map(item => {
-              return (
-                <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
-              );
-            })
-            : <h3 className="text-dark text-center">{this.state.loaded == true && 'No items found...'}</h3>
-          }
-          {this.state.loaded == false &&
-            <div className="text-center">
-              <div class="loadingio-spinner-rolling-oq809e0ojtq">
-                <div class="ldio-5u0wj89ps2u">
-                  <div></div>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    );
-  }*/
 
   render(){
     const loader = <div className="text-center"><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
