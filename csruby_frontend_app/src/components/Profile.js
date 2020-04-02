@@ -165,7 +165,7 @@ class Profile extends Component {
                     <ItemPreview key={item.item_id + 'buy'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
-                : <p>You have no items to buy...</p>
+                : <p className="lead">You have no items to buy...</p>
               }
             </div>
             <div className="tab-pane fade" id="selling" role="tabpanel" aria-labelledby="selling-tab">
@@ -175,7 +175,7 @@ class Profile extends Component {
                     <ItemPreview key={item.item_id + 'sell'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                   )
                 })
-                : <p>You have no items to sell...</p>
+                : <p className="lead">You have no items to sell...</p>
               }
             </div>
             <div className="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">
@@ -185,7 +185,7 @@ class Profile extends Component {
                   <ItemPreview key={item.item_id + 'fav'} itemId={item.item_id} url={item.item_image} name={item.name} rarity_class={item.rarity}/>
                 )
               })
-              : <p>You have no favorite items...</p>
+              : <p className="lead">You have no favorite items...</p>
             }
             </div>
           </div>
