@@ -135,3 +135,10 @@
 .result-container{
   padding-bottom: 10px;
 }
+
+.modal-open {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom { padding-right: 0 !important; }
