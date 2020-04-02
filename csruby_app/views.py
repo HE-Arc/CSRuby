@@ -230,10 +230,12 @@ class ResetPassord(generics.GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         email = request.data['email']
+        print(email)
         if email:
             dest=[]
             try:
-                user = CSRuby_User.objects.get(email__exact=user_id)
+                user = CSRuby_User.objects.get(email__exact=email)
+                print(user.username)
                 dest.append(email)
                 new_password = get_random_string(8)
                 try:
@@ -244,11 +246,19 @@ class ResetPassord(generics.GenericAPIView):
                     user.save()
                 except Exception as e:
                     print("Error sending mail")
+                    response_body = {
+                        'user': UserSerializer(user).data,
+                    }
+                    return Response(response_body)
             except Exception as e1:
                 print("user not found")
+                response_body = {
+                    'user': None,
+                }
+                return Response(response_body)
 
         response_body = {
-            'user': UserSerializer(user).data,
+            'user': None,
         }
         return Response(response_body)
 

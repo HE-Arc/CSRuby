@@ -13,6 +13,7 @@ class ResetPassword extends Component {
     this.state={
       email:'',
       is_authenticated: false,
+      is_reset: false,
     };
 
     this.handle_change = this.handle_change.bind(this);
@@ -44,12 +45,10 @@ class ResetPassword extends Component {
       data: userFormData,
     })
     .then((response) => {
-      if (response.status === 200) {
-        return (<Redirect to ="/" />);
-      }
+      window.location='/';
     })
     .catch((error) => {
-      return (<Redirect to ="/" />);
+      
     }
   );
 }
