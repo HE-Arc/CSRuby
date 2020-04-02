@@ -1,7 +1,6 @@
 from django.test import TestCase
-from csruby_app.models import *
+from csruby_app.models import CSRuby_User, Item, Price
 from django.utils import timezone
-import pytz
 
 class UserAndRoleTestCase(TestCase):
     """This class is used to test the User and Role model using django.test package"""

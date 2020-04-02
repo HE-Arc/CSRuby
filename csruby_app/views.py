@@ -1,18 +1,12 @@
-from django.shortcuts import render, redirect
-from .models import *
-from .serializers import *
+from .models import CSRuby_User, Item, User_Item
+from .serializers import UserSerializer, ItemSerializer, ItemProfileSerializer, ItemActionSerializer, UserItemSerializer, LoginSerializer, RegisterSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.renderers import JSONRenderer
-from django.http import HttpResponse, HttpResponseForbidden, HttpRequest
-from django.db import models
 import csruby_app.utils.item_utils as item_utils
 from knox.models import AuthToken
-from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
-import pytz
 
 def convert_arg_to_float(str):
     try:
@@ -108,7 +102,6 @@ class UserView(generics.GenericAPIView):
         return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, *args, **kwargs):
-        email = ''
         user_id = None
 
         if 'pk' in kwargs:

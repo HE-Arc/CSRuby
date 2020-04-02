@@ -42,7 +42,6 @@ class TraderPreview extends Component {
       data: {
         action: this.props.action,
         intention: 'remove',
-        authed_user: sessionStorage.getItem('authed_user'),
         trade: this.props.trade,
       }
     }).then((response) => {

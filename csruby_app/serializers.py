@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from .models import *
-from django.forms import ModelForm
-from django.contrib.auth.hashers import make_password
+from .models import CSRuby_User, Item, User_Item
 from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):

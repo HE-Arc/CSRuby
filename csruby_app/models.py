@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
@@ -7,7 +6,6 @@ from django.contrib.auth.models import (
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
-import pytz
 
 class CSRuby_UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, steamid=None):
@@ -158,13 +156,10 @@ class User_ItemManager(models.Manager):
 
     def patch_trade(self, request):
         action = ''
-        user = ''
         intention = ''
-        possible_actions = ['buy', 'sell', 'fav']
 
-        if request.data['action'] and request.data['authed_user'] and request.data['intention']:
+        if request.data['action'] and request.data['intention']:
             action = request.data['action']
-            user = request.data['authed_user']
             intention = request.data['intention']
             user_item = None
 
