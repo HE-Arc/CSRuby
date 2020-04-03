@@ -18,6 +18,7 @@ class Search extends Component {
       offset: 0,
       limit_item: 8,
       has_more_item: true,
+      request_id:0,
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -49,25 +50,27 @@ class Search extends Component {
   }
 
   updateSearchResult = () => {
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
   onSubmit(event) {
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
     event.preventDefault();
   }
 
   fetchMore(){
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
   fetchItems(url) {
+    let request_id = this.state.request_id+1;
     this.setState({
       loaded: false,
       has_more_item:false,
+      request_id: this.state.request_id+1,
     });
 
     axios({
@@ -75,8 +78,8 @@ class Search extends Component {
       url: url,
     })
     .then((response) => {
-      if(response.status === 200) {
-        var allData = this.state.data;
+      if(response.status === 200 && request_id == this.state.request_id) {
+        let allData = this.state.data;
         response.data.map(item => allData.push(item));
         this.setState({
           data: allData,
@@ -94,13 +97,13 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    var url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
   render() {
-    const loader = <div className="text-center"><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
-    var items = [];
+    const loader = <div className="text-center" key={0}><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
+    let items = [];
     this.state.data.map(item=>{
       items.push(
         <ItemPreview key={item.item_id} itemId={item.item_id} url={item.item_image} name={item.name} price={item.lowest_price} rarity_class={item.rarity}/>
