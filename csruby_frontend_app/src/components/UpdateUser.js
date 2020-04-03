@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import { AuthContext } from './AuthProvider';
+import Error from './Error';
 
 class UpdateUser extends Component {
 
@@ -21,7 +22,8 @@ class UpdateUser extends Component {
         password: '',
         confirm_password: '',
         other: ''
-      }
+      },
+      error: null,
     };
 
     this.handle_change = this.handle_change.bind(this);
@@ -32,10 +34,20 @@ class UpdateUser extends Component {
   componentDidMount() {
     let user = this.context.getUser();
 
-    this.setState({
-      username: user.username,
-      steamid: user.steamid === null ? '' : user.steamid,
-    })
+    if(user == null){
+      this.setState({
+        error: {
+          status: '403 Forbidden',
+          detail: 'Access is forbidden to the requested page.',
+        }
+      });
+    }
+    else {
+      this.setState({
+        username: user.username,
+        steamid: user.steamid === null ? '' : user.steamid,
+      })
+    }
   }
 
   handle_change(event) {
@@ -138,6 +150,9 @@ class UpdateUser extends Component {
   render() {
     if (this.state.is_updated) {
       return (<Redirect to ="/profile" />)
+    }
+    if (this.state.error) {
+      return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     return (
       <div className="content">

@@ -8,7 +8,8 @@ import React, { Component } from 'react';
 import {
   Route,
   NavLink,
-  HashRouter
+  HashRouter,
+  Switch,
 } from 'react-router-dom';
 
 import Dashboard from './Dashboard';
@@ -26,6 +27,8 @@ import Logout from './Logout';
 import AuthProvider from './AuthProvider';
 import {AuthContext} from './AuthProvider';
 import MessageProvider from './MessageProvider';
+
+import Error from './Error';
 
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
@@ -76,17 +79,21 @@ class Main extends Component {
                 </nav>
               </header>
               <div className="content text-light mt-5">
-                <Route exact path="/" component={Dashboard}/>
+                <Switch>
+                  <Route exact path="/" component={Dashboard}/>
 
-                <Route exact path="/myprofile" component={Profile}/>
-                <Route exact path="/profile" component={Profile}/>
-                <Route exact path="/profile/update" component={UpdateUser}/>
-                <Route exact path="/search" component={Search}/>
+                  <Route exact path="/myprofile" component={Profile}/>
+                  <Route exact path="/profile" component={Profile}/>
+                  <Route exact path="/profile/update" component={UpdateUser}/>
+                  <Route exact path="/search" component={Search}/>
 
-                <Route exact path="/login" component={Login}/>
-                <Route exact path="/signup" component={Signup}/>
-                <Route exact path="/logout" component={Logout}/>
-                <Route exact path="/resetPassword" component={ResetPassword}/>
+                  <Route exact path="/login" component={Login}/>
+                  <Route exact path="/signup" component={Signup}/>
+                  <Route exact path="/logout" component={Logout}/>
+                  <Route exact path="/resetPassword" component={ResetPassword}/>
+
+                  <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found'}/> }/>
+                </Switch>
               </div>
             </div>
           </MessageProvider>

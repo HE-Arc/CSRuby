@@ -47,7 +47,7 @@ class AuthAPI(generics.RetrieveAPIView):
 
 class UserView(generics.GenericAPIView):
     serializer_class = UserSerializer
-    user_not_found = Response(data={'detail': 'User not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    user_not_found = Response(data={'detail': 'User not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, *args, **kwargs):
         user_id = None
@@ -92,7 +92,7 @@ class UserView(generics.GenericAPIView):
                 response_body['user']['favorite_items'] = None
 
             return Response(response_body)
-        return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, *args, **kwargs):
         user_id = None
@@ -110,7 +110,7 @@ class UserView(generics.GenericAPIView):
             }
 
             return Response(response_body)
-        return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, *args, **kwargs):
         user_id = None
@@ -127,7 +127,7 @@ class UserView(generics.GenericAPIView):
             user.delete()
 
             return Response(data={'detail': 'User was deleted successfully'})
-        return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ResetPassord(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -250,8 +250,8 @@ class ItemMostExpensive(generics.ListAPIView):
 
 class ItemActions(generics.GenericAPIView):
     serializer_class = ItemActionSerializer
-    item_not_found = Response(data={'detail': 'Item not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    user_not_found = Response(data={'detail': 'User not found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    item_not_found = Response(data={'detail': 'Item not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    user_not_found = Response(data={'detail': 'User not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, *args, **kwargs):
         item = None
@@ -267,7 +267,7 @@ class ItemActions(generics.GenericAPIView):
                     'user_item': UserItemSerializer(User_Item.objects.get(item_id__exact=item, user_id__exact=user)).data,
                 })
             return Response(data={'detail': 'Row not found'}, status=status.HTTP_204_NO_CONTENT)
-        return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, *args, **kwargs):
         item = None
@@ -303,7 +303,7 @@ class ItemActions(generics.GenericAPIView):
                 user_item.save()
 
                 return Response(data={'detail': 'Action successul', 'action': action})
-        return Response(data={'detail': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, *args, **kwargs):
         return User_Item.objects.patch_trade(request)
