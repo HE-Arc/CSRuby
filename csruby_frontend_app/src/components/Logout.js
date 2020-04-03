@@ -36,7 +36,7 @@ class Logout extends Component {
         if(error.response) {
           this.setState({
             error: {
-              status: error.response.status + " " + error.response.statusText,
+              status: error.response.status + ' ' + error.response.statusText,
               detail: error.response.data.detail,
             }
           });
