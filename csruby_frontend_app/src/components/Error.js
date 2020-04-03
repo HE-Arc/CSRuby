@@ -8,7 +8,7 @@ class Error extends Component {
         <div className="container">
             <div className="text-center">
                 <div>
-                    <h1 className="csruby-error-title">Oops!</h1>
+                    <h1 className="csruby-error-title text-danger">Oops!</h1>
                     <h2>{this.props.status}</h2>
                     <div>
                         Sorry, an error has occured. {this.props.detail}
