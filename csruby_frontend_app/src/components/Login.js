@@ -69,50 +69,48 @@ render() {
     return (<Redirect to ="/" />);
   }
   return (
-    <div className="content">
-      <div className="container text-light mt-5">
-        <div className="csruby-bg-darkest p-3">
-          <form onSubmit={this.submit_form}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="text"
-                className="form-control"
-                name="email"
-                placeholder="Enter Email"
-                value={this.state.email}
-                onChange={this.handle_change}
-                required
-                />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                placeholder="Enter Password"
-                value={this.state.password}
-                onChange={this.handle_change}
-                />
-              {this.state.has_error &&
-                <span className='error'>The credentials are false</span>}
-                </div>
-                <div className="form-group">
-                  <button type="submit" className="btn btn-primary">Login</button>
-                </div>
-                <div className="form-group">
-                  <small id="emailHelp" className="form-text text-muted">
-                    Don't have an account? Sign up <Link to="/signup">here</Link>
-                  </small>
-                </div>
-                <div className="form-group">
-                  <small id="resetHelp" className="form-text text-muted">
-                    You forgot your password? You can reset it <Link to="/resetPassword">here</Link>
-                  </small>
-                </div>
-            </form>
+    <div className="container pt-4">
+      <div className="csruby-bg-darkest p-3">
+        <form onSubmit={this.submit_form}>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="text"
+              className="form-control"
+              name="email"
+              placeholder="Enter Email"
+              value={this.state.email}
+              onChange={this.handle_change}
+              required
+              />
           </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              placeholder="Enter Password"
+              value={this.state.password}
+              onChange={this.handle_change}
+              />
+            {this.state.has_error &&
+              <span className='error'>The credentials are false</span>}
+              </div>
+              <div className="form-group">
+                <button type="submit" className="btn btn-danger">Login</button>
+              </div>
+              <div className="form-group">
+                <small id="emailHelp" className="form-text text-muted">
+                  Don't have an account? Sign up <Link className="text-danger" exact to="/signup">here</Link>
+                </small>
+              </div>
+              <div className="form-group">
+                <small id="resetHelp" className="form-text text-muted">
+                  You forgot your password? You can reset it <Link className="text-danger" exact to="/resetPassword">here</Link>
+                </small>
+              </div>
+          </form>
         </div>
       </div>
     );

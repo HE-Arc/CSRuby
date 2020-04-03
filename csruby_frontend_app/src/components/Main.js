@@ -36,59 +36,80 @@ class Main extends Component {
       <HashRouter>
         <AuthProvider>
           <MessageProvider>
-            <div>
-              <header>
-                <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-red">
-                  <NavLink className="navbar-brand" exact to="/">CSRuby<span className="sr-only">(current)</span></NavLink>
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-
-                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav mr-auto">
-                      <li className="nav-item active">
-                        <NavLink className="nav-link" exact to="/search">Search</NavLink>
-                      </li>
-                    </ul>
-                    <ul className="navbar-nav">
-                      <li className="nav-item active">
-                        <AuthContext.Consumer>
-                        {(context) =>
-                          (context.getIsAuthenticated()
-                            ? <NavLink className="nav-link" exact to="/myprofile" onClick={() => sessionStorage.setItem('user', context.getUser().id)}>
-                            {context.getUsername()}</NavLink>
-                            : <NavLink className="nav-link" exact to="/login">Login</NavLink>
-                          )
-                        }
-                        </AuthContext.Consumer>
-                      </li>
-                      <li className="nav-item active">
-                        <AuthContext.Consumer>
-                        {(context) =>
-                          (context.getIsAuthenticated() &&
-                            <NavLink className="nav-link" exact to="/logout">Logout</NavLink>
-                          )
-                        }
-                        </AuthContext.Consumer>
-                      </li>
-                    </ul>
+            <header>
+              <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-darkest">
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul className="navbar-nav mr-auto">
+                    <li className="nav-item active">
+                      <NavLink className="nav-link text-danger" exact to="/search"><i className="fas fa-search"></i> Search</NavLink>
+                    </li>
+                  </ul>
+                  <div className="navbar-brand d-none d-lg-block">
+                    <NavLink className="csruby-logo" exact to="/">
+                      <img className="csruby-logo-img" src="/static/csruby_frontend_app/images/logo/csruby_logo.png" alt="csruby_logo"/>
+                    </NavLink>
+                    <div className="csruby-logo-border"></div>
+                    <div className="csruby-logo-border-red"></div>
                   </div>
-                </nav>
-              </header>
-              <div className="content text-light mt-5">
-                <Route exact path="/" component={Dashboard}/>
-
-                <Route exact path="/myprofile" component={Profile}/>
-                <Route exact path="/profile" component={Profile}/>
-                <Route exact path="/profile/update" component={UpdateUser}/>
-                <Route exact path="/search" component={Search}/>
-
-                <Route exact path="/login" component={Login}/>
-                <Route exact path="/signup" component={Signup}/>
-                <Route exact path="/logout" component={Logout}/>
-                <Route exact path="/resetPassword" component={ResetPassword}/>
+                  <ul className="navbar-nav ml-auto">
+                    <li className="nav-item active">
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated()
+                          ? <NavLink className="nav-link text-danger" exact to="/myprofile" onClick={() => sessionStorage.setItem('user', context.getUser().id)}>
+                          {context.getUsername()}</NavLink>
+                          : <NavLink className="nav-link text-danger" exact to="/login"><i className="fas fa-sign-in-alt"></i> Login</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li className="nav-item active">
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() &&
+                          <NavLink className="nav-link text-danger" exact to="/logout"><i className="fas fa-sign-out-alt"></i> Logout</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
+              <div className="csruby-nav-underline csruby-bg-red">
               </div>
+            </header>
+            <div className="content text-light mt-5">
+              <Route exact path="/" component={Dashboard}/>
+
+              <Route exact path="/myprofile" component={Profile}/>
+              <Route exact path="/profile" component={Profile}/>
+              <Route exact path="/profile/update" component={UpdateUser}/>
+              <Route exact path="/search" component={Search}/>
+
+              <Route exact path="/login" component={Login}/>
+              <Route exact path="/signup" component={Signup}/>
+              <Route exact path="/logout" component={Logout}/>
+              <Route exact path="/resetPassword" component={ResetPassword}/>
             </div>
+            <footer className="csruby-bg-darkest text-white py-4 mt-5">
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg">
+                    <h5 className="my-3">Information</h5>
+                    <p className="text-muted">Hello, welcome to CSRuby ! If you found this site, it likely means that you're interested in CSGO (Counter Strike Global Offensive) or the steam market. Before you dive in, we want to specify that CSRuby is a site that allows users to follow CSGO item's market prices. CSRuby does <strong><u>not</u></strong>, in any circumstances, allow users to purchase or buy items through the website by any means, it merely provides an interface in which the user can search up items and view their current price or price history. However, it allows the user to place virtual buy and sell orders in which then others can make contact with them and proceed to exchange the item via the steam application. This website does <strong><u>not</u></strong>, in any way, support gambling or similar activities.</p>
+                    <h5 className="my-3">Social networks</h5>
+                    <p className="text-muted">Like what we do ? Then you can follow us on twitter or instagram for updates and other informations !</p>
+                    <a className="text-danger" href="#"><i className="fab fa-twitter fa-lg mx-2"></i></a>
+                    <a className="text-danger" href="#"><i className="fab fa-instagram fa-lg mx-2"></i></a>
+                    <h5 className="my-3">&nbsp;</h5>
+                    <p className="text-lg-right">&copy; 2020 CSRuby</p>
+                  </div>
+                </div>
+              </div>
+            </footer>
           </MessageProvider>
         </AuthProvider>
       </HashRouter>

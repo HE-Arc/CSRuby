@@ -98,7 +98,7 @@ class Search extends Component {
     this.fetchItems(url);
   }
 
-  render(){
+  render() {
     const loader = <div className="text-center"><div className="loadingio-spinner-rolling-oq809e0ojtq"><div className="ldio-5u0wj89ps2u"><div></div></div></div></div>;
     var items = [];
     this.state.data.map(item=>{
@@ -107,14 +107,14 @@ class Search extends Component {
       )
     });
     return (
-      <div className="container">
+      <div className="container pt-4">
         <div className="csruby-bg-darkest p-4 mb-3">
           <form onSubmit={this.onSubmit} ref="form">
             <div className="form-row">
-              <div className="form-group col mb-0">
+              <div className="form-group col-lg my-2">
                 <input className="form-control" id="searchbar" type="text" placeholder="Search item..." name="search" value={this.state.search_value} onChange={this.handleSearchChange}/>
               </div>
-              <div className="form-group col mb-0">
+              <div className="form-group col-lg my-2">
                 <select className="form-control" id="rarity" value={this.state.rarity} onChange={this.handleRarityChange}>
                   <option value="">All rarities</option>
                   <option value="COG">Consumer grade</option>
@@ -131,13 +131,13 @@ class Search extends Component {
                   <option value="EXG">Extraordinary Gloves</option>
                 </select>
               </div>
-              <div className="form-group col mb-0">
+              <div className="form-group col-lg my-2">
                 <input className="form-control" id="min_price" type="number" min="0" max="7500" value="0" name="min_price" value={this.state.min_price} onChange={this.handleMinPriceChange} placeholder="Min price..."/>
               </div>
-              <div className="form-group col mb-0">
+              <div className="form-group col-lg my-2">
                 <input className="form-control" id="max_price" type="number" min="0" max="7500" value="7500" name="max_price" value={this.state.max_price} onChange={this.handleMaxPriceChange} placeholder="Max price..."/>
               </div>
-              <div className="form-group col mb-0">
+              <div className="form-group col-lg my-2">
                 <select className="form-control" id="ordering" value={this.state.ordering} onChange={this.handleOrderingChange}>
                   <option value="">None</option>
                   <option value="price">Price ascending</option>

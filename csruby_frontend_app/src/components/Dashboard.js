@@ -396,9 +396,9 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="container text-light mt-5">
+      <div className="container pt-4">
         <div className="row">
-          <div className="col-lg p-3">
+          <div className="col-lg">
             <div className="csruby-bg-darkest text-center p-3">
               <img src={this.state.item_image} className="img-fluid text-center csruby-item-dashboard-img" alt={this.state.item_name} />
             </div>
@@ -406,17 +406,22 @@ class Dashboard extends Component {
               {(context) => (
                 <div className="row mt-3 py-3">
                   <div className="col-4">
-                    <button id="buy" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onBuyClickPatch : this.onBuyClickPost) : this.showLoginWarning}>Buy</button>
+                    <button id="buy" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onBuyClickPatch : this.onBuyClickPost) : this.showLoginWarning}><i className="fas fa-shopping-cart"></i> Buy</button>
                   </div>
                   <div className="col-4">
-                    <button id="sell" type="button" className="item-action btn btn-lg btn-block csruby-bg-red" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onSellClickPatch : this.onSellClickPost) : this.showLoginWarning}>Sell</button>
+                    <button id="sell" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onSellClickPatch : this.onSellClickPost) : this.showLoginWarning}><i className="fas fa-dollar-sign"></i> Sell</button>
                   </div>
                   <div className="col-4">
-                    <button id="fav" type="button" className="btn btn-lg btn-block csruby-bg-red" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onFavClickPatch : this.onFavClickPost) : this.showLoginWarning}>{this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
+                    <button id="fav" type="button" className="btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onFavClickPatch : this.onFavClickPost) : this.showLoginWarning}><i className={this.state.is_favorite ? "far fa-star" : "fas fa-star"}></i> {this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
                   </div>
                 </div>
               )}
             </AuthContext.Consumer>
+          </div>
+          <div className="col-lg">
+            <div className="csruby-bg-darkest csruby-height-100 p-3">
+              <canvas id="piceChart" width="540" height="450"></canvas>
+            </div>
           </div>
           <div className="modal fade" id="loginWarningModal" tabIndex="-1" role="dialog" aria-labelledby="loginWarningModalLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
@@ -455,13 +460,8 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="col-lg p-3">
-            <div className="csruby-bg-darkest csruby-height-100 p-3">
-              <canvas id="piceChart" width="540" height="450"></canvas>
-            </div>
-          </div>
         </div>
-        <div id="itemInformation" className="csruby-bg-darkest p-3">
+        <div id="itemInformation" className="csruby-bg-darkest p-3 mt-3">
           <h4 className={this.state.rarity_class}>{this.state.item_name}</h4>
           <p className="lead">Selling price : ${this.state.item_lowest_price}</p>
           <p className="lead">Median price : ${this.state.item_median_price}</p>
