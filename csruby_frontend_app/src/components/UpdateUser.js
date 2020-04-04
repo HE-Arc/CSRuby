@@ -155,7 +155,7 @@ class UpdateUser extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     return (
-      <div className="content">
+      <div className="content pt-4">
         <div className="container text-light mt-5">
           <div className="csruby-bg-darkest p-3">
             <form onSubmit={this.submit_form}>
@@ -215,8 +215,8 @@ class UpdateUser extends Component {
               </div>
               <div className="form-group">
               {this.has_errors()
-                  ? <button type="submit" className="btn btn-primary" disabled>Submit</button>
-                  : <button type="submit" className="btn btn-primary">Submit</button>
+                  ? <button type="submit" className="btn btn-danger" disabled>Submit</button>
+                  : <button type="submit" className="btn btn-danger">Submit</button>
               }
               </div>
             </form>

@@ -86,7 +86,7 @@ class Profile extends Component {
       return (<Redirect to ='/login' />);
     }
     return (
-      <div className="container text-light mt-5">
+      <div className="container pt-4">
         <div className="csruby-bg-darkest text-center">
           <h1 className="py-5 mb-0">{this.state.username}</h1>
         </div>
