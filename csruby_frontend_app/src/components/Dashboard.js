@@ -405,14 +405,14 @@ class Dashboard extends Component {
             </div>
             <AuthContext.Consumer>
               {(context) => (
-                <div className="row mt-3 py-3">
-                  <div className="col-lg-4">
+                <div className="row mt-3 py-3 mb-3 mb-lg-0">
+                  <div className="col-lg-4 mb-2 mb-xl-0">
                     <button id="buy" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onBuyClickPatch : this.onBuyClickPost) : this.showLoginWarning}><i className="fas fa-shopping-cart"></i> Buy</button>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-4 my-2 my-lg-0">
                     <button id="sell" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onSellClickPatch : this.onSellClickPost) : this.showLoginWarning}><i className="fas fa-dollar-sign"></i> Sell</button>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-4 mt-2 mt-lg-0">
                     <button id="fav" type="button" className="btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onFavClickPatch : this.onFavClickPost) : this.showLoginWarning}>{this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
                   </div>
                 </div>
