@@ -52,7 +52,7 @@ class Main extends Component {
                   </ul>
                   <div className="navbar-brand d-none d-lg-block">
                     <NavLink className="csruby-logo" exact to="/">
-                      <img className="csruby-logo-img" src="/static/csruby_frontend_app/images/logo/csruby_logo.png" alt="csruby_logo"/>
+                      <img className="csruby-logo-img" src="/static/csruby_frontend_app/logo/csruby_logo.png" alt="csruby_logo"/>
                     </NavLink>
                     <div className="csruby-logo-border"></div>
                     <div className="csruby-logo-border-red"></div>
@@ -98,7 +98,7 @@ class Main extends Component {
                 <Route exact path="/logout" component={Logout}/>
                 <Route exact path="/resetPassword" component={ResetPassword}/>
 
-                <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found'}/> }/>
+                <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found.'}/> }/>
               </Switch>
             </div>
             <footer className="csruby-bg-darkest text-white py-4 mt-5">

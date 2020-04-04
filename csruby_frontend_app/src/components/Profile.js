@@ -4,9 +4,9 @@ import { Redirect } from 'react-router';
 import {
   NavLink
 } from 'react-router-dom';
-
 import { AuthContext } from './AuthProvider';
 import ItemPreview from './item/ItemPreview';
+import Error from './Error';
 
 class Profile extends Component {
 
@@ -24,7 +24,8 @@ class Profile extends Component {
       favorite_items: [],
       response_description: '',
       redirect_to_update: false,
-      redirect_after_delete: false
+      redirect_after_delete: false,
+      error: null,
     };
 
     this.delete = this.delete.bind(this);
@@ -75,10 +76,24 @@ class Profile extends Component {
           favorite_items: response.data.user.favorite_items,
         });
       }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
     });
+
   }
 
   render() {
+    if (this.state.error) {
+      return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
+    }
     if (this.state.redirect_to_update) {
       return (<Redirect to ='/profile/update' />);
     }
@@ -104,7 +119,7 @@ class Profile extends Component {
             }
             <tr>
               <th scope="row">Steam profile</th>
-              <td>{this.state.steamid ? <a href={'https://steamcommunity.com/' + this.state.steamid}>Steam profile</a> : 'None'}</td>
+              <td>{this.state.steamid ? <a href={'https://steamcommunity.com/profiles/' + this.state.steamid}>Steam profile</a> : 'None'}</td>
             </tr>
             <tr>
               <th scope="row">Joined on</th>
