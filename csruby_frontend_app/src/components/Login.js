@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthProvider';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
 class Login extends Component {
@@ -102,12 +102,12 @@ render() {
               </div>
               <div className="form-group">
                 <small id="emailHelp" className="form-text text-muted">
-                  Don't have an account? Sign up <Link className="text-danger" exact to="/signup">here</Link>
+                  Don't have an account? Sign up <NavLink className="text-danger" to="/signup">here</NavLink>
                 </small>
               </div>
               <div className="form-group">
                 <small id="resetHelp" className="form-text text-muted">
-                  You forgot your password? You can reset it <Link className="text-danger" exact to="/resetPassword">here</Link>
+                  You forgot your password? You can reset it <NavLink className="text-danger" to="/resetPassword">here</NavLink>
                 </small>
               </div>
           </form>

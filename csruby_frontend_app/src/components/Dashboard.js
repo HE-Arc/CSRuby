@@ -286,7 +286,8 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if(prevState.has_placed_buy_order !== this.state.has_placed_buy_order
-      || prevState.has_placed_sell_order !== this.state.has_placed_sell_order) {
+      || prevState.has_placed_sell_order !== this.state.has_placed_sell_order
+      || prevState.is_favorite !== this.state.is_favorite) {
         this.fetchItem();
       }
   }
@@ -314,20 +315,20 @@ class Dashboard extends Component {
   }
 
   toggleBuyLink() {
-    this.trader_links[1].classList.remove('text-secondary');
-    this.trader_links[1].classList.add('text-light');
-    this.trader_links[0].classList.add('text-secondary');
-    this.trader_links[0].classList.remove('text-light');
+    this.trader_links[1].classList.remove('text-danger');
+    this.trader_links[1].classList.add('text-secondary');
+    this.trader_links[0].classList.add('text-danger');
+    this.trader_links[0].classList.remove('text-secondary');
 
     this.buyers_div.classList.remove('d-none');
     this.sellers_div.classList.add('d-none');
   }
 
   toggleSellLink() {
-    this.trader_links[0].classList.remove('text-secondary');
-    this.trader_links[0].classList.add('text-light');
-    this.trader_links[1].classList.add('text-secondary');
-    this.trader_links[1].classList.remove('text-light');
+    this.trader_links[0].classList.remove('text-danger');
+    this.trader_links[0].classList.add('text-secondary');
+    this.trader_links[1].classList.add('text-danger');
+    this.trader_links[1].classList.remove('text-secondary');
 
     this.buyers_div.classList.add('d-none');
     this.sellers_div.classList.remove('d-none');
@@ -398,27 +399,27 @@ class Dashboard extends Component {
     return (
       <div className="container pt-4">
         <div className="row">
-          <div className="col-lg">
+          <div className="col-xl">
             <div className="csruby-bg-darkest text-center p-3">
               <img src={this.state.item_image} className="img-fluid text-center csruby-item-dashboard-img" alt={this.state.item_name} />
             </div>
             <AuthContext.Consumer>
               {(context) => (
                 <div className="row mt-3 py-3">
-                  <div className="col-4">
+                  <div className="col-lg-4">
                     <button id="buy" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onBuyClickPatch : this.onBuyClickPost) : this.showLoginWarning}><i className="fas fa-shopping-cart"></i> Buy</button>
                   </div>
-                  <div className="col-4">
+                  <div className="col-lg-4">
                     <button id="sell" type="button" className="item-action btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onSellClickPatch : this.onSellClickPost) : this.showLoginWarning}><i className="fas fa-dollar-sign"></i> Sell</button>
                   </div>
-                  <div className="col-4">
-                    <button id="fav" type="button" className="btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onFavClickPatch : this.onFavClickPost) : this.showLoginWarning}><i className={this.state.is_favorite ? "far fa-star" : "fas fa-star"}></i> {this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
+                  <div className="col-lg-4">
+                    <button id="fav" type="button" className="btn btn-lg btn-block btn-danger" onClick={context.getIsAuthenticated() ? (this.state.row_exists ? this.onFavClickPatch : this.onFavClickPost) : this.showLoginWarning}>{this.state.is_favorite ? 'UnFavorite' : 'Favorite'}</button>
                   </div>
                 </div>
               )}
             </AuthContext.Consumer>
           </div>
-          <div className="col-lg">
+          <div className="col-xl">
             <div className="csruby-bg-darkest csruby-height-100 p-3">
               <canvas id="piceChart" width="540" height="450"></canvas>
             </div>
@@ -466,7 +467,7 @@ class Dashboard extends Component {
           <p className="lead">Selling price : ${this.state.item_lowest_price}</p>
           <p className="lead">Median price : ${this.state.item_median_price}</p>
         </div>
-        <h2 className="mt-3"><a className="traders-link text-secondary" href="#">Buyers</a> | <a className="traders-link text-light" href="#">Sellers</a></h2>
+        <h2 className="mt-3"><a className="traders-link text-danger" href="#">Buyers</a> | <a className="traders-link text-secondary" href="#">Sellers</a></h2>
         <AuthContext.Consumer>
         {(context) => (
           <div>

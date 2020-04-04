@@ -173,10 +173,7 @@ class ResetPassord(generics.GenericAPIView):
                     send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
                     user.save()
                 except Exception as e:
-                    response_body = {
-                        'user': UserSerializer(user).data,
-                    }
-                    return Response(response_body, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    return Response(data={'detail': 'Unexpected error while sending mail. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Exception as e1:
                 response_body = {
                     'user': None,

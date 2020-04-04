@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import Error from './Error';
 
 class ResetPassword extends Component {
 
@@ -14,7 +15,7 @@ class ResetPassword extends Component {
       email:'',
       is_authenticated: false,
       is_reset: false,
-      has_error: false,
+      error: null,
     };
 
     this.handle_change = this.handle_change.bind(this);
@@ -46,12 +47,20 @@ class ResetPassword extends Component {
       this.setState({ is_reset: true });
     })
     .catch((error) => {
-      this.setState({ has_error: true });
+      this.setState({
+        error: {
+          status: error.response.status + ' ' + error.response.statusText,
+          detail: error.response.data.detail,
+        }
+      });
     }
   );
 }
 
 render() {
+  if (this.state.error) {
+    return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
+  }
   if (this.state.is_authenticated) {
     return (<Redirect to ="/" />);
   }
@@ -60,23 +69,18 @@ render() {
       <div className="csruby-bg-darkest p-3">
       {this.state.is_reset &&
         <div>
-          <h1>Password reseted</h1>
+          <h1>Password is reset</h1>
           <p>If the email you provided is linked to an account, you will soon recieve an email containing your new password.</p>
           <p>Once you recieve the email and <Link to="/login">log in</Link>, don't forget to change your password (by updating profile inforamtions).</p>
         </div>}
-      {this.state.has_error &&
-        <div>
-        <h1>Error while sending mail</h1>
-        <p>We encountered an error while sending you the email. Please try again later.</p>
-        </div>}
       {!this.state.is_reset && !this.state.has_error &&
       <div>
-      <p>To reset yout password, enter the email address linked to your account in the field below.</p>
+      <p>To reset your password, enter the email address linked to your account in the field below.</p>
         <form onSubmit={this.submit_form}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
-              type="text"
+              type="email"
               className="form-control"
               name="email"
               placeholder="Enter Email"
