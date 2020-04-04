@@ -23,4 +23,11 @@ SECURE_HSTS_PRELOAD = True
 
 SECURE_REFERRER_POLICY = 'no-referrer'
 
+# disable browsable API (for production)
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
 # TODO:  SET environment variable DJANGO_SETTINGS_MODULE to CSRuby.settings.production_settings on server
