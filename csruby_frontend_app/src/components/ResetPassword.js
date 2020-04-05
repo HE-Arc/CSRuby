@@ -65,7 +65,7 @@ render() {
     return (<Redirect to ="/" />);
   }
   return (
-    <div className="container pt-4">
+    <div className="container py-4">
       <div className="csruby-bg-darkest p-3">
       {this.state.is_reset &&
         <div>
