@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 import { AuthContext } from './AuthProvider';
 import ItemPreview from './item/ItemPreview';
+var $ = require('jquery');
+
 import Error from './Error';
 
 class Profile extends Component {

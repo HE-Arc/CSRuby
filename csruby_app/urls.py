@@ -3,11 +3,11 @@ from . import views
 from knox import views as knox_views
 
 urlpatterns = [
-    path('item/search', views.ItemSearch.as_view()),
+    path('items/search', views.ItemSearch.as_view()),
     path('items/<int:pk>', views.ItemPriceDetail.as_view()),
-    path('item/action/<int:item>/<int:user>', views.ItemActions.as_view()),
-    path('item/action', views.ItemActions.as_view()),
-    path('item/getMostExpensive', views.ItemMostExpensive.as_view()),
+    path('items/action/<int:item>/<int:user>', views.ItemActions.as_view()),
+    path('items/action', views.ItemActions.as_view()),
+    path('items/getMostExpensive', views.ItemMostExpensive.as_view()),
     path('users/<int:pk>', views.UserView.as_view()),
     path('auth/', include('knox.urls')),
     path('auth/register', views.RegistrationAPI.as_view()),

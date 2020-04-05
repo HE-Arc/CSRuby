@@ -50,18 +50,18 @@ class Search extends Component {
   }
 
   updateSearchResult = () => {
-    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/items/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
   onSubmit(event) {
-    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/items/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
     event.preventDefault();
   }
 
   fetchMore(){
-    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/items/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
@@ -97,7 +97,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    let url = '/item/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
+    let url = '/items/search?name=' + this.state.search_value + '&rarity=' + this.state.rarity + '&min_price=' + this.state.min_price + '&max_price=' + this.state.max_price + '&order_by=' + this.state.ordering + '&offset=' + this.state.offset + '&limit=' +this.state.limit_item;
     this.fetchItems(url);
   }
 
