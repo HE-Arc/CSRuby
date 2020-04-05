@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+var $ = require('jquery');
 
 import {
   NavLink
@@ -59,7 +60,7 @@ class Dashboard extends Component {
   onBuyClickPatch(event) {
     axios({
       method: 'patch',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'buy',
         intention: 'add',
@@ -78,7 +79,7 @@ class Dashboard extends Component {
   onSellClickPatch(event) {
     axios({
       method: 'patch',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'sell',
         intention: 'add',
@@ -97,7 +98,7 @@ class Dashboard extends Component {
   onFavClickPatch(event) {
     axios({
       method: 'patch',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'fav',
         intention: this.state.is_favorite ? 'remove' : 'add',
@@ -116,7 +117,7 @@ class Dashboard extends Component {
   onBuyClickPost(event) {
     axios({
       method: 'post',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'buy',
         item_id: sessionStorage.getItem('session_item_id'),
@@ -134,7 +135,7 @@ class Dashboard extends Component {
   onSellClickPost(event) {
     axios({
       method: 'post',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'sell',
         item_id: sessionStorage.getItem('session_item_id'),
@@ -152,7 +153,7 @@ class Dashboard extends Component {
   onFavClickPost(event) {
     axios({
       method: 'post',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: 'fav',
         item_id: sessionStorage.getItem('session_item_id'),
@@ -172,7 +173,7 @@ class Dashboard extends Component {
       let authed_user = sessionStorage.getItem('authed_user');
       let method = 'get';
       let item_id = sessionStorage.getItem('session_item_id');
-      let url = '/item/action/' + item_id + '/' + authed_user;
+      let url = '/items/action/' + item_id + '/' + authed_user;
 
       axios({
         method: method,
@@ -205,7 +206,7 @@ class Dashboard extends Component {
     let item_prices = [];
     let labels = [];
 
-    let url = '/item/getMostExpensive';
+    let url = '/items/getMostExpensive';
     if (this.state.item_id) {
       url = '/items/' + this.state.item_id;
     } else if (session_item_id !== null) {
