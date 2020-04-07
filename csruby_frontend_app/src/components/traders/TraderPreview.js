@@ -38,7 +38,7 @@ class TraderPreview extends Component {
   onClickActionPatch(event) {
     axios({
       method: 'patch',
-      url: '/item/action',
+      url: '/items/action',
       data: {
         action: this.props.action,
         intention: 'remove',
