@@ -67,6 +67,8 @@ class UserView(generics.GenericAPIView):
 
             items_to_buy, items_to_sell, favorite_items = CSRuby_User.objects.get_user_trades(user_id)
 
+            # Constructing response with each item in items_to_buy, items_to_sell and favorite_items.
+            # Response will have an array of items and will be constructed with ItemProfileSerializer.
             response_body['user']['items_to_buy'] = []
 
             if items_to_buy:
@@ -165,6 +167,7 @@ class ResetPassord(generics.GenericAPIView):
             try:
                 user = CSRuby_User.objects.get(email__exact=email)
                 dest.append(email)
+                # Generating new random temporary password
                 new_password = get_random_string(8)
                 try:
                     msg = self.message.format(user.username,new_password)
@@ -174,15 +177,18 @@ class ResetPassord(generics.GenericAPIView):
                     user.save()
                 except Exception as e:
                     return Response(data={'detail': 'Unexpected error while sending mail. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             except Exception as e1:
                 response_body = {
                     'user': None,
                 }
+
                 return Response(response_body)
 
         response_body = {
             'user': None,
         }
+
         return Response(response_body)
 
 
@@ -223,8 +229,11 @@ class ItemSearch(generics.ListAPIView):
             queryset = sorted(queryset, key=lambda item:item_utils.get_rarity_value(item.rarity), reverse=order_by=='rarity_reverse')
         elif order_by == 'name' or 'name_reverse':
             queryset = queryset.order_by('name' if order_by=='name' else '-name')
+
+        # If limit_item is set then return the items from offset to limit_item
         if limit_item:
             return queryset[offset:offset+limit_item]
+
         return queryset[offset:]
 
 class ItemPriceDetail(generics.RetrieveAPIView):

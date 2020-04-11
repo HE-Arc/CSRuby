@@ -9,9 +9,7 @@ from rest_framework.response import Response
 
 class CSRuby_UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, steamid=None):
-        """
-        Creates and saves a User with the given email and password.
-        """
+        """Creates and saves a User with the given email, password and steamid"""
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -25,7 +23,9 @@ class CSRuby_UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
     def get_user_trades(self, user_id):
+        """Return items from buy, sell orders and favorites as a set (items_to_buy, items_to_sell, favorite_items)"""
         buy_orders = None
         buy_orders_item_ids = set()
         items_to_buy = []
@@ -38,11 +38,14 @@ class CSRuby_UserManager(BaseUserManager):
         favorite_item_ids = set()
         favorite_items = []
 
-        # Get the items from the buy and sell orders
+        # Get the items from the buy / sell orders and favorites
+        # Using sets for buy / sell orders and favorites items to avoid duplicates
         if User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).exists():
             buy_orders = User_Item.objects.filter(buy_item__exact='1', user_id__exact=user_id).all()
 
+            # Comprehension set
             buy_orders_item_ids = {buy_order.item_id for buy_order in buy_orders}
+            # Comprehension list, see https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
             items_to_buy = [Item.objects.get(item_id__exact=item_id) for item_id in buy_orders_item_ids]
 
         if User_Item.objects.filter(sell_item__exact='1', user_id__exact=user_id).exists():
@@ -56,9 +59,11 @@ class CSRuby_UserManager(BaseUserManager):
 
             favorite_item_ids = {favorite_item.item_id for favorite_item in favorite_user_items}
             favorite_items = [Item.objects.get(item_id__exact=item_id) for item_id in favorite_item_ids]
+
         return items_to_buy, items_to_sell, favorite_items
 
     def patch_user(self, user_id, request):
+        """Patches the user with the given id. Request must contain username, steamid and password"""
         user = None
 
         user = CSRuby_User.objects.get(id__exact=user_id)
@@ -97,6 +102,7 @@ class CSRuby_User(AbstractBaseUser):
 
 class ItemManager(models.Manager):
     def get_most_expensive_item(self, queryset):
+        """Returns the most expensive item in the database"""
         lowest_price = -1
 
         for item in queryset:
@@ -143,18 +149,28 @@ class Price(models.Model):
 
 class User_ItemManager(models.Manager):
     def create_buy(self, item, user, buy_created_at=timezone.now(), buy_item=True):
+        """Creates a buy order for the given user and item. the timestamp is set to now() and buy_item is set to true"""
         user_item = self.create(item=item, user=user, buy_created_at=buy_created_at, sell_created_at=None, buy_item=buy_item, sell_item=False, favorite_item=False)
         return user_item
 
     def create_sell(self, item, user, sell_created_at=timezone.now(), sell_item=True):
+        """Creates a buy order for the given user and item. the timestamp is set to now() and sell_item is set to true"""
         user_item = self.create(item=item, user=user, buy_created_at=None, sell_created_at=sell_created_at, buy_item=False, sell_item=True, favorite_item=False)
         return user_item
 
     def create_fav(self, item, user, favorite_item=True):
+        """(Creates) Adds an item to the favorites of a user. the timestamp is set to now() and favorite_item is set to true"""
         user_item = self.create(item=item, user=user, buy_created_at=None, sell_created_at=None, buy_item=False, sell_item=False, favorite_item=favorite_item)
         return user_item
 
     def patch_trade(self, request):
+        """
+        Modifies a buy, sell order and favortie item for a given user.
+        Request must contain :
+            - action, intention
+            - trade (if action is buy or sell)
+            - item_id, authed_user (if action is fav)
+        """
         action = ''
         intention = ''
 
