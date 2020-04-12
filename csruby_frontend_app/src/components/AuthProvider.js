@@ -3,6 +3,15 @@ import axios from 'axios';
 
 export const AuthContext = React.createContext();
 
+/**
+Component That provides informations about the authentication status of the current user
+to all "consumer" Component. The information that this Component provides is:
+    - If the user is authenciated
+    - What user is currently authenticated
+    - What the token of the authenticated user is
+Any "consumer" Component can have access to this information and modify it via the get/set methods listed in the
+render method.
+**/
 class AuthProvider extends Component {
   constructor(props) {
     super(props)
