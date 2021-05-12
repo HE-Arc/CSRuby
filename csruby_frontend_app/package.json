@@ -28,7 +28,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "jquery": "^3.5.0",
     "popper.js": "^1.16.1",
     "react-infinite-scroller": "^1.2.4",
